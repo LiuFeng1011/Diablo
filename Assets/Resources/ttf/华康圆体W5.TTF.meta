@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 6132a08caad7046f58244b87f2f1fd71
+timeCreated: 1527155192
+licenseType: Pro
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: DFPYuanW5-GB
+  fontNames:
+  - DFPYuanW5-GB
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

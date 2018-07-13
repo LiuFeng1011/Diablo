@@ -21,23 +21,23 @@ public class AStar
     }
 
     //附近的格子 8方向
-    int[,] nearArray= new int[,]{
-        {0, 1},   
-        {1, 1},   
-        {1, 0},   
-        {1, -1},  
-        {0, -1},  
-        {-1, -1}, 
-        {-1, 0},  
-        {-1, 1}   
-    };
-    //附近的格子 4方向
-    //int[,] nearArray = new int[,]{
-    //    {0, 1},
-    //    {1, 0},
-    //    {0, -1},
-    //    {-1, 0},
+    //int[,] nearArray= new int[,]{
+    //    {0, 1},   
+    //    {1, 1},   
+    //    {1, 0},   
+    //    {1, -1},  
+    //    {0, -1},  
+    //    {-1, -1}, 
+    //    {-1, 0},  
+    //    {-1, 1}   
     //};
+    //附近的格子 4方向
+    int[,] nearArray = new int[,]{
+        {0, 1},
+        {1, 0},
+        {0, -1},
+        {-1, 0},
+    };
     Vector2 startPosition, endPosition;//起始点和结束点
 
     //开放列表，在插入时根据MapNode的f值进行排序，即优先队列
@@ -87,18 +87,18 @@ public class AStar
 
     float GetNodeG(MapNode parent,MapNode node){
         //曼哈顿距离
-        //float dis = Mathf.Abs(parent.p.x - node.p.x) + Mathf.Abs(parent.p.y - node.p.y);
+        float dis = Mathf.Abs(parent.p.x - node.p.x) + Mathf.Abs(parent.p.y - node.p.y);
         //欧式距离
-        float dis = Vector2.Distance(parent.p, node.p);
+        //float dis = Vector2.Distance(parent.p, node.p);
         return parent.g + dis;
     }
 
     float GetNodeH( MapNode node)
     {
         //曼哈顿距离
-        //return Mathf.Abs(endPosition.x - node.p.x) + Mathf.Abs(endPosition.y - node.p.y);
+        return Mathf.Abs(endPosition.x - node.p.x) + Mathf.Abs(endPosition.y - node.p.y);
         //欧式距离
-        return Vector2.Distance(endPosition,node.p);
+        //return Vector2.Distance(endPosition,node.p);
     }
 
     /// <summary>
@@ -109,7 +109,6 @@ public class AStar
     /// <param name="startPosition">开始位置.</param>
     /// <param name="endPosition">结束位置.</param>
     public List<Vector2> StratAStar(int[,] map,Vector2 startPosition,Vector2 endPosition){
-        Debug.Log("StratAStar : " +  startPosition + " end L: " + endPosition);
         openList.Clear();
         mapList = new MapNode[map.GetLength(0),map.GetLength(1)];
 

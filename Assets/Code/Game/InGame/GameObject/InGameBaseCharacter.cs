@@ -105,6 +105,9 @@ public class InGameBaseCharacter : InGameBaseObj
     public Vector3 boxSize;
 
     Vector3 lastPos = Vector3.zero;
+
+    List<EquipData> equipList = new List<EquipData>();
+
     //生命回复时间
     float lifeReviveTime = 0;
 
@@ -189,9 +192,45 @@ public class InGameBaseCharacter : InGameBaseObj
 
     }
 
+    public virtual void SetEquipProperty(){
+
+        for (int i = 0; i < equipList.Count; i ++){
+            EquipData equipdata = equipList[i];
+            //EquipConf econf = ConfigManager.equipConfManager.dic[equipdata.equipid];
+            for (int j = 0; j < equipdata.propertyList.Count; j++)
+            {
+                EquipProperty p = equipdata.propertyList[j];
+                PropertyConf pconf = ConfigManager.propertyConfManager.dataMap[p.id];
+
+                string propertyText = string.Format(pconf.des, p.val) + "\n";
+                if (pconf.formula != 2)
+                {
+                    if (pconf.formula == 1)
+                    {
+                        propertys.propertyValues[p.id] *= (1f - p.val / 100f);
+                    }
+                    else
+                    {
+                        propertys.propertyValues[p.id] += p.val;
+                    }
+                }
+                else
+                {
+                    propertys.propertyValues[p.id] += p.val;
+                }
+
+                Debug.Log(propertyText);
+            }
+
+        }
+
+
+    }
+
     public virtual void ResetAllProperty(bool isinit)
     {
         SetBaseProperty();
+        SetEquipProperty();
 
         for (int i = 1; i < propertys.propertyValues.Length; i++)
         {
@@ -260,11 +299,33 @@ public class InGameBaseCharacter : InGameBaseObj
         ai.Init(this);
     }
 
+    public virtual bool AddEquip(EquipData equip){
+        for (int i = 0; i < equipList.Count; i ++){
+            if(equipList[i].instanceid == equip.instanceid){
+                return false;
+            }
+        }
+        equipList.Add(equip);
+        return true;
+    }
+
+    public virtual bool CancleEquip(int instanceid){
+        for (int i = 0; i < equipList.Count; i++)
+        {
+            if (equipList[i].instanceid == instanceid)
+            {
+                equipList.RemoveAt(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public virtual void Move(Vector3 targetpos){
-        
+        targetpos = GameCommon.GetWorldPos(targetpos);
         Vector3 v = (targetpos - transform.position).normalized;
 
-        transform.position += v*Time.deltaTime;
+        transform.position += v * Time.deltaTime * this.GetMoveSpeed();
 
         transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (v.x > 0?-1:1), transform.localScale.y, transform.localScale.z);
     }
@@ -290,7 +351,7 @@ public class InGameBaseCharacter : InGameBaseObj
 
     public void StartAtk(InGameBaseObj target)
     {
-        actionManager.StartAction(target, Vector3.zero);
+        actionManager.StartAction(target, target.transform.position);
         //agent.SetDestination(transform.position);
     }
 
@@ -306,6 +367,14 @@ public class InGameBaseCharacter : InGameBaseObj
         InGameManager.GetInstance().inGameUIManager.DelRole(this.instanceId);
         //base.Die();
         SetAnimatorState(AnimatorState.Dead, 1);
+
+        if(camp == enMSCamp.en_camp_enemy){
+            EquipSystem.GetInstance().OutEquip(gameObject, level);
+        }
+
+        transform.GetComponent<BoxCollider>().enabled = false;
+        Invoke("Delself",3);
+
     }
 
     public void Delself(){

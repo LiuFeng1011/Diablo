@@ -24,8 +24,8 @@ public class BaseEnemyAI : BaseGameObject {
             List<InGameBaseObj> objlist = InGameManager.GetInstance().inGameObjManager.objList;
 
             for (int i = 0; i < objlist.Count; i ++){
-                if(objlist[i].GetObjType() == InGameBaseObj.enObjType.role){
-                    if (Vector3.Distance(objlist[i].transform.position, this.character.transform.position) < 3f){
+                if(character.IsEnemy(objlist[i])){
+                    if (Vector2.Distance(objlist[i].transform.position, this.character.transform.position) < 3f){
                         character.StartAtk((InGameBaseCharacter)objlist[i]);
                         state = AIState.atk;
                         break;
@@ -40,7 +40,7 @@ public class BaseEnemyAI : BaseGameObject {
                 character.StopAction();
                 return;
             }
-            if (Vector3.Distance(character.actionManager.target.transform.position,
+            if (Vector2.Distance(character.actionManager.target.transform.position,
                                  this.character.transform.position) > 3f)
             {  
                 state = AIState.run;

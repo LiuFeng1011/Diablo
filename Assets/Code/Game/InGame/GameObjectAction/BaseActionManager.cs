@@ -85,32 +85,24 @@ public class BaseActionManager : BaseGameObject {
 
     public virtual void StartAction(InGameBaseObj target,Vector3 targetPos){
 
-        path.Clear();
         MazeMapManager gameMap = InGameManager.GetInstance().inGameLevelManager.gameMap;
-        path = astar.StratAStar(
+        List<Vector2> _path = astar.StratAStar(
             gameMap.map,
-            GameCommon.GetMapPos(parent.transform.position),
+            GameCommon.GetMapPos(parent.transform.position) ,
             GameCommon.GetMapPos(targetPos));
-        if (path.Count <= 0)
+        
+        if (_path.Count <= 0)
         {
-            this.targetPos = parent.transform.position;
             return;
         }
-
+        path = _path;
 
         isaction = true;
-        if(target != null){
-            this.targetPos = target.transform.position;
-        }else{
-
-            this.targetPos = targetPos;
-        }
         this.target = target;
+        this.targetPos = targetPos;
 
         atkTime = 0;
         state = ActionState.move;
-
-        SetPathPos();
 
     }
 
@@ -128,33 +120,43 @@ public class BaseActionManager : BaseGameObject {
     {
         if(target != null){
 
-            targetPos = target.transform.position + (target.transform.position - parent.transform.position).normalized * parent.GetAtkDis(target) * 1.2f;
-
-            if (Vector3.Distance(parent.transform.position, target.transform.position) > parent.GetAtkDis(target))
+            if (Vector2.Distance(parent.transform.position, target.transform.position) > parent.GetAtkDis(target))
             {
-                parent.Move(targetPos);
+                MoveAction();
             }
             else
             {
-                parent.Move(parent.transform.position);
                 StartAtk();
             }
         }else{
-            float dis = Vector3.Distance(parent.transform.position, targetPos);
-            if (dis <= parent.GetMoveSpeed() * Time.deltaTime * 2)
+            MoveAction();
+        }
+    }
+
+    void MoveAction(){
+        Vector3 tp = GameCommon.GetWorldPos(path[0]);
+
+        float dis = Vector2.Distance(parent.transform.position, tp);
+        if (dis <= parent.GetMoveSpeed() * Time.deltaTime)
+        {
+
+            SetPathPos();
+            if (path.Count <= 0)
             {
                 parent.StopAction();
-                return;
             }
             else
             {
-                parent.Move(targetPos);
-                parent.SetAnimatorState(InGameBaseCharacter.AnimatorState.Run, parent.GetMoveSpeed() * 0.3f);
+                parent.Move(path[0]);
             }
+            return;
         }
-
+        else
+        {
+            parent.Move(path[0]);
+            parent.SetAnimatorState(InGameBaseCharacter.AnimatorState.Run, parent.GetMoveSpeed() * 0.3f);
+        }
     }
-
     void StartAtk()
     {
         state = ActionState.atkbegin;
@@ -163,7 +165,7 @@ public class BaseActionManager : BaseGameObject {
             state = ActionState.non;
             return;
         }
-        if (Vector3.Distance(parent.transform.position, target.transform.position) > parent.GetAtkDis(target))
+        if (Vector2.Distance(parent.transform.position, target.transform.position) > parent.GetAtkDis(target))
         {
             state = ActionState.move;
             return;
@@ -188,8 +190,6 @@ public class BaseActionManager : BaseGameObject {
         parent.SetAnimatorState(parent.GetAtkAnimator(), parent.GetAtkSpeed());
         atkTime = 0;
 
-        Vector3 v = (target.transform.position - parent.transform.position).normalized;
-        parent.transform.forward = v;
     }
 
     void Atk()

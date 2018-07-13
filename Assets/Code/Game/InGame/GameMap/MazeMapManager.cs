@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public class InsertMapData{
+    public Vector2 pos;
+    public string mappath;
+}
+
 public class MazeMapManager : BaseGameMapManager {
 
     const float mapscale = 1;
-    const int row = 50, col = 30;
+    const int row = 50, col = 50;
     MazeCreate mazeCreate;
     int Accumulation = 95;//障碍堆积系数
     int Erosion = 30;//障碍侵蚀系数
-
-    public Vector3 startPosition;
 
     public int[,] map;
 
@@ -20,7 +23,28 @@ public class MazeMapManager : BaseGameMapManager {
     {
         mapObj = new GameObject("map");
 
-        mazeCreate = MazeCreate.GetMaze(row, col);
+        //mazeCreate = MazeCreate.GetMaze(row, col);
+        List<List<int>> mapList = new List<List<int>>();
+
+        for (int i = 0; i < row; i++)
+        {
+            mapList.Add(new List<int>());
+            for (int j = 0; j < col; j++)
+            {
+                if ((i >= 10 && i < 20) &&
+                    (j >= 10 && j < 20))
+                {
+                    mapList[i].Add((int)MazeCreate.PointType.nullpoint);
+                }
+                else
+                {
+                    mapList[i].Add((int)MazeCreate.PointType.wall);
+                }
+            }
+        }
+
+        mazeCreate = MazeCreate.GetMaze(mapList);
+
 
         CreateMap(mazeCreate.tree);
 
@@ -31,9 +55,14 @@ public class MazeMapManager : BaseGameMapManager {
         {
             for (int j = 0; j < col; j++)
             {
+                if(mazeCreate.mapList[i][j] != (int)MazeCreate.PointType.wall && 
+                   mazeCreate.mapList[i][j] != (int)MazeCreate.PointType.nullpoint){
+                    map[i,j] = 1;
+                }
                 if (mazeCreate.mapList[i][j] == (int)MazeCreate.PointType.startpoint)
                 {
-                    startPosition = new Vector3(i, j, 0) ;
+                    startPoint = new Vector3(i, j, 0) ;
+                    Debug.Log("startPosition1 : " + startPoint);
                 }
 
                 if (mazeCreate.mapList[i][j] == (int)MazeCreate.PointType.startpoint ||
@@ -62,7 +91,9 @@ public class MazeMapManager : BaseGameMapManager {
         StaticBatchingUtility.Combine(mapObj);
     }
 
-
+    void InsertMap(){
+        
+    }
     int GetMaxFullSpace(int i, int j)
     {
         int z = 0;
@@ -182,5 +213,63 @@ public class MazeMapManager : BaseGameMapManager {
             str += "\n";
         }
         Debug.Log(str);
+    }
+
+    public Vector3 GetRandomWay(){
+        int x = Random.Range(0, map.GetLength(0));
+        int y = Random.Range(0, map.GetLength(1));
+
+        if(map[x, y] != 1){
+            int count = 0;
+
+            bool isfind = false;
+
+            while (!isfind){
+                count++;
+
+                for (int i = -count; i <= count; i ++){
+                    if(IsPointWay(x + i,y - count)){
+                        isfind = true;
+                        x = x + i;
+                        y = y - count;
+                        break;
+                    }
+                    if (IsPointWay(x + i, y + count))
+                    {
+                        isfind = true;
+                        x = x + i;
+                        y = y + count;
+                        break;
+                    }
+
+                    if (IsPointWay(x - count, y + i))
+                    {
+                        isfind = true;
+                        x = x - count;
+                        y = y + i;
+                        break;
+                    }
+                    if (IsPointWay(x + count, y + i))
+                    {
+                        isfind = true;
+                        x = x + count;
+                        y = y + i;
+                        break;
+                    }
+                }
+                if(count >= map.GetLength(0)){
+                    break;
+                }
+            }
+
+        }
+
+        return new Vector3(x, y, 0);
+    }
+
+    bool IsPointWay(int x,int y){
+        if (x < 0 || x >= map.GetLength(0)) return false;
+        if (y < 0 || y >= map.GetLength(1)) return false;
+        return map[x, y] == 1;
     }
 }

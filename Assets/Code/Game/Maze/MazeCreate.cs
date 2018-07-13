@@ -27,7 +27,7 @@ public class MapTree
 /// 从起始点开始，随机从上下左右四个位置寻找周围没有被找到过的位置，找到后此点标记为1，并把此点与前一点之间的位置设置为1
 /// 如果全部位置已经找到过，则退回到上一个点重复次逻辑，直到所有点都记录到或 退回到起始点且没有可用点
 /// </summary>
-public class MazeCreate : MonoBehaviour
+public class MazeCreate 
 {
 
     public enum PointType
@@ -123,7 +123,7 @@ public class MazeCreate : MonoBehaviour
         if (_col % 2 == 0) { _col += 1; }
 
         mapList[_row][_col] = (int)PointType.startpoint;
-
+        Debug.Log("_row : " + _row + " _col : " + _col);
         tree = new MapTree(new Vector3(_row, _col));
 
         int nowindex = _row * col + _col;

@@ -27,8 +27,16 @@ public class InGamePlayerManager : InGameBaseManager {
 
         InGameManager.GetInstance().inGameCameraManager.SetTarget(role.gameObject);
         //InGameManager.GetInstance().GetManager<InGameObjManager>(InGameManager.enGameManager.InGameObjManager).AddObj(0);
+        Vector3 startpos = InGameManager.GetInstance().inGameLevelManager.gameMap.GetStartPosition();
+        Debug.Log("startpos : " + GameCommon.GetWorldPos(startpos));
+        role.transform.position = GameCommon.GetWorldPos(startpos);
 
-        role.transform.position = GameCommon.GetWorldPos(InGameManager.GetInstance().inGameLevelManager.gameMap.GetStartPosition());
+        for (int i = 0; i < rd.choseEquipList.Count; i++)
+        {
+            if (rd.choseEquipList[i] == -1) continue;
+            EquipData edata = UserDataManager.instance.GetEquip(rd.choseEquipList[i]);
+            role.AddEquip(edata);
+        }
 
         role.ResetAllProperty(true);
         EventData.CreateEvent(EventID.EVENT_GAME_INITROLE).AddData(role).Send();
@@ -47,6 +55,7 @@ public class InGamePlayerManager : InGameBaseManager {
         //role.GetData().weaponid = instanceid;
 
         EquipData edata = UserDataManager.instance.GetEquip(instanceid);
+        role.AddEquip(edata);
         role.ResetAllProperty();
     }
     //捡装备
@@ -60,6 +69,8 @@ public class InGamePlayerManager : InGameBaseManager {
     public void CancelEquip(int unequipinstanceid){
 
         UserDataManager.instance.CancelEquip(unequipinstanceid);
+
+        role.CancleEquip(unequipinstanceid);
         role.ResetAllProperty();
 
         EventData.CreateEvent(EventID.EVENT_UI_REFRESH_PACKAGEUI).Send();

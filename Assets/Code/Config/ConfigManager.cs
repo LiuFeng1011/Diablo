@@ -27,6 +27,7 @@ public class ConfigManager  {
     public static EquipConfManager equipConfManager = new EquipConfManager();
     public static PropertyConfManager propertyConfManager = new PropertyConfManager();
     public static SkillConfManager skillConfManager = new SkillConfManager();
+    public static SmallMapConfManager smallMapConfManager = new SmallMapConfManager();
 
     public static void LoadData(){
         Debuger.Log("===========启动配置表管理器===========");
@@ -36,6 +37,7 @@ public class ConfigManager  {
         equipConfManager.Load();
         propertyConfManager.Load();
         skillConfManager.Load();
+        smallMapConfManager.Load();
         Debuger.Log("----------配置表管理器启动成功-----------");
 
     }

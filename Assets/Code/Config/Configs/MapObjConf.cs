@@ -9,6 +9,7 @@ public class MapObjConf
     public enum enMapObjType
     {
         character = 1,
+        enemy = 2,
     }
 
     public int id;    /*  道具id    */

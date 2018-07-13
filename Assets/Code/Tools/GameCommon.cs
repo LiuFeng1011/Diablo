@@ -257,7 +257,7 @@ public class GameCommon  {
         float x = worldpos.x / 2f - worldpos.y;
         float y = worldpos.x - x;
 
-        Vector2 mappos = new Vector2(x, y);
+        Vector2 mappos = new Vector2((int)(x + 0.5f), (int)(y + 0.5f));
         return mappos;
     }
 }

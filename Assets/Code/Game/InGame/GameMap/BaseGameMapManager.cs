@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class BaseGameMapManager : BaseGameObject {
 
-    Vector3 startPoint = Vector3.zero;
+    public Vector3 startPoint = Vector3.zero;
 
     public virtual void Init()
     {

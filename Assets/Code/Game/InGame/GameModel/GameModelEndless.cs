@@ -15,11 +15,13 @@ public class GameModelEndless : BaseGameModelManager {
     {
         if(enemy == null){
 
-            List<MapObjConf> roleList = ConfigManager.mapObjectManager.dicByType[(int)MapObjConf.enMapObjType.character];
+            List<MapObjConf> roleList = ConfigManager.mapObjectManager.dicByType[(int)MapObjConf.enMapObjType.enemy];
 
             enemy = InGameManager.GetInstance().inGameObjManager.AddObj(roleList[Random.Range(0,roleList.Count)].id,enMSCamp.en_camp_enemy) as InGameBaseCharacter;
             enemy.AddAI();
-            enemy.transform.position = new Vector3(Random.Range(-3, 3), Random.Range(-3, 3),0);
+
+            Vector3 pos = InGameManager.GetInstance().inGameLevelManager.gameMap.GetRandomWay();
+            enemy.transform.position = GameCommon.GetWorldPos(pos);
         }
     }
 

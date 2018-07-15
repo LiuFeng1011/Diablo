@@ -4,18 +4,15 @@ using UnityEngine;
 
 public class ChooseRoleLayerManager : MonoBehaviour {
     public ScrollViewManager scrollViewManager;
-
+    public GameObject createRoleBtn, startBtn, delBtn;
     public int selinstanceid = -1;
     private void Start()
     {
 
-        GameObject createRoleBtn = transform.Find("CreateRoleBtn").gameObject;
         GameUIEventListener.Get(createRoleBtn).onClick = CreateRoleCB;
 
-        GameObject startBtn = transform.Find("StartBtn").gameObject;
         GameUIEventListener.Get(startBtn).onClick = StartCB;
 
-        GameObject delBtn = transform.Find("DelBtn").gameObject;
         GameUIEventListener.Get(delBtn).onClick = DelCB;
 
     }

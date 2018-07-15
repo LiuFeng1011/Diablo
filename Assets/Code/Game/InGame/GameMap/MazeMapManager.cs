@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class InsertMapData{
     public Vector2 pos;
-    public string mappath;
+    public SmallMapConf conf;
 }
 
 public class MazeMapManager : BaseGameMapManager {
 
     const float mapscale = 1;
-    const int row = 50, col = 50;
+    int row = 30, col = 30;
     MazeCreate mazeCreate;
     int Accumulation = 95;//障碍堆积系数
     int Erosion = 30;//障碍侵蚀系数
@@ -23,6 +23,9 @@ public class MazeMapManager : BaseGameMapManager {
     {
         mapObj = new GameObject("map");
 
+        List<InsertMapData> insertMapList = new List<InsertMapData>();
+        InsertMapData insertMapData = new InsertMapData();
+        //insertMapData.pos = 
         //mazeCreate = MazeCreate.GetMaze(row, col);
         List<List<int>> mapList = new List<List<int>>();
 

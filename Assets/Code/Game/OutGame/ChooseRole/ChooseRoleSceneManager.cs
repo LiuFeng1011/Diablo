@@ -56,6 +56,7 @@ public class ChooseRoleSceneManager : MonoBehaviour {
         }
 
         MapObjConf conf = ConfigManager.mapObjectManager.dic[id];
+        Debug.Log(conf.prefabName);
         GameObject obj = Resources.Load(conf.prefabName) as GameObject;
 
         obj = MonoBehaviour.Instantiate(obj);

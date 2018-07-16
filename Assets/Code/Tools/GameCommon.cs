@@ -260,6 +260,17 @@ public class GameCommon  {
         Vector2 mappos = new Vector2((int)(x + 0.5f), (int)(y + 0.5f));
         return mappos;
     }
+
+    //计算夹角的角度 0~360
+    public static float GetVecAngle( Vector3 v)
+    {
+        float angle = Mathf.Atan(v.y / v.x) / 3.14159f * 180f;
+
+        if(v.x < 0){
+            angle += 180;
+        }
+        return angle;
+    }
 }
 
 public class GameItem{

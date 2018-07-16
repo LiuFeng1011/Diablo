@@ -8,7 +8,7 @@ public class InGameBaseEnemy : InGameBaseCharacter {
 
     public override enObjType GetObjType()
     {
-        return enObjType.enemy;
+        return enObjType.character;
 
     }
 

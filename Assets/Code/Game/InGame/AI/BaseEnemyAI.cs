@@ -24,6 +24,7 @@ public class BaseEnemyAI : BaseGameObject {
             List<InGameBaseObj> objlist = InGameManager.GetInstance().inGameObjManager.objList;
 
             for (int i = 0; i < objlist.Count; i ++){
+                if (objlist[i].GetObjType() != InGameBaseObj.enObjType.character) continue;
                 if(character.IsEnemy(objlist[i])){
                     if (Vector2.Distance(objlist[i].transform.position, this.character.transform.position) < 3f){
                         character.StartAtk((InGameBaseCharacter)objlist[i]);

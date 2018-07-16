@@ -6,8 +6,7 @@ public class InGameBaseObj : BaseUnityObject {
 
     public enum enObjType{
         nothing,
-        role,
-        enemy,
+        character,
         equip,
         skill
     }
@@ -35,6 +34,7 @@ public class InGameBaseObj : BaseUnityObject {
 
 
     public virtual void SetDie(bool selfdie){
+        Debug.Log("set die");
         isDie = true;
     }
 
@@ -48,7 +48,8 @@ public class InGameBaseObj : BaseUnityObject {
     }
 
     public bool IsEnemy(InGameBaseObj target){
-        return GameConst.CAMP_ATK[(int)camp, (int)target.camp] == 1;
+        int val = GameConst.CAMP_ATK[(int)camp, (int)target.camp];
+        return val == 1;
     }
 
 }

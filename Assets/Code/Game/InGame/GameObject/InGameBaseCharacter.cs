@@ -144,6 +144,12 @@ public class InGameBaseCharacter : InGameBaseObj
         lastPos = transform.position;
     }
 
+    public override enObjType GetObjType()
+    {
+        return enObjType.character;
+
+    }
+
     public virtual void SetData(RoleData data)
     {
         charactername = data.name;
@@ -477,7 +483,7 @@ public class InGameBaseCharacter : InGameBaseObj
 
     public int GetBaseSkillID(){
 
-        return 300001;
+        return this.conf.atkskill;
     }
 
     public InGameBaseCharacter.AnimatorState GetAtkAnimator(){
@@ -488,9 +494,11 @@ public class InGameBaseCharacter : InGameBaseObj
     public float GetAtkDis(InGameBaseObj target)
     {
         float ret = boxSize.x + 0.3f;
-        if(target.GetObjType() == enObjType.enemy){
+        if(target.GetObjType() == enObjType.character){
             ret += ((InGameBaseCharacter)target).boxSize.x;
         }
+
+        ret += this.conf.atkdis;
 
         return ret;
     }

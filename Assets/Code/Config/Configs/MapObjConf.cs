@@ -19,6 +19,9 @@ public class MapObjConf
     1角色" 
     */
     public int level;
+    public float atkdis;
+    public int atkskill;
+
     public int unlocktype;//解锁方式
 
     public int price;//价格

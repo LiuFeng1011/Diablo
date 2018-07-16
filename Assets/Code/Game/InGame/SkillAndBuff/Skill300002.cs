@@ -15,11 +15,13 @@ public class Skill300002 : BaseSkill {
         Vector3 targetPos = target.transform.position + new Vector3(0, target.boxSize.y / 2, 0);
 
         moveVector = (targetPos - sourcePos).normalized;
-
+        moveVector.z = 0;
         startPos = sourcePos;
         transform.position = startPos;
 
-        transform.forward = moveVector;
+        float angle = GameCommon.GetVecAngle(moveVector);
+        Debug.Log(angle);
+        transform.eulerAngles = new Vector3(0, 0,angle);
     }
 
     public override bool ObjUpdate()
@@ -31,7 +33,7 @@ public class Skill300002 : BaseSkill {
         //Debug.Log("move vec : " + moveVector);
         transform.position = transform.position + moveVector * Time.deltaTime * 5;
 
-        if(Vector3.Distance(startPos,transform.position) > 20){
+        if(Vector2.Distance(startPos,transform.position) > 20){
             SetDie(true);
             return false;
         }
@@ -51,18 +53,18 @@ public class Skill300002 : BaseSkill {
     }
 
     void HitObj(GameObject obj){
-
         InGameBaseObj baseobj  = obj.GetComponent<InGameBaseObj>();
         if (baseobj == null)
         {
-            SetDie(true);
+            return;
+        }
+
+        if (baseobj.GetObjType() != enObjType.character)
+        {
             return;
         }
         if (!source.IsEnemy(baseobj))
         {
-            return;
-        }
-        if(!(baseobj.GetObjType() == enObjType.role || baseobj.GetObjType() == enObjType.enemy)){
             return;
         }
 
@@ -74,7 +76,7 @@ public class Skill300002 : BaseSkill {
                     source.propertys.GetProperty(enCharacterProperty.comborate),
                     source.propertys.GetProperty(enCharacterProperty.comboval),
                     false);
-
+        Debug.Log("set die");
         SetDie(true);
     }
 }

@@ -71,8 +71,7 @@ public class InGameObjManager : InGameBaseManager {
         SkillConf conf = ConfigManager.skillConfManager.dataMap[skill];
         GameObject obj = Resources.Load(conf.filepath) as GameObject;
 
-        obj = MonoBehaviour.Instantiate(obj);
-
+        obj = InGameManager.Instantiate(obj);
         InGameBaseObj objscript = obj.GetComponent<InGameBaseObj>();
         objscript.Init(gameObjInstanceId, skill,camp);
         addList.Add(objscript);

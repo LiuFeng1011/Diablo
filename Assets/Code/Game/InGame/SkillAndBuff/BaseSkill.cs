@@ -16,7 +16,6 @@ public class BaseSkill : InGameBaseObj {
         BaseSkill skill = InGameManager.GetInstance().inGameObjManager.AddSkill(skillid,source.camp) as BaseSkill;
 
         skill.SkillInit(source,target);
-
         return skill;
     }
 

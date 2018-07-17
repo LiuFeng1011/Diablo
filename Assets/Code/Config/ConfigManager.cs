@@ -28,6 +28,7 @@ public class ConfigManager  {
     public static PropertyConfManager propertyConfManager = new PropertyConfManager();
     public static SkillConfManager skillConfManager = new SkillConfManager();
     public static SmallMapConfManager smallMapConfManager = new SmallMapConfManager();
+    public static MapObjConfManager mapObjConfManager = new MapObjConfManager();
 
     public static void LoadData(){
         Debuger.Log("===========启动配置表管理器===========");
@@ -38,6 +39,7 @@ public class ConfigManager  {
         propertyConfManager.Load();
         skillConfManager.Load();
         smallMapConfManager.Load();
+        mapObjConfManager.Load();
         Debuger.Log("----------配置表管理器启动成功-----------");
 
     }

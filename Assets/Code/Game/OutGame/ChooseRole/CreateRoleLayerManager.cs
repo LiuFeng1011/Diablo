@@ -18,7 +18,7 @@ public class CreateRoleLayerManager : MonoBehaviour {
         GameObject backBtn = transform.Find("Bottom").Find("BackBtn").gameObject;
         GameUIEventListener.Get(backBtn).onClick = BackCB;
 
-        List<MapObjConf> roleList = ConfigManager.mapObjectManager.dicByType[(int)MapObjConf.enMapObjType.character];
+        List<CharacterConf> roleList = ConfigManager.mapObjectManager.dicByType[(int)CharacterConf.enCharacterType.character];
 
         for (int i = 0; i < roleList.Count; i++)
         {

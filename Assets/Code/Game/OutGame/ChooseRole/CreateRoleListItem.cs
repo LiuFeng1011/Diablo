@@ -5,9 +5,9 @@ using UnityEngine;
 public class CreateRoleListItem : MonoBehaviour {
 
     public UILabel nameLabel;
-    MapObjConf conf;
+    CharacterConf conf;
 	// Use this for initialization
-    public void Init(MapObjConf conf){
+    public void Init(CharacterConf conf){
         this.conf = conf;
 
         nameLabel.text = conf.name;

@@ -98,7 +98,7 @@ public class InGameBaseCharacter : InGameBaseObj
     [HideInInspector] public CharacterProperty propertys;
     public float life = 10;
 
-    protected MapObjConf conf;
+    protected CharacterConf conf;
 
     public string charactername = "";
 
@@ -331,9 +331,11 @@ public class InGameBaseCharacter : InGameBaseObj
         targetpos = GameCommon.GetWorldPos(targetpos);
         Vector3 v = (targetpos - transform.position).normalized;
 
-        transform.position += v * Time.deltaTime * this.GetMoveSpeed();
-
+        Vector3 newv = v * Time.deltaTime * this.GetMoveSpeed();
+        transform.position = new Vector3(newv.x,newv.y,newv.y-newv.x + 100);
         transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (v.x > 0?-1:1), transform.localScale.y, transform.localScale.z);
+    
+    
     }
 
     string lastAnimatorName = "";

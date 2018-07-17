@@ -53,7 +53,7 @@ public class InGameObjManager : InGameBaseManager {
     {
         gameObjInstanceId++;
 
-        CharacterConf conf = ConfigManager.mapObjectManager.dic[objid];
+        CharacterConf conf = ConfigManager.characterConfManager.dic[objid];
         GameObject obj = Resources.Load(conf.prefabName) as GameObject;
 
         obj = MonoBehaviour.Instantiate(obj);

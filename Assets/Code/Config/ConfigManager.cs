@@ -23,7 +23,7 @@ public class ConfigManager  {
 
 	public static bool loadDown = false;
 
-    public static ConfMapObjectManager mapObjectManager = new ConfMapObjectManager();
+    public static CharacterConfManager characterConfManager = new CharacterConfManager();
     public static EquipConfManager equipConfManager = new EquipConfManager();
     public static PropertyConfManager propertyConfManager = new PropertyConfManager();
     public static SkillConfManager skillConfManager = new SkillConfManager();
@@ -34,7 +34,7 @@ public class ConfigManager  {
         Debuger.Log("===========启动配置表管理器===========");
         //confMapObjectManager.Load();
         //confEffectManager.Load();
-        mapObjectManager.Load();
+        characterConfManager.Load();
         equipConfManager.Load();
         propertyConfManager.Load();
         skillConfManager.Load();

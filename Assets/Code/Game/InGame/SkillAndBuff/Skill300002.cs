@@ -31,8 +31,8 @@ public class Skill300002 : BaseSkill {
             return false;
         }
         //Debug.Log("move vec : " + moveVector);
-        transform.position = transform.position + moveVector * Time.deltaTime * 5;
-
+        transform.position = transform.position + moveVector * Time.deltaTime * 15;
+        SetZPos();
         if(Vector2.Distance(startPos,transform.position) > 20){
             SetDie(true);
             return false;

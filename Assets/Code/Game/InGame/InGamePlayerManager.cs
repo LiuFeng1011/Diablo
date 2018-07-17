@@ -28,8 +28,9 @@ public class InGamePlayerManager : InGameBaseManager {
         InGameManager.GetInstance().inGameCameraManager.SetTarget(role.gameObject);
         //InGameManager.GetInstance().GetManager<InGameObjManager>(InGameManager.enGameManager.InGameObjManager).AddObj(0);
         Vector3 startpos = InGameManager.GetInstance().inGameLevelManager.gameMap.GetStartPosition();
-        Debug.Log("startpos : " + GameCommon.GetWorldPos(startpos));
+
         role.transform.position = GameCommon.GetWorldPos(startpos);
+        role.SetZPos();
 
         for (int i = 0; i < rd.choseEquipList.Count; i++)
         {

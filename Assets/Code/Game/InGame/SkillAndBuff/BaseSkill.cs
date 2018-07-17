@@ -41,4 +41,9 @@ public class BaseSkill : InGameBaseObj {
         return base.ObjUpdate();
     }
 
+    public void SetZPos()
+    {
+        transform.position = new Vector3(transform.position.x, transform.position.y,
+                                         transform.position.y - transform.position.x - 30);
+    }
 }

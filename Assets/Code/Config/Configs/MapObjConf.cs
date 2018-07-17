@@ -11,12 +11,14 @@ public class MapObjConf
     public int group;
     public string path;
     public int size;
+    public int depth;
 }
 public class MapObjConfManager {
 
     public List<MapObjConf> datas { get; private set; }
 
-    public Dictionary<int, MapObjConf> groupMap = new Dictionary<int, MapObjConf>();
+    public Dictionary<int, Dictionary<int,List<MapObjConf>>> groupMap = 
+        new Dictionary<int, Dictionary<int, List<MapObjConf>>>();
 
     public void Load()
     {
@@ -28,7 +30,15 @@ public class MapObjConfManager {
         for (int i = 0; i < datas.Count; i++)
         {
             MapObjConf obj = datas[i];
-            groupMap.Add(obj.group, obj);
+
+            if(!groupMap.ContainsKey(obj.group)){
+                groupMap.Add(obj.group,new Dictionary<int, List<MapObjConf>>());
+            }
+
+            if(!groupMap[obj.group].ContainsKey(obj.size)){
+                groupMap[obj.group].Add(obj.size, new List<MapObjConf>());
+            }
+            groupMap[obj.group][obj.size].Add(obj);
         }
     }
 

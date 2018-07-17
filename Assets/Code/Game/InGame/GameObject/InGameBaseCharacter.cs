@@ -120,7 +120,7 @@ public class InGameBaseCharacter : InGameBaseObj
 
         propertys = new CharacterProperty();
 
-        conf = ConfigManager.mapObjectManager.dic[confid];
+        conf = ConfigManager.characterConfManager.dic[confid];
 
         //名字
         charactername = conf.name;
@@ -329,13 +329,20 @@ public class InGameBaseCharacter : InGameBaseObj
 
     public virtual void Move(Vector3 targetpos){
         targetpos = GameCommon.GetWorldPos(targetpos);
-        Vector3 v = (targetpos - transform.position).normalized;
+        Vector3 v = (targetpos - new Vector3(transform.position.x,transform.position.y)).normalized;
 
-        Vector3 newv = v * Time.deltaTime * this.GetMoveSpeed();
-        transform.position = new Vector3(newv.x,newv.y,newv.y-newv.x + 100);
+
+        transform.position += v * Time.deltaTime * this.GetMoveSpeed();
+        this.SetZPos();
+
         transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (v.x > 0?-1:1), transform.localScale.y, transform.localScale.z);
     
     
+    }
+
+    public void SetZPos (){
+        transform.position = new Vector3(transform.position.x, transform.position.y,
+                                         transform.position.y - transform.position.x - 30);
     }
 
     string lastAnimatorName = "";

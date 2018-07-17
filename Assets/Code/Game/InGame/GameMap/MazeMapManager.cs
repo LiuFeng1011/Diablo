@@ -191,11 +191,14 @@ public class MazeMapManager : BaseGameMapManager {
 
     GameObject CreateGround(Vector3 v, int scale)
     {
-        GameObject column = (GameObject)Resources.Load("Prefabs/MapObj/MapGround_1_" + scale + "_" + 0);
+        Debug.Log(scale);
+        List<MapObjConf> list = ConfigManager.mapObjConfManager.groupMap[1][scale];
+        MapObjConf conf = list[Random.Range(0, list.Count)];
+        GameObject column = (GameObject)Resources.Load(conf.path);
         column = MonoBehaviour.Instantiate(column);
 
         column.transform.position = GameCommon.GetWorldPos(v) ;
-        column.transform.position += new Vector3(0, 0, v.y - v.x + 100);
+        column.transform.position += new Vector3(0, 0, v.y - v.x - conf.depth * 10);
         //column.transform.localScale = new Vector3(1, 1, 1);
 
         column.transform.parent = mapObj.transform;

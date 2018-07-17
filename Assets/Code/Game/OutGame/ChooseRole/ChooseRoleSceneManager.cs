@@ -55,7 +55,7 @@ public class ChooseRoleSceneManager : MonoBehaviour {
             chooseRole = null;
         }
 
-        CharacterConf conf = ConfigManager.mapObjectManager.dic[id];
+        CharacterConf conf = ConfigManager.characterConfManager.dic[id];
         Debug.Log(conf.prefabName);
         GameObject obj = Resources.Load(conf.prefabName) as GameObject;
 

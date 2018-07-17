@@ -60,7 +60,7 @@ public class CharacterConf
 }
 
 
-public class ConfMapObjectManager{
+public class CharacterConfManager{
     public List<CharacterConf> datas {get;private set;}
     public Dictionary<int, CharacterConf> dic = new Dictionary<int, CharacterConf>();
 

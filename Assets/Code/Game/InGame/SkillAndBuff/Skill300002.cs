@@ -34,6 +34,7 @@ public class Skill300002 : BaseSkill {
         transform.position = transform.position + moveVector * Time.deltaTime * 15;
 
         GameCommon.SetObjZIndex(gameObject,3);
+
         if(Vector2.Distance(startPos,transform.position) > 20){
             SetDie(true);
             return false;
@@ -54,6 +55,11 @@ public class Skill300002 : BaseSkill {
     }
 
     void HitObj(GameObject obj){
+        if(obj.layer == 11){
+            SetDie(true);
+            return;
+        }
+
         InGameBaseObj baseobj  = obj.GetComponent<InGameBaseObj>();
         if (baseobj == null)
         {

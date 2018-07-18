@@ -56,17 +56,12 @@ public class MazeMapManager : BaseGameMapManager {
 
         map = new int[row, col];
 
+        startPoint = mazeCreate.tree.position;
 
         for (int i = 0; i < row; i++)
         {
             for (int j = 0; j < col; j++)
             {
-                if (IsPointType(i, j, MazeCreate.PointType.startpoint))
-                {
-                    startPoint = new Vector3(i, j, 0) ;
-                    Debug.Log("startPosition1 : " + startPoint);
-                }
-
                 if (IsPointType(i, j, MazeCreate.PointType.way) )
                 {
                     map[i, j] = 1;
@@ -92,8 +87,34 @@ public class MazeMapManager : BaseGameMapManager {
                 {
                     GameObject ground   = CreateGround(new Vector3(i, j), mapGroup , 1);
                     GameObject obs      = CreateGround(new Vector3(i, j), mapGroup + 100000, 1);
+                    if (Random.Range(0, 100) < 50) obs.transform.localScale = new Vector3(
+                        obs.transform.localScale.x * -1,
+                        obs.transform.localScale.y,
+                        obs.transform.localScale.z
+                    );
                     mazeCreate.mapList[i][j] = (int)MazeCreate.PointType.wallfull;
 
+                }else{
+                    if (mazeCreate.mapList[i][j] == (int)MazeCreate.PointType.wallfull) continue;
+                    int scale = GetMaxFullSpace(i, j, MazeCreate.PointType.wall);
+                    if (scale < 2 /*&& Random.Range(0,100) < 50*/) {
+                        continue;
+                    }
+                    GameObject ground = CreateGround(new Vector3(i + (float)(scale - 1f) / 2f, j + (float)(scale - 1f) / 2f, 0), mapGroup + 100000, scale);
+
+                    while (ground == null)
+                    {
+                        scale--;
+                        ground = CreateGround(new Vector3(i + (float)(scale - 1f) / 2f, j + (float)(scale - 1f) / 2f, 0), mapGroup + 100000, scale);
+                    }
+                    for (int x = 0; x < scale; x++)
+                    {
+                        for (int y = 0; y < scale; y++)
+                        {
+                            ground = CreateGround(new Vector3(i+x, j+y), mapGroup, 1);
+                            mazeCreate.mapList[i + x][j + y] = (int)MazeCreate.PointType.wallfull;
+                        }
+                    }
                 }
 
             }

@@ -32,7 +32,8 @@ public class Skill300002 : BaseSkill {
         }
         //Debug.Log("move vec : " + moveVector);
         transform.position = transform.position + moveVector * Time.deltaTime * 15;
-        SetZPos();
+
+        GameCommon.SetObjZIndex(gameObject,3);
         if(Vector2.Distance(startPos,transform.position) > 20){
             SetDie(true);
             return false;

@@ -13,7 +13,9 @@ public class MazeMapManager : BaseGameMapManager {
     int row = 30, col = 30;
     MazeCreate mazeCreate;
     int Accumulation = 95;//障碍堆积系数
-    int Erosion = 30;//障碍侵蚀系数
+    int Erosion = 50;//障碍侵蚀系数
+
+    int mapGroup = 1;
 
     public int[,] map;
 
@@ -34,12 +36,12 @@ public class MazeMapManager : BaseGameMapManager {
             mapList.Add(new List<int>());
             for (int j = 0; j < col; j++)
             {
-                if ((i >= 10 && i < 20) &&
-                    (j >= 10 && j < 20))
-                {
-                    mapList[i].Add((int)MazeCreate.PointType.nullpoint);
-                }
-                else
+                //if ((i >= 10 && i < 20) &&
+                //    (j >= 10 && j < 20))
+                //{
+                //    mapList[i].Add((int)MazeCreate.PointType.nullpoint);
+                //}
+                //else
                 {
                     mapList[i].Add((int)MazeCreate.PointType.wall);
                 }
@@ -49,7 +51,8 @@ public class MazeMapManager : BaseGameMapManager {
         mazeCreate = MazeCreate.GetMaze(mapList);
 
 
-        CreateMap(mazeCreate.tree);
+        AccumulationMap(mazeCreate.tree,Accumulation);
+        ErosionMap(mazeCreate.tree);
 
         map = new int[row, col];
 
@@ -58,22 +61,24 @@ public class MazeMapManager : BaseGameMapManager {
         {
             for (int j = 0; j < col; j++)
             {
-                if(mazeCreate.mapList[i][j] != (int)MazeCreate.PointType.wall && 
-                   mazeCreate.mapList[i][j] != (int)MazeCreate.PointType.nullpoint){
-                    map[i,j] = 1;
-                }
-                if (mazeCreate.mapList[i][j] == (int)MazeCreate.PointType.startpoint)
+                if (IsPointType(i, j, MazeCreate.PointType.startpoint))
                 {
                     startPoint = new Vector3(i, j, 0) ;
                     Debug.Log("startPosition1 : " + startPoint);
                 }
 
-                if (mazeCreate.mapList[i][j] == (int)MazeCreate.PointType.startpoint ||
-                    mazeCreate.mapList[i][j] == (int)MazeCreate.PointType.way)
+                if (IsPointType(i, j, MazeCreate.PointType.way) )
                 {
-                    int scale = GetMaxFullSpace(i, j);
+                    map[i, j] = 1;
+                    if (mazeCreate.mapList[i][j] == (int)MazeCreate.PointType.fullway) continue;
+                    int scale = GetMaxFullSpace(i, j,MazeCreate.PointType.way);
 
-                    GameObject ground = CreateGround(new Vector3(i + (float)(scale - 1f) / 2f, j + (float)(scale - 1f) / 2f, 0), scale);
+                    GameObject ground = CreateGround(new Vector3(i + (float)(scale - 1f) / 2f, j + (float)(scale - 1f) / 2f, 0),mapGroup, scale);
+
+                    while(ground == null){
+                        scale--;
+                        ground = CreateGround(new Vector3(i + (float)(scale - 1f) / 2f, j + (float)(scale - 1f) / 2f, 0),mapGroup, scale);
+                    }
 
                     for (int x = 0; x < scale; x++)
                     {
@@ -83,9 +88,12 @@ public class MazeMapManager : BaseGameMapManager {
                         }
                     }
                 }
-                else
+                else if(IsNearFullGround(i,j))
                 {
-                    
+                    GameObject ground   = CreateGround(new Vector3(i, j), mapGroup , 1);
+                    GameObject obs      = CreateGround(new Vector3(i, j), mapGroup + 100000, 1);
+                    mazeCreate.mapList[i][j] = (int)MazeCreate.PointType.wallfull;
+
                 }
 
             }
@@ -97,7 +105,7 @@ public class MazeMapManager : BaseGameMapManager {
     void InsertMap(){
         
     }
-    int GetMaxFullSpace(int i, int j)
+    int GetMaxFullSpace(int i, int j,MazeCreate.PointType type)
     {
         int z = 0;
 
@@ -109,7 +117,7 @@ public class MazeMapManager : BaseGameMapManager {
             for (int x = 0; x < z; x++)
             {
                 int val = mazeCreate.mapList[i + x][j + z];
-                if (val == (int)MazeCreate.PointType.way)
+                if (val == (int)type)
                 {
 
                 }
@@ -124,7 +132,7 @@ public class MazeMapManager : BaseGameMapManager {
             for (int y = 0; y < z; y++)
             {
                 int val = mazeCreate.mapList[i + z][j + y];
-                if (val == (int)MazeCreate.PointType.way)
+                if (val == (int)type)
                 {
 
                 }
@@ -139,20 +147,39 @@ public class MazeMapManager : BaseGameMapManager {
         return z;
     }
 
-    void CreateMap(MapTree tree)
+    bool IsNearFullGround(int i,int j){
+        if(IsPointType(i,j+1,MazeCreate.PointType.way) &&
+           IsPointType(i,j-1,MazeCreate.PointType.way) &&
+           IsPointType(i+1,j,MazeCreate.PointType.way) &&
+           IsPointType(i-1,j,MazeCreate.PointType.way) 
+           ){
+            return true;
+        }
+        return false;
+    }
+
+    bool IsPointType(int i ,int j,MazeCreate.PointType type){
+
+        if (i < 0 || i >= mazeCreate.mapList.Count) return false;
+        if (j < 0 || j >= mazeCreate.mapList[i].Count) return false;
+
+        return (mazeCreate.mapList[i][j] & (int)type) == (int)type;
+    }
+
+    void AccumulationMap(MapTree tree,float accumulation)
     {
         for (int i = tree.children.Count - 1; i >= 0; i--)
         {
-            CreateMap(tree.children[i]);
+            AccumulationMap(tree.children[i], accumulation * 0.9f);
         }
 
         if (tree.children.Count < 1)
         {
             int rate = Random.Range(0, 100);
-            if (rate < Accumulation)
+            if (rate < Accumulation/*-accumulation*/)
             {
 
-                mazeCreate.mapList[(int)tree.position.x][(int)tree.position.y] = (int)MazeCreate.PointType.nullpoint;
+                mazeCreate.mapList[(int)tree.position.x][(int)tree.position.y] = (int)MazeCreate.PointType.wall;
 
                 tree.parent.children.Remove(tree);
                 return;
@@ -160,45 +187,61 @@ public class MazeMapManager : BaseGameMapManager {
         }
         //CreateGround(tree.position + new Vector3(0,33));
 
+    }
+
+    void ErosionMap(MapTree tree){
+        for (int i = 0; i < tree.children.Count; i++)
+        {
+            ErosionMap(tree.children[i]);
+        }
+
         int x = (int)tree.position.x;
         int y = (int)tree.position.y;
+
         if (x > 0 && mazeCreate.mapList[x - 1][y] == (int)MazeCreate.PointType.wall)
         {
-            SetMapWay(x - 1, y);
+            SetErosionMapWay(tree,x - 1, y);
         }
         if (x < mazeCreate.mapList.Count - 1 && mazeCreate.mapList[x + 1][y] == (int)MazeCreate.PointType.wall)
         {
-            SetMapWay(x + 1, y);
+            SetErosionMapWay(tree,x + 1, y);
         }
         if (y > 0 && mazeCreate.mapList[x][y - 1] == (int)MazeCreate.PointType.wall)
         {
-            SetMapWay(x, y - 1);
+            SetErosionMapWay(tree,x, y - 1);
         }
         if (y < mazeCreate.mapList[x].Count - 1 && mazeCreate.mapList[x][y + 1] == (int)MazeCreate.PointType.wall)
         {
-            SetMapWay(x, y + 1);
+            SetErosionMapWay(tree,x, y + 1);
         }
+
     }
 
-    void SetMapWay(int x, int y)
+    void SetErosionMapWay(MapTree tree,int x, int y)
     {
-        if (Random.Range(0, 100) < Erosion)
+        int rate = Random.Range(0, 100);
+        if (rate < Erosion)
         {
             mazeCreate.mapList[x][y] = (int)MazeCreate.PointType.way;
+            tree.AddChile(new MapTree(new Vector3(x, y)));
             //CreateGround(new Vector3(x, y + 33));
         }
     }
 
-    GameObject CreateGround(Vector3 v, int scale)
+    GameObject CreateGround(Vector3 v,int group, int scale)
     {
-        Debug.Log(scale);
-        List<MapObjConf> list = ConfigManager.mapObjConfManager.groupMap[1][scale];
+        if(!ConfigManager.mapObjConfManager.groupMap[group].ContainsKey(scale)){
+            return null;
+        }
+        List<MapObjConf> list = ConfigManager.mapObjConfManager.groupMap[group][scale];
         MapObjConf conf = list[Random.Range(0, list.Count)];
         GameObject column = (GameObject)Resources.Load(conf.path);
         column = MonoBehaviour.Instantiate(column);
 
-        column.transform.position = GameCommon.GetWorldPos(v) ;
-        column.transform.position += new Vector3(0, 0, v.y - v.x - conf.depth * 10);
+        Vector3 worldpos = GameCommon.GetWorldPos(v);
+        column.transform.position = worldpos ;
+
+        GameCommon.SetObjZIndex(column, 0);
         //column.transform.localScale = new Vector3(1, 1, 1);
 
         column.transform.parent = mapObj.transform;

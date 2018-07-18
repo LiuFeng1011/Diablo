@@ -341,8 +341,8 @@ public class InGameBaseCharacter : InGameBaseObj
     }
 
     public void SetZPos (){
-        transform.position = new Vector3(transform.position.x, transform.position.y,
-                                         transform.position.y - transform.position.x - 30);
+
+        GameCommon.SetObjZIndex(gameObject,3);
     }
 
     string lastAnimatorName = "";

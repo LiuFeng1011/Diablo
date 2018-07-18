@@ -261,6 +261,12 @@ public class GameCommon  {
         return mappos;
     }
 
+    public static void SetObjZIndex(GameObject obj,int layer){
+        Vector3 pos = obj.transform.position;
+        pos.z = pos.y  /*+ pos.x*/  - layer*10;
+        obj.transform.position = pos;
+    }
+
     //计算夹角的角度 0~360
     public static float GetVecAngle( Vector3 v)
     {

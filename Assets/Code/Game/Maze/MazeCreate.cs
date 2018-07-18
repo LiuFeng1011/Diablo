@@ -32,12 +32,13 @@ public class MazeCreate
 
     public enum PointType
     {
-        wall = 0,//墙
-        way = 10,//路
-        fullway = 11,//路
-        startpoint = 20,//起始点
-        endpoint = 30,//结束点
-        nullpoint = 40,//空位置，不进行任何操作
+        wall = 0x1,//墙0000 0001
+        wallfull = 0x3,//墙 0000 0011
+        nullpoint = 0x7,//空位置，不进行任何操作  0000 0111
+        way = 0x10,//路 0001 0000
+        fullway = 0x30,//路 0011 0000
+        startpoint = 0x110,//起始点 0001 0001 0000
+        endpoint = 0x210,//结束点 0010 0001 0000
     }
 
     /// <summary>

@@ -22,7 +22,6 @@ public class Skill300002 : BaseSkill {
         transform.position = startPos;
 
         float angle = GameCommon.GetVecAngle(moveVector);
-        Debug.Log(angle);
         transform.eulerAngles = new Vector3(0, 0,angle);
     }
 
@@ -63,11 +62,6 @@ public class Skill300002 : BaseSkill {
     }
 
     void HitObj(GameObject obj){
-        Debug.Log("layer : " + obj.layer + " name : " + obj.name + "   / " + LayerMask.GetMask("MapObjstacle"));
-        if(obj.layer == 11){
-            SetDie(true);
-            return;
-        }
 
         InGameBaseObj baseobj  = obj.GetComponent<InGameBaseObj>();
         if (baseobj == null)

@@ -225,7 +225,6 @@ public class InGameBaseCharacter : InGameBaseObj
                     propertys.propertyValues[p.id] += p.val;
                 }
 
-                Debug.Log(propertyText);
             }
 
         }

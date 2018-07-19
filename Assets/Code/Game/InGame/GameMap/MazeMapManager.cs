@@ -12,10 +12,11 @@ public class MapPointObj{
 
 }
 public class InGameMapPointData{
+    public Vector2 pos;
     public MazeCreate.PointType type;
     public List<MapPointObj> objList = new List<MapPointObj>();
 
-    public InGameMapPointData(MazeCreate.PointType type){
+    public InGameMapPointData(MazeCreate.PointType type,Vector2 pos){
         this.type = type;
     }
 
@@ -44,6 +45,10 @@ public class MazeMapManager : BaseGameMapManager {
     public InGameMapPointData[,] map;  // 0 null,1 路 ,2 障碍
     public int[,] astarArray;
     GameObject mapObj;
+
+    Dictionary<int, List<GameObject>> objPool = new Dictionary<int, List<GameObject>>();
+
+    List<InGameMapPointData> lastScreenObj = new List<InGameMapPointData>();
 
     public override void Init()
     {
@@ -86,7 +91,7 @@ public class MazeMapManager : BaseGameMapManager {
                 if (IsPointType(i, j, MazeCreate.PointType.way) )
                 {
                     astarArray[i, j] = 1;
-                    map[i, j] = new InGameMapPointData(MazeCreate.PointType.way);
+                    map[i, j] = new InGameMapPointData(MazeCreate.PointType.way,new Vector2(i,j));
 
                     if (mazeCreate.mapList[i][j] == (int)MazeCreate.PointType.fullway) continue;
                     int scale = GetMaxFullSpace(i, j,MazeCreate.PointType.way);
@@ -100,8 +105,7 @@ public class MazeMapManager : BaseGameMapManager {
                         for (int y = 0; y < scale; y++)
                         {
                             mazeCreate.mapList[i + x][j + y] = (int)MazeCreate.PointType.fullway;
-                            map[i+x, j+y] = new InGameMapPointData(MazeCreate.PointType.way);
-
+                            map[i+x, j+y] = new InGameMapPointData(MazeCreate.PointType.way, new Vector2(i + x, j + y));
                         }
                     }
 
@@ -111,7 +115,7 @@ public class MazeMapManager : BaseGameMapManager {
                 }
                 else if(IsNearFullGround(i,j))
                 {
-                    map[i, j] = new InGameMapPointData(MazeCreate.PointType.wall);
+                    map[i, j] = new InGameMapPointData(MazeCreate.PointType.wall, new Vector2(i , j ));
 
                     GameObject ground   = CreateGround(new Vector3(i, j), mapGroup , 1);
                     GameObject obs      = CreateGround(new Vector3(i, j), mapGroup + 100000, 1);
@@ -134,7 +138,7 @@ public class MazeMapManager : BaseGameMapManager {
                     {
                         for (int y = 0; y < scale; y++)
                         {
-                            map[i+x, j+y] = new InGameMapPointData(MazeCreate.PointType.wall);
+                            map[i+x, j+y] = new InGameMapPointData(MazeCreate.PointType.wall, new Vector2(i, j));
                             CreateGround(new Vector3(i+x, j+y), mapGroup, 1);
                             mazeCreate.mapList[i + x][j + y] = (int)MazeCreate.PointType.wallfull;
                         }
@@ -143,11 +147,15 @@ public class MazeMapManager : BaseGameMapManager {
                     GameObject ground = CreateGround(new Vector3(i + (float)(scale - 1f) / 2f, j + (float)(scale - 1f) / 2f, 0), mapGroup + 100000, scale);
 
                 }
-
             }
         }
 
         StaticBatchingUtility.Combine(mapObj);
+    }
+
+    public override void Update()
+    {
+
     }
 
     void InsertMap(){
@@ -318,7 +326,7 @@ public class MazeMapManager : BaseGameMapManager {
         int x = Random.Range(0, map.GetLength(0));
         int y = Random.Range(0, map.GetLength(1));
 
-        if(map[x, y].type != MazeCreate.PointType.way){
+        if(GetPointType(x, y) != MazeCreate.PointType.way){
             int count = 0;
 
             bool isfind = false;
@@ -373,7 +381,10 @@ public class MazeMapManager : BaseGameMapManager {
     {
         if (x < 0 || x >= map.GetLength(0)) return MazeCreate.PointType.nullpoint;
         if (y < 0 || y >= map.GetLength(1)) return MazeCreate.PointType.nullpoint;
+        if(map[x, y] == null) return MazeCreate.PointType.nullpoint;
         return map[x, y].type ;
     }
+
+
 
 }

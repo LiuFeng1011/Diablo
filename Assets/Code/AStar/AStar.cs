@@ -87,18 +87,18 @@ public class AStar
 
     float GetNodeG(MapNode parent,MapNode node){
         //曼哈顿距离
-        float dis = Mathf.Abs(parent.p.x - node.p.x) + Mathf.Abs(parent.p.y - node.p.y);
+        //float dis = Mathf.Abs(parent.p.x - node.p.x) + Mathf.Abs(parent.p.y - node.p.y);
         //欧式距离
-        //float dis = Vector2.Distance(parent.p, node.p);
+        float dis = Vector2.Distance(parent.p, node.p);
         return parent.g + dis;
     }
 
     float GetNodeH( MapNode node)
     {
         //曼哈顿距离
-        return Mathf.Abs(endPosition.x - node.p.x) + Mathf.Abs(endPosition.y - node.p.y);
+        //return Mathf.Abs(endPosition.x - node.p.x) + Mathf.Abs(endPosition.y - node.p.y);
         //欧式距离
-        //return Vector2.Distance(endPosition,node.p);
+        return Vector2.Distance(endPosition,node.p);
     }
 
     /// <summary>

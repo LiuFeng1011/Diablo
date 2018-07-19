@@ -335,8 +335,12 @@ public class InGameBaseCharacter : InGameBaseObj
 
         transform.position += v * Time.deltaTime * this.GetMoveSpeed();
 
-        transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (v.x > 0?-1:1), transform.localScale.y, transform.localScale.z);
-    
+        SetDir(v.x);
+    }
+
+    public void SetDir(float dir){
+
+        transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * (dir > 0?-1:1), transform.localScale.y, transform.localScale.z);
     
     }
 
@@ -505,9 +509,8 @@ public class InGameBaseCharacter : InGameBaseObj
         float ret = boxSize.x + 0.3f;
         if(target.GetObjType() == enObjType.character){
             ret += ((InGameBaseCharacter)target).boxSize.x;
+            ret += this.conf.atkdis;
         }
-
-        ret += this.conf.atkdis;
 
         return ret;
     }

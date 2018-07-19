@@ -2,33 +2,53 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InsertMapData{
-    public Vector2 pos;
-    public SmallMapConf conf;
+public class MapPointObj{
+    public MapObjConf conf;
+    public GameObject obj;
+    public MapPointObj(MapObjConf conf,GameObject obj){
+        this.conf = conf;
+        this.obj = obj;
+    }
+
+}
+public class InGameMapPointData{
+    public MazeCreate.PointType type;
+    public List<MapPointObj> objList = new List<MapPointObj>();
+
+    public InGameMapPointData(MazeCreate.PointType type){
+        this.type = type;
+    }
+
+    public void AddObj(MapPointObj obj){
+        objList.Add(obj);
+    }
+
+    public void ClearObj()
+    {
+        for (int i = 0; i < objList.Count;i ++){
+            objList[i].obj = null;
+        }
+    }
 }
 
 public class MazeMapManager : BaseGameMapManager {
 
     const float mapscale = 1;
-    int row = 30, col = 30;
+    int row = 20, col = 20;
     MazeCreate mazeCreate;
     int Accumulation = 95;//障碍堆积系数
-    int Erosion = 50;//障碍侵蚀系数
+    int Erosion = 20;//障碍侵蚀系数
 
     int mapGroup = 1;
 
-    public int[,] map;
-
+    public InGameMapPointData[,] map;  // 0 null,1 路 ,2 障碍
+    public int[,] astarArray;
     GameObject mapObj;
 
     public override void Init()
     {
         mapObj = new GameObject("map");
 
-        List<InsertMapData> insertMapList = new List<InsertMapData>();
-        InsertMapData insertMapData = new InsertMapData();
-        //insertMapData.pos = 
-        //mazeCreate = MazeCreate.GetMaze(row, col);
         List<List<int>> mapList = new List<List<int>>();
 
         for (int i = 0; i < row; i++)
@@ -54,7 +74,8 @@ public class MazeMapManager : BaseGameMapManager {
         AccumulationMap(mazeCreate.tree,Accumulation);
         ErosionMap(mazeCreate.tree);
 
-        map = new int[row, col];
+        map = new InGameMapPointData[row, col];
+        astarArray = new int[row, col];
 
         startPoint = mazeCreate.tree.position;
 
@@ -64,15 +85,14 @@ public class MazeMapManager : BaseGameMapManager {
             {
                 if (IsPointType(i, j, MazeCreate.PointType.way) )
                 {
-                    map[i, j] = 1;
+                    astarArray[i, j] = 1;
+                    map[i, j] = new InGameMapPointData(MazeCreate.PointType.way);
+
                     if (mazeCreate.mapList[i][j] == (int)MazeCreate.PointType.fullway) continue;
                     int scale = GetMaxFullSpace(i, j,MazeCreate.PointType.way);
 
-                    GameObject ground = CreateGround(new Vector3(i + (float)(scale - 1f) / 2f, j + (float)(scale - 1f) / 2f, 0),mapGroup, scale);
-
-                    while(ground == null){
+                    while(scale > 1 && !ConfigManager.mapObjConfManager.groupMap[mapGroup].ContainsKey(scale)){
                         scale--;
-                        ground = CreateGround(new Vector3(i + (float)(scale - 1f) / 2f, j + (float)(scale - 1f) / 2f, 0),mapGroup, scale);
                     }
 
                     for (int x = 0; x < scale; x++)
@@ -80,41 +100,48 @@ public class MazeMapManager : BaseGameMapManager {
                         for (int y = 0; y < scale; y++)
                         {
                             mazeCreate.mapList[i + x][j + y] = (int)MazeCreate.PointType.fullway;
+                            map[i+x, j+y] = new InGameMapPointData(MazeCreate.PointType.way);
+
                         }
                     }
+
+                    Vector3 objpos = new Vector3(i + (float)(scale - 1f) / 2f, j + (float)(scale - 1f) / 2f, 0);
+                    GameObject ground = CreateGround(objpos, mapGroup, scale);
+
                 }
                 else if(IsNearFullGround(i,j))
                 {
+                    map[i, j] = new InGameMapPointData(MazeCreate.PointType.wall);
+
                     GameObject ground   = CreateGround(new Vector3(i, j), mapGroup , 1);
                     GameObject obs      = CreateGround(new Vector3(i, j), mapGroup + 100000, 1);
-                    if (Random.Range(0, 100) < 50) obs.transform.localScale = new Vector3(
-                        obs.transform.localScale.x * -1,
-                        obs.transform.localScale.y,
-                        obs.transform.localScale.z
-                    );
-                    mazeCreate.mapList[i][j] = (int)MazeCreate.PointType.wallfull;
 
-                }else{
+                    mazeCreate.mapList[i][j] = (int)MazeCreate.PointType.wallfull;
+                }
+                else{
                     if (mazeCreate.mapList[i][j] == (int)MazeCreate.PointType.wallfull) continue;
                     int scale = GetMaxFullSpace(i, j, MazeCreate.PointType.wall);
-                    if (scale < 2 /*&& Random.Range(0,100) < 50*/) {
-                        continue;
-                    }
-                    GameObject ground = CreateGround(new Vector3(i + (float)(scale - 1f) / 2f, j + (float)(scale - 1f) / 2f, 0), mapGroup + 100000, scale);
 
-                    while (ground == null)
+                    while (scale > 1 && !ConfigManager.mapObjConfManager.groupMap[mapGroup + 100000].ContainsKey(scale))
                     {
                         scale--;
-                        ground = CreateGround(new Vector3(i + (float)(scale - 1f) / 2f, j + (float)(scale - 1f) / 2f, 0), mapGroup + 100000, scale);
                     }
+                    if(scale < 2){
+                        continue;
+                    }
+
                     for (int x = 0; x < scale; x++)
                     {
                         for (int y = 0; y < scale; y++)
                         {
-                            ground = CreateGround(new Vector3(i+x, j+y), mapGroup, 1);
+                            map[i+x, j+y] = new InGameMapPointData(MazeCreate.PointType.wall);
+                            CreateGround(new Vector3(i+x, j+y), mapGroup, 1);
                             mazeCreate.mapList[i + x][j + y] = (int)MazeCreate.PointType.wallfull;
                         }
                     }
+
+                    GameObject ground = CreateGround(new Vector3(i + (float)(scale - 1f) / 2f, j + (float)(scale - 1f) / 2f, 0), mapGroup + 100000, scale);
+
                 }
 
             }
@@ -129,16 +156,16 @@ public class MazeMapManager : BaseGameMapManager {
     int GetMaxFullSpace(int i, int j,MazeCreate.PointType type)
     {
         int z = 0;
-
         while (true)
         {
             z++;
             if (i + z >= row || j + z >= col) break;
             bool isfull = true;
-            for (int x = 0; x < z; x++)
+            for (int x = 0; x <= z; x++)
             {
-                int val = mazeCreate.mapList[i + x][j + z];
-                if (val == (int)type)
+                int val1 = mazeCreate.mapList[i + x][j + z  ];
+                int val2 = mazeCreate.mapList[i + x][j      ];
+                if (val1== (int)type && val2 == (int)type)
                 {
 
                 }
@@ -150,10 +177,11 @@ public class MazeMapManager : BaseGameMapManager {
             }
             if (!isfull) break;
 
-            for (int y = 0; y < z; y++)
+            for (int y = 0; y <= z; y++)
             {
-                int val = mazeCreate.mapList[i + z][j + y];
-                if (val == (int)type)
+                int val1 = mazeCreate.mapList[i + z ][j + y];
+                int val2 = mazeCreate.mapList[i     ][j + y];
+                if (val1 == (int)type && val2 == (int)type)
                 {
 
                 }
@@ -267,6 +295,7 @@ public class MazeMapManager : BaseGameMapManager {
 
         column.transform.parent = mapObj.transform;
 
+        map[(int)v.x, (int)v.y].AddObj(new MapPointObj(conf, column));
         return column;
     }
 
@@ -289,7 +318,7 @@ public class MazeMapManager : BaseGameMapManager {
         int x = Random.Range(0, map.GetLength(0));
         int y = Random.Range(0, map.GetLength(1));
 
-        if(map[x, y] != 1){
+        if(map[x, y].type != MazeCreate.PointType.way){
             int count = 0;
 
             bool isfind = false;
@@ -337,9 +366,14 @@ public class MazeMapManager : BaseGameMapManager {
         return new Vector3(x, y, 0);
     }
 
-    bool IsPointWay(int x,int y){
-        if (x < 0 || x >= map.GetLength(0)) return false;
-        if (y < 0 || y >= map.GetLength(1)) return false;
-        return map[x, y] == 1;
+    public bool IsPointWay(int x,int y){
+        return GetPointType(x, y) == MazeCreate.PointType.way;
     }
+    public MazeCreate.PointType GetPointType(int x, int y)
+    {
+        if (x < 0 || x >= map.GetLength(0)) return MazeCreate.PointType.nullpoint;
+        if (y < 0 || y >= map.GetLength(1)) return MazeCreate.PointType.nullpoint;
+        return map[x, y].type ;
+    }
+
 }

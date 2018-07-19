@@ -36,7 +36,7 @@ public class BaseEnemyAI : BaseGameObject {
 
         }
         else{
-            if(character == null || character.actionManager.target == null){
+            if(character == null || character.actionManager.target == null || character.actionManager.target.IsDie()){
                 state = AIState.run;
                 character.StopAction();
                 return;

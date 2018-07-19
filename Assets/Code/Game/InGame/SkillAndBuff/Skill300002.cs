@@ -7,12 +7,14 @@ public class Skill300002 : BaseSkill {
     Vector3 moveVector;
     Vector3 startPos;
 
+    Vector3 additionPos;
     public override void SkillInit(InGameBaseCharacter source, InGameBaseCharacter target)
     {
         base.SkillInit(source,target);
 
-        Vector3 sourcePos = source.transform.position + new Vector3(0,source.boxSize.y / 2,0);
-        Vector3 targetPos = target.transform.position + new Vector3(0, target.boxSize.y / 2, 0);
+        additionPos = new Vector3(0, source.boxSize.y / 2, 0);
+        Vector3 sourcePos = source.transform.position + additionPos;
+        Vector3 targetPos = target.transform.position + additionPos;
 
         moveVector = (targetPos - sourcePos).normalized;
         moveVector.z = 0;
@@ -40,6 +42,12 @@ public class Skill300002 : BaseSkill {
             return false;
         }
 
+        Vector2 mapos = GameCommon.GetMapPos(transform.position - additionPos);
+        if (InGameManager.GetInstance().inGameLevelManager.gameMap.GetPointType((int)mapos.x, (int)mapos.y) == MazeCreate.PointType.wall){
+            SetDie(true);
+            return false;
+        }
+
         return base.ObjUpdate();
 
     }
@@ -55,6 +63,7 @@ public class Skill300002 : BaseSkill {
     }
 
     void HitObj(GameObject obj){
+        Debug.Log("layer : " + obj.layer + " name : " + obj.name + "   / " + LayerMask.GetMask("MapObjstacle"));
         if(obj.layer == 11){
             SetDie(true);
             return;
@@ -86,4 +95,5 @@ public class Skill300002 : BaseSkill {
         Debug.Log("set die");
         SetDie(true);
     }
+
 }

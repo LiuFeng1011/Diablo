@@ -87,7 +87,7 @@ public class BaseActionManager : BaseGameObject {
 
         MazeMapManager gameMap = InGameManager.GetInstance().inGameLevelManager.gameMap;
         List<Vector2> _path = astar.StratAStar(
-            gameMap.map,
+            gameMap.astarArray,
             GameCommon.GetMapPos(parent.transform.position) ,
             GameCommon.GetMapPos(targetPos));
         
@@ -190,6 +190,7 @@ public class BaseActionManager : BaseGameObject {
         parent.SetAnimatorState(parent.GetAtkAnimator(), parent.GetAtkSpeed());
         atkTime = 0;
 
+        parent.SetDir(target.transform.position.x - parent.transform.position.x);
     }
 
     void Atk()

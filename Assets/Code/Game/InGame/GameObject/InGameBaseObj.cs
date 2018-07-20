@@ -34,7 +34,6 @@ public class InGameBaseObj : BaseUnityObject {
 
 
     public virtual void SetDie(bool selfdie){
-        Debug.Log("set die");
         isDie = true;
     }
 

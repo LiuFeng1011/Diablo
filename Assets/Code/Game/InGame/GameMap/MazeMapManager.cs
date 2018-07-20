@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class MapPointObj{
+    public Vector2 pos;
     public MapObjConf conf;
     public GameObject obj;
-    public MapPointObj(MapObjConf conf,GameObject obj){
+    public MapPointObj(MapObjConf conf,GameObject obj, Vector2 pos){
         this.conf = conf;
         this.obj = obj;
+        this.pos = pos;
     }
 
 }
@@ -18,24 +20,19 @@ public class InGameMapPointData{
 
     public InGameMapPointData(MazeCreate.PointType type,Vector2 pos){
         this.type = type;
+        this.pos = pos;
     }
 
     public void AddObj(MapPointObj obj){
         objList.Add(obj);
-    }
-
-    public void ClearObj()
-    {
-        for (int i = 0; i < objList.Count;i ++){
-            objList[i].obj = null;
-        }
     }
 }
 
 public class MazeMapManager : BaseGameMapManager {
 
     const float mapscale = 1;
-    int row = 20, col = 20;
+    int row = 100, col = 100;
+    int UPDATE_MAP_SIZE = 16;
     MazeCreate mazeCreate;
     int Accumulation = 95;//障碍堆积系数
     int Erosion = 20;//障碍侵蚀系数
@@ -91,7 +88,7 @@ public class MazeMapManager : BaseGameMapManager {
                 if (IsPointType(i, j, MazeCreate.PointType.way) )
                 {
                     astarArray[i, j] = 1;
-                    map[i, j] = new InGameMapPointData(MazeCreate.PointType.way,new Vector2(i,j));
+                    //map[i, j] = new InGameMapPointData(MazeCreate.PointType.way,new Vector2(i,j));
 
                     if (mazeCreate.mapList[i][j] == (int)MazeCreate.PointType.fullway) continue;
                     int scale = GetMaxFullSpace(i, j,MazeCreate.PointType.way);
@@ -110,15 +107,15 @@ public class MazeMapManager : BaseGameMapManager {
                     }
 
                     Vector3 objpos = new Vector3(i + (float)(scale - 1f) / 2f, j + (float)(scale - 1f) / 2f, 0);
-                    GameObject ground = CreateGround(objpos, mapGroup, scale);
+                    CreateGround(objpos, mapGroup, scale);
 
                 }
                 else if(IsNearFullGround(i,j))
                 {
                     map[i, j] = new InGameMapPointData(MazeCreate.PointType.wall, new Vector2(i , j ));
 
-                    GameObject ground   = CreateGround(new Vector3(i, j), mapGroup , 1);
-                    GameObject obs      = CreateGround(new Vector3(i, j), mapGroup + 100000, 1);
+                    CreateGround(new Vector3(i, j), mapGroup , 1);
+                    CreateGround(new Vector3(i, j), mapGroup + 100000, 1);
 
                     mazeCreate.mapList[i][j] = (int)MazeCreate.PointType.wallfull;
                 }
@@ -144,23 +141,93 @@ public class MazeMapManager : BaseGameMapManager {
                         }
                     }
 
-                    GameObject ground = CreateGround(new Vector3(i + (float)(scale - 1f) / 2f, j + (float)(scale - 1f) / 2f, 0), mapGroup + 100000, scale);
+                    CreateGround(new Vector3(i + (float)(scale - 1f) / 2f, j + (float)(scale - 1f) / 2f, 0), mapGroup + 100000, scale);
 
                 }
             }
         }
 
         StaticBatchingUtility.Combine(mapObj);
+
     }
 
+    //动态生成地面
     public override void Update()
     {
+        //return;
+        Vector2 startPos = InGameManager.GetInstance().inGameCameraManager.GetCameraPos();
 
+        Vector2 startMapPos = GameCommon.GetMapPos(startPos);
+
+        int startX = (int)startMapPos.x - UPDATE_MAP_SIZE / 2;
+        int startY = (int)startMapPos.y - UPDATE_MAP_SIZE / 2;
+
+        for (int i = 0; i < lastScreenObj.Count; i ++){
+            Vector2 pos = lastScreenObj[i].pos;
+            if (pos.x >= startX && pos.x < startX + UPDATE_MAP_SIZE-1 && 
+                pos.y >= startY && pos.y < startY + UPDATE_MAP_SIZE-1) continue;
+
+            List<MapPointObj> _list = lastScreenObj[i].objList;
+            for (int j = 0; j < _list.Count; j ++){
+                if (_list[j].obj == null) continue;
+                AddPoolObj(_list[j].conf.id,_list[j].obj);
+                _list[j].obj = null;
+            }
+        }
+
+        lastScreenObj.Clear();
+
+        for (int x = 0; x < UPDATE_MAP_SIZE; x++){
+            for (int y = 0; y < UPDATE_MAP_SIZE; y++)
+            {
+                int sx = startX + x;
+                int sy = startY + y;
+                if (sx < 0 || sx >= map.GetLength(0)) break;
+                if (sy < 0 || sy >= map.GetLength(1)) continue;
+
+                InGameMapPointData data = map[sx,sy];
+                if(data == null){
+                    continue;
+                }
+                for (int i = 0; i < data.objList.Count; i ++){
+                    if(data.objList[i].obj == null){
+                        GameObject obj = GetPoolObj(data.objList[i].conf);
+                        obj.transform.position = GameCommon.GetWorldPos(data.objList[i].pos);
+                        GameCommon.SetObjZIndex(obj, 0);
+                        data.objList[i].obj = obj;
+                    }
+                }
+                lastScreenObj.Add(data);
+            }
+        }
     }
 
-    void InsertMap(){
-        
+    //把物体放到池里
+    void AddPoolObj(int id,GameObject obj){
+        obj.transform.position = new Vector3(-10000, 0, 0);
+        if (!objPool.ContainsKey(id))
+        {
+            objPool.Add(id, new List<GameObject>());
+        }
+
+        objPool[id].Add(obj);
     }
+
+    //从池里取出一个物体
+    GameObject GetPoolObj(MapObjConf conf){
+        GameObject obj = null;
+        if (!objPool.ContainsKey(conf.id) || objPool[conf.id].Count <= 0){
+            GameObject column = (GameObject)Resources.Load(conf.path);
+            obj = MonoBehaviour.Instantiate(column);
+            obj.transform.parent = mapObj.transform;
+        }else {
+            obj = objPool[conf.id][objPool[conf.id].Count - 1];
+            objPool[conf.id].RemoveAt(objPool[conf.id].Count - 1);
+        }
+        return obj;
+    }
+
+
     int GetMaxFullSpace(int i, int j,MazeCreate.PointType type)
     {
         int z = 0;
@@ -215,6 +282,7 @@ public class MazeMapManager : BaseGameMapManager {
         return false;
     }
 
+    //判断一个障碍是否具有某种属性 例如way fullway startpoint endpoint 都具有way的属性
     bool IsPointType(int i ,int j,MazeCreate.PointType type){
 
         if (i < 0 || i >= mazeCreate.mapList.Count) return false;
@@ -223,6 +291,7 @@ public class MazeMapManager : BaseGameMapManager {
         return (mazeCreate.mapList[i][j] & (int)type) == (int)type;
     }
 
+    //障碍侵蚀
     void AccumulationMap(MapTree tree,float accumulation)
     {
         for (int i = tree.children.Count - 1; i >= 0; i--)
@@ -246,6 +315,7 @@ public class MazeMapManager : BaseGameMapManager {
 
     }
 
+    //道路侵蚀
     void ErosionMap(MapTree tree){
         for (int i = 0; i < tree.children.Count; i++)
         {
@@ -274,6 +344,7 @@ public class MazeMapManager : BaseGameMapManager {
 
     }
 
+    //道路侵蚀
     void SetErosionMapWay(MapTree tree,int x, int y)
     {
         int rate = Random.Range(0, 100);
@@ -285,26 +356,24 @@ public class MazeMapManager : BaseGameMapManager {
         }
     }
 
-    GameObject CreateGround(Vector3 v,int group, int scale)
+    void CreateGround(Vector3 v,int group, int scale)
     {
         if(!ConfigManager.mapObjConfManager.groupMap[group].ContainsKey(scale)){
-            return null;
+            return ;
         }
         List<MapObjConf> list = ConfigManager.mapObjConfManager.groupMap[group][scale];
         MapObjConf conf = list[Random.Range(0, list.Count)];
-        GameObject column = (GameObject)Resources.Load(conf.path);
-        column = MonoBehaviour.Instantiate(column);
+        //GameObject column = (GameObject)Resources.Load(conf.path);
+        //column = MonoBehaviour.Instantiate(column);
 
-        Vector3 worldpos = GameCommon.GetWorldPos(v);
-        column.transform.position = worldpos ;
+        //Vector3 worldpos = GameCommon.GetWorldPos(v);
+        //column.transform.position = worldpos ;
 
-        GameCommon.SetObjZIndex(column, 0);
-        //column.transform.localScale = new Vector3(1, 1, 1);
+        //GameCommon.SetObjZIndex(column, 0);
 
-        column.transform.parent = mapObj.transform;
+        //column.transform.parent = mapObj.transform;
 
-        map[(int)v.x, (int)v.y].AddObj(new MapPointObj(conf, column));
-        return column;
+        map[(int)v.x, (int)v.y].AddObj(new MapPointObj(conf, null,v));
     }
 
     public void LogMap()
@@ -322,6 +391,8 @@ public class MazeMapManager : BaseGameMapManager {
         Debug.Log(str);
     }
 
+    //获取一条随机的道路
+    //随机一个点,向周围放大寻找
     public Vector3 GetRandomWay(){
         int x = Random.Range(0, map.GetLength(0));
         int y = Random.Range(0, map.GetLength(1));
@@ -374,9 +445,11 @@ public class MazeMapManager : BaseGameMapManager {
         return new Vector3(x, y, 0);
     }
 
+    //判断一个点是否路径
     public bool IsPointWay(int x,int y){
         return GetPointType(x, y) == MazeCreate.PointType.way;
     }
+    //获取地图上一个点的属性
     public MazeCreate.PointType GetPointType(int x, int y)
     {
         if (x < 0 || x >= map.GetLength(0)) return MazeCreate.PointType.nullpoint;

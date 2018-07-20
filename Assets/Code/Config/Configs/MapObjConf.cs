@@ -20,6 +20,8 @@ public class MapObjConfManager {
     public Dictionary<int, Dictionary<int,List<MapObjConf>>> groupMap = 
         new Dictionary<int, Dictionary<int, List<MapObjConf>>>();
 
+    public Dictionary<int, MapObjConf> map = new Dictionary<int, MapObjConf>();
+
     public void Load()
     {
         if (datas != null) datas.Clear();
@@ -30,6 +32,8 @@ public class MapObjConfManager {
         for (int i = 0; i < datas.Count; i++)
         {
             MapObjConf obj = datas[i];
+
+            map.Add(obj.id,obj);
 
             if(!groupMap.ContainsKey(obj.group)){
                 groupMap.Add(obj.group,new Dictionary<int, List<MapObjConf>>());

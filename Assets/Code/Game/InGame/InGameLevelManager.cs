@@ -18,10 +18,12 @@ public class InGameLevelManager : InGameBaseManager {
     public override void Update()
     {
         gameModel.Update();
+        gameMap.Update();
     }
 
     public override void Destory()
     {
         gameModel.Destory();
+        gameMap.Destory();
     }
 }

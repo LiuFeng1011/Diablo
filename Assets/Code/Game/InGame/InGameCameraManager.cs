@@ -30,4 +30,8 @@ public class InGameCameraManager : InGameBaseManager{
         this.target = target;
     }
 
+    public Vector3 GetCameraPos(){
+        return gameCamera.transform.position;
+    }
+
 }

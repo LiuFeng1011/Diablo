@@ -77,6 +77,14 @@ public class InGamePlayerManager : InGameBaseManager {
         EventData.CreateEvent(EventID.EVENT_UI_REFRESH_PACKAGEUI).Send();
     }
 
+    public Vector3 GetRolePos(){
+
+        if(role == null){
+            return Vector3.zero;
+        }
+        return role.transform.position;
+    }
+
 
     public override void HandleEvent(EventData resp)
     {

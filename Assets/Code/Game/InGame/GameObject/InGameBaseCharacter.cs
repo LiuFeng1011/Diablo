@@ -505,11 +505,12 @@ public class InGameBaseCharacter : InGameBaseObj
 
     public float GetAtkDis(InGameBaseObj target)
     {
-        float ret = boxSize.x + 0.3f;
-        if(target.GetObjType() == enObjType.character){
-            ret += ((InGameBaseCharacter)target).boxSize.x;
-            ret += this.conf.atkdis;
-        }
+        //float ret = boxSize.x + 0.3f;
+        //if(target.GetObjType() == enObjType.character){
+        //    ret += ((InGameBaseCharacter)target).boxSize.x;
+        //    ret += this.conf.atkdis;
+        //}
+        float ret = this.conf.atkdis + 1;
 
         return ret;
     }

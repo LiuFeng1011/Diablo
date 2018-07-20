@@ -32,15 +32,15 @@ public class MazeMapManager : BaseGameMapManager {
 
     const float mapscale = 1;
     int row = 100, col = 100;
-    int UPDATE_MAP_SIZE = 16;
+    int UPDATE_MAP_SIZE = 30;
     MazeCreate mazeCreate;
     int Accumulation = 95;//障碍堆积系数
     int Erosion = 20;//障碍侵蚀系数
 
     int mapGroup = 1;
 
-    public InGameMapPointData[,] map;  // 0 null,1 路 ,2 障碍
-    public int[,] astarArray;
+    public InGameMapPointData[,] map;  
+    public int[,] astarArray;// 0 null,1 路 ,2 障碍
     GameObject mapObj;
 
     Dictionary<int, List<GameObject>> objPool = new Dictionary<int, List<GameObject>>();
@@ -391,7 +391,7 @@ public class MazeMapManager : BaseGameMapManager {
         Debug.Log(str);
     }
 
-    //获取一条随机的道路
+    //获取一个随机的路径点
     //随机一个点,向周围放大寻找
     public Vector3 GetRandomWay(){
         int x = Random.Range(0, map.GetLength(0));

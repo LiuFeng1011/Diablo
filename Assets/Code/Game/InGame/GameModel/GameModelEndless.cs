@@ -20,7 +20,7 @@ public class GameModelEndless : BaseGameModelManager {
         }
         List<CharacterConf> roleList = ConfigManager.characterConfManager.dicByType[(int)CharacterConf.enCharacterType.enemy];
 
-        while(enemyList.Count < 2){
+        while(enemyList.Count < 20){
             InGameBaseCharacter enemy = InGameManager.GetInstance().inGameObjManager.AddObj(roleList[Random.Range(0, roleList.Count)].id, enMSCamp.en_camp_enemy) as InGameBaseCharacter;
             enemy.AddAI();
 

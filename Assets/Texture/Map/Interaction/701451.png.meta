@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 874f3febc8baf4d2a94257e798f30fab
+guid: 0a07a5552b63043bfb9e9ab520f6d463
 TextureImporter:
   fileIDToRecycleName: {}
   externalObjects: {}
@@ -89,7 +89,7 @@ TextureImporter:
     indices: 
     edges: []
     weights: []
-  spritePackingTag: adorn
+  spritePackingTag: 
   userData: 
   assetBundleName: 
   assetBundleVariant: 

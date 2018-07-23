@@ -110,6 +110,7 @@ public class InGameBaseCharacter : InGameBaseObj
 
     //生命回复时间
     float lifeReviveTime = 0;
+    float lifeReviveCount = 0f;
 
     public override void Init(int instanceId, int confid, enMSCamp camp)
     {
@@ -292,7 +293,12 @@ public class InGameBaseCharacter : InGameBaseObj
             if (lifeReviveTime >= 1)
             {
                 lifeReviveTime -= 1;
-                this.ChangeLife((int)propertys.GetProperty(enCharacterProperty.liferevive), false);
+                lifeReviveCount += propertys.GetProperty(enCharacterProperty.liferevive);
+                if(lifeReviveCount > 1){
+                    int addval = (int)lifeReviveCount;
+                    this.ChangeLife(addval, false);
+                    lifeReviveCount -= addval;
+                }
             }
         }
 

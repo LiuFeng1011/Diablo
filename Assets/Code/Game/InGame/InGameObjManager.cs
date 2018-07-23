@@ -11,6 +11,8 @@ public class InGameObjManager : InGameBaseManager {
     public List<InGameBaseObj> addList = new List<InGameBaseObj>();
     public List<InGameBaseObj> delList = new List<InGameBaseObj>();
 
+    List<InGameBaseObj> getList = new List<InGameBaseObj>();
+
     public override void Init()
     {
         base.Init();
@@ -76,5 +78,23 @@ public class InGameObjManager : InGameBaseManager {
         objscript.Init(gameObjInstanceId, skill,camp);
         addList.Add(objscript);
         return objscript;
+    }
+
+    public List<InGameBaseObj> GetObjListByDistance(Vector2 pos ,float dis){
+        getList.Clear();
+        for (int i = 0; i < objList.Count; i++)
+        {
+            InGameBaseObj obj = objList[i];
+
+            if (obj.IsDie())
+            {
+                continue;
+            }
+
+            if(Vector2.Distance(obj.transform.position,pos) < dis){
+                getList.Add(obj);
+            }
+        }
+        return getList;
     }
 }

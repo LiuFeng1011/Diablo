@@ -391,6 +391,7 @@ public class InGameBaseCharacter : InGameBaseObj
         }
 
         transform.GetComponent<BoxCollider>().enabled = false;
+        transform.GetComponent<SphereCollider>().enabled = false;
         Invoke("Delself",3);
 
     }

@@ -263,7 +263,7 @@ public class GameCommon  {
 
     public static void SetObjZIndex(GameObject obj,int layer){
         Vector3 pos = obj.transform.position;
-        pos.z = pos.y  /*+ pos.x*/  - layer*10;
+        pos.z = pos.y  /*+ pos.x*/  - layer * 0.1f;
         obj.transform.position = pos;
     }
 

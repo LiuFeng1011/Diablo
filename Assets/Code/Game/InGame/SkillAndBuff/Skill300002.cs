@@ -32,7 +32,7 @@ public class Skill300002 : BaseSkill {
             return false;
         }
         //Debug.Log("move vec : " + moveVector);
-        transform.position = transform.position + moveVector * Time.deltaTime * 15;
+        transform.position = transform.position + moveVector * Time.deltaTime * 10;
 
         GameCommon.SetObjZIndex(gameObject,3);
 
@@ -40,8 +40,19 @@ public class Skill300002 : BaseSkill {
             SetDie(true);
             return false;
         }
+        Vector3 collisionpos = transform.position - additionPos;
+        //游戏物体碰撞
+        List<InGameBaseObj> list = InGameManager.GetInstance().inGameObjManager.GetObjListByDistance(collisionpos, 0.5f);
 
-        Vector2 mapos = GameCommon.GetMapPos(transform.position - additionPos);
+        for (int i = 0; i < list.Count; i ++){
+            if(HitGameObj(list[i])){
+                return false;
+            }
+
+        }
+
+        //地图碰撞
+        Vector2 mapos = GameCommon.GetMapPos(collisionpos);
         if (InGameManager.GetInstance().inGameLevelManager.gameMap.GetPointType((int)mapos.x, (int)mapos.y) == MazeCreate.PointType.wall){
             SetDie(true);
             return false;
@@ -51,15 +62,15 @@ public class Skill300002 : BaseSkill {
 
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        HitObj(collision.gameObject);
-    }
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    HitObj(collision.gameObject);
+    //}
 
-    private void OnTriggerEnter(Collider collision)
-    {
-        HitObj(collision.gameObject);
-    }
+    //private void OnTriggerEnter(Collider collision)
+    //{
+    //    HitObj(collision.gameObject);
+    //}
 
     void HitObj(GameObject obj){
 
@@ -69,13 +80,21 @@ public class Skill300002 : BaseSkill {
             return;
         }
 
+        HitGameObj(baseobj);
+    }
+
+    bool HitGameObj(InGameBaseObj baseobj)
+    {
+        if(baseobj.instanceId == this.instanceId){
+            return false;
+        }
         if (baseobj.GetObjType() != enObjType.character)
         {
-            return;
+            return false;
         }
         if (!source.IsEnemy(baseobj))
         {
-            return;
+            return false;
         }
 
         InGameBaseCharacter character = (InGameBaseCharacter)baseobj;
@@ -86,8 +105,10 @@ public class Skill300002 : BaseSkill {
                     source.propertys.GetProperty(enCharacterProperty.comborate),
                     source.propertys.GetProperty(enCharacterProperty.comboval),
                     false);
-        Debug.Log("set die");
+        Debug.Log(baseobj.gameObject.name);
         SetDie(true);
+
+        return true;
     }
 
 }

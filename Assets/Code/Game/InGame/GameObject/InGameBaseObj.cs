@@ -8,7 +8,8 @@ public class InGameBaseObj : BaseUnityObject {
         nothing,
         character,
         equip,
-        skill
+        skill,
+        map,
     }
 
     public int instanceId = -1;

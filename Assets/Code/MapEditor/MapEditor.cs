@@ -13,7 +13,6 @@ public class MapEditor : MonoBehaviour {
 	public int mapWidth = 100;
 
     public bool isAutoPos = true;
-	public float autoDPos = 0.1f;
 
 	// Use this for initialization
 	void Start () {
@@ -32,7 +31,7 @@ public class MapEditor : MonoBehaviour {
         for (float y = 0; y < mapHeight; y ++)
 		{
             Gizmos.DrawLine(GameCommon.GetWorldPos(new Vector3(0, y, -1f)),
-                            GameCommon.GetWorldPos(new Vector3(mapWidth, y, -1f)));
+                            GameCommon.GetWorldPos(new Vector3(mapWidth-1, y, -1f)));
 			
             //Handles.Label(new Vector3(-1f,y+0.5f , 0f), "" + y);
 		}
@@ -40,7 +39,7 @@ public class MapEditor : MonoBehaviour {
 		for (float x = 0; x < mapWidth; x ++)
 		{
             Gizmos.DrawLine(GameCommon.GetWorldPos(new Vector3(x, 0, -1f)),
-                            GameCommon.GetWorldPos(new Vector3(x, mapHeight, -1f)));
+                            GameCommon.GetWorldPos(new Vector3(x, mapHeight-1, -1f)));
 			
             //Handles.Label(new Vector3(x,-0.2f, 0f), "" + x);
         }
@@ -84,29 +83,5 @@ public class MapEditor : MonoBehaviour {
         //    return;
         //}
 
-        float autoDPosx = 1;
-        float autoDPosy = 1;
-
-        float alignedx = 0;
-        float alignedy = 0;
-
-        if (autoDPosx == 0)
-        {
-            alignedx = pos.x;
-        }
-        else
-        {
-            alignedx = Mathf.Floor(pos.x / autoDPosx) * autoDPosx ;
-        }
-        if (autoDPosy == 0)
-        {
-            alignedy = pos.y;
-        }
-        else
-        {
-            alignedy = Mathf.Floor(pos.y / autoDPosy) * autoDPosy ;
-        }
-        Vector3 aligned = new Vector3(alignedx, alignedy, 0.0f);
-        obj.transform.position = aligned;
     }
 }

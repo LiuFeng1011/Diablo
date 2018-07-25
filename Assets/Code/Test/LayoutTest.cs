@@ -4,84 +4,81 @@ using UnityEngine;
 
 public class LayoutTest : MonoBehaviour {
 
-    List<GameObject> objList = new List<GameObject>();
-
+    public int[,] maparr;// 0 null,1 路 ,2 障碍
+    public int rol = 30, col = 20,objcount = 10;
 	// Use this for initialization
 	void Start () {
-        for (int i = 0; i < 2; i ++){
+        maparr = new int[rol,col];
+
+        for (int i = 0; i < objcount; i ++){
             GameObject obj = Resources.Load("Prefabs/Test/Cube") as GameObject;
 
             obj = MonoBehaviour.Instantiate(obj);
 
-            int randomScale = Random.Range(1, 5);
+            int randomScale = Random.Range(3, 8);
 
             obj.transform.position = Vector3.zero;
             obj.transform.localScale = new Vector3(randomScale, randomScale, 1);
 
-            objList.Add(obj);
+            SetObjPos(obj);
         }
+
 	}
-	
-	// Update is called once per frame
-	void Update () {
 
-        for (int i = 0; i < objList.Count; i ++){
-            GameObject obj = objList[i];
-            Rect r = GetObjRect(obj);
-            Debug.Log("1:" + r);
-            for (int j = 0; j < objList.Count; j ++){
-                GameObject nextobj = objList[j];
-                Rect nextr = GetObjRect(nextobj);
-
-                Debug.Log("nextr:" + nextr);
-                float minx = Mathf.Max(r.x, nextr.x);
-                float miny = Mathf.Max(r.y, nextr.y);
-                float maxx = Mathf.Min(r.x + r.width, nextr.x + nextr.width);  
-                float maxy = Mathf.Min(r.y + r.height, nextr.y + nextr.height);
-
-                if(minx > maxx || miny > maxy){
-                    continue;
-                }
-
-                float dx = maxx - minx ,dy = maxy - miny;
-                Debug.Log(dx + "," + dy);
-                if(dx > dy){
-                    if(nextobj.transform.position.x > obj.transform.position.x){
-                        nextobj.transform.position =new Vector3(
-                            obj.transform.position.x + obj.transform.localScale.x / 2 + nextobj.transform.localScale.x / 2,
-                            nextobj.transform.position.y, 0);
-                    }else{
-                        nextobj.transform.position =new Vector3(
-                            obj.transform.position.x - obj.transform.localScale.x / 2 - nextobj.transform.localScale.x / 2,
-                            nextobj.transform.position.y, 0);
-                    }
-
-                }else{
-                    if (nextobj.transform.position.y > obj.transform.position.y)
-                    {
-                        nextobj.transform.position = new Vector3(
-                            obj.transform.position.y + obj.transform.localScale.y / 2 + nextobj.transform.localScale.y / 2,
-                            nextobj.transform.position.y, 0);
-                    }
-                    else
-                    {
-                        nextobj.transform.position = new Vector3(
-                            obj.transform.position.x - obj.transform.localScale.x / 2 - nextobj.transform.localScale.x / 2,
-                            nextobj.transform.position.y, 0);
-                    }
+    void SetObjPos(GameObject go){
+        List<Vector2> poslist = new List<Vector2>();
+        int size = (int)go.transform.localScale.x;
+        for (int i = 0; i < rol; i ++){
+            for (int j = 0; j < col;j ++){
+                Vector2 v = new Vector2(i, j);
+                if(haveSpace(v,size)){
+                    poslist.Add(v);
                 }
             }
         }
+        if (poslist.Count <= 0) {
+            Destroy(go);
+            return;
+        }
+
+        Vector2 selpos = poslist[Random.Range(0,poslist.Count)];
+        go.transform.position = selpos+new Vector2(size / 2f,size/2f);
+        SetSpace(selpos,size);
+    }
+
+    bool haveSpace(Vector2 pos,int size){
+        int x = (int)pos.x,y = (int)pos.y;
+
+        for (int i = x; i < x+size; i ++){
+            if (i >= rol) return false;
+            for (int j = y; j < y+size; j++){
+                if (j >= col) return false;
+                if(maparr[i,j] == 1){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    void SetSpace(Vector2 pos, int size){
+        int x = (int)pos.x, y = (int)pos.y;
+        for (int i = x; i < x + size; i++)
+        {
+            if (i >= rol) return ;
+            for (int j = y; j < y + size; j++)
+            {
+                if (j >= col) return ;
+                maparr[i, j] = 1;
+            }
+        }
+    }
+	
+	// Update is called once per frame
+	void Update () {
+        
 
 	}
 
-    Rect GetObjRect(GameObject obj){
-        Vector2 pos = obj.transform.position;
 
-        Vector2 startPos = new Vector2(pos.x - obj.transform.localScale.x / 2,
-                                       pos.y - obj.transform.localScale.y / 2);
-
-        Rect r = new Rect(startPos, obj.transform.localScale);
-        return r;
-    }
 }

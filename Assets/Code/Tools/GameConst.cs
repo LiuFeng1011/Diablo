@@ -112,14 +112,13 @@ public static class GameConst  {
 
 	
 	public static string GetLevelDataFilePath(string filename){
-		if (!Directory.Exists(Application.persistentDataPath + "/LevelData"))
-		{
-			Directory.CreateDirectory(Application.persistentDataPath + "/LevelData");//创建文件夹
-
-		}
-		return Application.persistentDataPath + "/LevelData/" + filename;
+        return "Assets/Resources/LevelData/" + filename;
 	}
 
+    public static string GetLevelDataFilePath()
+    {
+        return Application.dataPath + "/Resources/LevelData/";
+    }
 	public static string GetExcelFilePath(string filename){
 		return Application.dataPath+"/ExcelTools/xlsx/"+filename;
 	}

@@ -52,4 +52,5 @@ public class InGameBaseObj : BaseUnityObject {
         return val == 1;
     }
 
+
 }

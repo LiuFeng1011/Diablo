@@ -147,9 +147,8 @@ public class MELoadLevelData : EditorWindow {
 		int objcount = datastream.ReadSInt32();
 
         Debug.Log("objcount : " + objcount);
+        MapObjConfManager mapObjConfManager = ConfigManager.GetEditorMapObjConfManager();
 
-        MapObjConfManager mapObjConfManager = new MapObjConfManager();
-        mapObjConfManager.Load();
 		for(int i = 0 ; i < objcount ;i ++){
 			//MSBaseObject.CreateObj(datastream);
 			//从字节流中获取id

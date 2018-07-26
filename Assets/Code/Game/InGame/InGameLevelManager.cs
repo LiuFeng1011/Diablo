@@ -11,7 +11,7 @@ public class InGameLevelManager : InGameBaseManager {
     {
         gameModel = BaseGameModelManager.GetGameMode(BaseGameModelManager.GameLevelModel.endless);
 
-        gameMap = MazeMapManager.CreateMapManager(MazeMapManager.MapType.en_type_1,2,100,100);
+        gameMap = MazeMapManager.CreateMapManager(MazeMapManager.MapType.en_type_editormap,1,50,50);
     }
 
     public override void Update()

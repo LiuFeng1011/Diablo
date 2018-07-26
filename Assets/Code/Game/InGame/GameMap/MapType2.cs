@@ -65,7 +65,8 @@ public class MapType2 : MazeMapManager {
                         }
                     }
 
-                    Vector3 objpos = new Vector3(i + (float)(scale - 1f) / 2f, j + (float)(scale - 1f) / 2f, 0);
+                    //Vector3 objpos = new Vector3(i + (float)(scale - 1f) / 2f, j + (float)(scale - 1f) / 2f, 0);
+                    Vector3 objpos = new Vector3(i , j , 0);
                     CreateGround(objpos, mapGroup, scale);
 
                 }
@@ -89,7 +90,8 @@ public class MapType2 : MazeMapManager {
                         }
                     }
 
-                    CreateGround(new Vector3(i + (float)(scale - 1f) / 2f, j + (float)(scale - 1f) / 2f, 0), mapGroup + 100000, scale);
+                    //CreateGround(new Vector3(i + (float)(scale - 1f) / 2f, j + (float)(scale - 1f) / 2f, 0), mapGroup + 100000, scale);
+                    CreateGround(new Vector3(i , j , 0), mapGroup + 100000, scale);
 
                 }
             }

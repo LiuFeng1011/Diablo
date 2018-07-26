@@ -75,7 +75,10 @@ public class MapEditor : MonoBehaviour {
         Vector2 mappos = GameCommon.GetMapPos(pos);
 
         obj.transform.position = GameCommon.GetWorldPos(mappos);
-        GameCommon.SetObjZIndex(obj, 1);
+
+        MapObjConf conf = ConfigManager.GetEditorMapObjConfManager().map[ingameobj.confid];
+        if (conf == null) return;
+        GameCommon.SetObjZIndex(obj, conf.depth);
         return;
         //MapEditor me = GameObject.Find("levelOption").transform.GetComponent<MapEditor>();
 

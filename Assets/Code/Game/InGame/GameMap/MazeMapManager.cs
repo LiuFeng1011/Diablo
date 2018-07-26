@@ -32,7 +32,8 @@ public class MazeMapManager : BaseGameMapManager {
 
     public enum MapType{
         en_type_1 = 1,
-        en_type_2 = 2
+        en_type_2 = 2,
+        en_type_editormap = 3,
     }
 
     const float mapscale = 1;
@@ -58,6 +59,9 @@ public class MazeMapManager : BaseGameMapManager {
             case MapType.en_type_2:
                 manager = new MapType2();
                 break;
+            case MapType.en_type_editormap:
+                manager = new MapTypeEditorMap();
+                break;
             case MapType.en_type_1 :
             default:
                 manager = new MapType1();
@@ -77,7 +81,6 @@ public class MazeMapManager : BaseGameMapManager {
     //动态生成地面
     public override void Update()
     {
-        //return;
         Vector2 startPos = InGameManager.GetInstance().inGameCameraManager.GetCameraPos();
 
         Vector2 startMapPos = GameCommon.GetMapPos(startPos);
@@ -116,7 +119,7 @@ public class MazeMapManager : BaseGameMapManager {
                     if(data.objList[i].obj == null){
                         GameObject obj = GetPoolObj(data.objList[i].conf);
                         obj.transform.position = GameCommon.GetWorldPos(data.objList[i].pos);
-                        GameCommon.SetObjZIndex(obj, 0);
+                        GameCommon.SetObjZIndex(obj, data.objList[i].conf.depth);
                         data.objList[i].obj = obj;
                     }
                 }
@@ -203,6 +206,78 @@ public class MazeMapManager : BaseGameMapManager {
             return true;
         }
         return false;
+    }
+
+    protected void InsertGroup(Vector2 pos, int groupid)
+    {
+        int x = (int)pos.x, y = (int)pos.y;
+        MapGroupConf conf = ConfigManager.mapGroupConfManager.dataMap[groupid];
+        if (conf == null) return;
+        TextAsset text = Resources.Load(conf.path) as TextAsset;
+        byte[] data = GameCommon.UnGZip(text.bytes);
+        DataStream datastream = new DataStream(data, true);
+
+        //配置LevelOption
+        GameObject logo = new GameObject(conf.path);
+        //logo.transform.parent = this.mapObj.transform;
+        logo.transform.position = GameCommon.GetWorldPos(pos);
+        LevelOption me = logo.AddComponent<LevelOption>();
+        me.deserialize(datastream);
+
+        //生成物体
+        int objcount = datastream.ReadSInt32();
+        for (int i = 0; i < objcount; i++)
+        {
+            //MSBaseObject.CreateObj(datastream);
+            //从字节流中获取id
+            int confid = datastream.ReadSInt32();
+            float objx = datastream.ReadSInt32() / 1000f;
+            float objy = datastream.ReadSInt32() / 1000f;
+
+            MapObjConf objconf = ConfigManager.mapObjConfManager.map[confid];
+
+            SetGroupPoint(pos + GameCommon.GetMapPos(new Vector2(objx, objy)), objconf);
+        }
+    }
+
+    protected void SetGroupPoint(Vector2 pos, MapObjConf objconf)
+    {
+        int x = (int)pos.x, y = (int)pos.y;
+        if (map[x, y] == null)
+        {
+            map[x, y] = new InGameMapPointData(MazeCreate.PointType.wall, pos);
+        }
+
+        map[x, y].AddObj(new MapPointObj(objconf, null, pos ));
+
+        MazeCreate.PointType type;
+        int arrval = 0;
+        if (objconf.depth >= 3)
+        {
+            type = MazeCreate.PointType.wallfull;
+            arrval = 0;
+        }
+        else
+        {
+            type = MazeCreate.PointType.way;
+            arrval = 1;
+        }
+
+        for (int i = 0; i < objconf.size; i++)
+        {
+            for (int j = 0; j < objconf.size; j++)
+            {
+                int _x = x + i;
+                int _y = y + j;
+                if (map[_x, _y] == null)
+                {
+                    map[_x, _y] = new InGameMapPointData(MazeCreate.PointType.wall, new Vector2(_x,_y));
+                }
+                if (map[_x, _y].type == MazeCreate.PointType.wallfull) continue;
+                map[_x, _y].type = type;
+                astarArray[_x, _y] = arrval;
+            }
+        }
     }
 
     //判断一个障碍是否具有某种属性 例如way fullway startpoint endpoint 都具有way的属性

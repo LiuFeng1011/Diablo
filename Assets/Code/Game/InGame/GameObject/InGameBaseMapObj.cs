@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class InGameBaseMapObj : InGameBaseObj {
 
-
     public override enObjType GetObjType()
     {
         return enObjType.map;

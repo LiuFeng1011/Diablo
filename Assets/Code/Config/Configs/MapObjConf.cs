@@ -29,6 +29,7 @@ public class MapObjConfManager {
         datas = ConfigManager.Load<MapObjConf>();
 
         groupMap.Clear();
+        map.Clear();
 
         for (int i = 0; i < datas.Count; i++)
         {

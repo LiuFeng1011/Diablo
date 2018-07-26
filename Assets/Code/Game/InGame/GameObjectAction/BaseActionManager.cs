@@ -122,6 +122,7 @@ public class BaseActionManager : BaseGameObject {
 
             if (Vector2.Distance(parent.transform.position, target.transform.position) > parent.GetAtkDis(target))
             {
+                StartAction( target,  target.transform.position);
                 MoveAction();
             }
             else

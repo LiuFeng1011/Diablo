@@ -26,7 +26,7 @@ public class MapTypeEditorMap : MazeMapManager {
         }
 
         //放置group
-        int count = row * col / 50;
+        int count = row * col / 100;
         for (int i = 0; i < count ; i++)
         {
             MapGroupConf conf = conflist[Random.Range(0, conflist.Count)];

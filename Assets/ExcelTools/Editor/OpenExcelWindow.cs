@@ -35,6 +35,11 @@ public class OpenExcelWindow : EditorWindow {
 		
 		Open();
 	}
+
+    [MenuItem("配置表工具/重新加载配置文件")]
+    static void ReloadConf(){
+        ConfigManager.ReloadEditorMapObjConf();
+    }
 	
 	void OnGUI()
 	{

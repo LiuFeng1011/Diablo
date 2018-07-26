@@ -360,11 +360,11 @@ public class InGameBaseCharacter : InGameBaseObj
         if (state != AnimatorState.Dead &&  IsDie()) return;
         //if (state == AnimatorState.atk)anim.Play(""+state);
         //anim.SetInteger("state", (int)state);
-        //anim.speed = speed;
         anim.SetBool(lastAnimatorName, false);
         string actionname = Enum.GetName(typeof(AnimatorState), state);
         anim.SetBool(actionname, true);
         lastAnimatorName = actionname;
+        anim.speed = speed;
     }
 
     public virtual void StartRun(Vector3 targetPos)

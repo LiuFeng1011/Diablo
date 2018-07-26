@@ -28,6 +28,7 @@ public class InGameCameraManager : InGameBaseManager{
 
     public void SetTarget (GameObject target){
         this.target = target;
+        gameCamera.transform.position = target.transform.position + constVector;
     }
 
     public Vector3 GetCameraPos(){

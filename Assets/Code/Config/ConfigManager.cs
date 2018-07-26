@@ -75,4 +75,8 @@ public class ConfigManager  {
         return editorMapObjConfManager;
     }
 
+    public static void ReloadEditorMapObjConf(){
+        GetEditorMapObjConfManager().Load();
+    }
+
 }

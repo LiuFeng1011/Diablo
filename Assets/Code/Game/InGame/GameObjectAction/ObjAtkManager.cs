@@ -112,7 +112,7 @@ public class ObjAtkManager : BaseActionManager {
 
                 parent.StopAction();
 
-                EquipData e = EquipSystem.GetInstance().RandEquipProperty(equip.confid, equip.level);
+                EquipData e = EquipSystem.GetInstance().RandEquipProperty(equip);
                 InGameManager.GetInstance().inGamePlayerManager.AddEquip(e);
 
                 MonoBehaviour.Destroy(equip.gameObject);

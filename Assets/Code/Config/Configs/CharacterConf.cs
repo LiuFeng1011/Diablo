@@ -18,7 +18,7 @@ public class CharacterConf
     public int type;/*   "种类
     1角色" 
     */
-    public int level;
+    //public int level;
     public float atkdis;
     public int atkskill;
 

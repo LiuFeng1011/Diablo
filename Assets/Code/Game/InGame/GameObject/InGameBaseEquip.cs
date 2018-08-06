@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class InGameBaseEquip : InGameBaseObj {
     public int level = 1;
+    public EquipQuality quality ;
 
     public override enObjType GetObjType()
     {

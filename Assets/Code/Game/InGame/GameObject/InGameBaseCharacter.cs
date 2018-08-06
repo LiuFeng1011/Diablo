@@ -108,6 +108,8 @@ public class InGameBaseCharacter : InGameBaseObj
 
     List<EquipData> equipList = new List<EquipData>();
 
+    InGameBaseObj killMe = null;
+
     //生命回复时间
     float lifeReviveTime = 0;
     float lifeReviveCount = 0f;
@@ -139,7 +141,7 @@ public class InGameBaseCharacter : InGameBaseObj
         //注册到UI界面
         InGameManager.GetInstance().inGameUIManager.AddRole(this);
 
-        this.level = conf.level;
+        //this.level = conf.level;
         ResetAllProperty(true);
 
         lastPos = transform.position;
@@ -296,7 +298,7 @@ public class InGameBaseCharacter : InGameBaseObj
                 lifeReviveCount += propertys.GetProperty(enCharacterProperty.liferevive);
                 if(lifeReviveCount > 1){
                     int addval = (int)lifeReviveCount;
-                    this.ChangeLife(addval, false);
+                    this.ChangeLife(null,addval, false);
                     lifeReviveCount -= addval;
                 }
             }
@@ -392,8 +394,15 @@ public class InGameBaseCharacter : InGameBaseObj
         //base.Die();
         SetAnimatorState(AnimatorState.Dead, 1);
 
-        if(camp == enMSCamp.en_camp_enemy){
-            EquipSystem.GetInstance().OutEquip(gameObject, level);
+        if (camp == enMSCamp.en_camp_enemy)
+        {
+            if(killMe.GetObjType() == enObjType.character){
+                InGameBaseCharacter source = (InGameBaseCharacter)killMe;
+                EquipSystem.GetInstance().OutEquip(gameObject, level,
+                                                   source.propertys.GetProperty(enCharacterProperty.equipdrop) + 
+                                                   this.conf.equipdrop);
+            }
+
         }
 
         transform.GetComponent<BoxCollider>().enabled = false;
@@ -406,13 +415,13 @@ public class InGameBaseCharacter : InGameBaseObj
         Destroy(gameObject);
     }
 
-    public bool ChangeLife(int val,bool iscombo){
+    public bool ChangeLife(InGameBaseObj source,int val,bool iscombo){
         if (val == 0) return false;
         life = Mathf.Clamp(life + val,0,propertys.GetProperty(enCharacterProperty.life));
 
         if (life <= 0){
             SetDie(false);
-
+            killMe = source;
             EventData.CreateEvent(EventID.EVENT_GAME_CHARACTER_DIE).AddData(this.instanceId, this.level).Send();
 
         }
@@ -468,20 +477,21 @@ public class InGameBaseCharacter : InGameBaseObj
         float returnval = overval * (propertys.GetProperty(enCharacterProperty.returnhurt) / 100f);
         overval -= returnval;
 
-        ((InGameBaseCharacter)source).ChangeLife(-(int)returnval, false);
-        ((InGameBaseCharacter)source).AtkHurt((int)overval);
+        ((InGameBaseCharacter)source).ChangeLife(this,-(int)returnval, false);
+        ((InGameBaseCharacter)source).AtkHurt(source,(int)overval);
 
         EventData.CreateEvent(EventID.EVENT_GAME_CHARACTER_HURT).
                  AddData(source, this,-(int)overval).Send();
         
-        return ChangeLife(-(int)Math.Ceiling(overval),iscombo);
+        return ChangeLife(source,-(int)Math.Ceiling(overval),iscombo);
     }
 
-    public void AtkHurt(int val){
+    //对敌人造成了伤害，在这里处理吸血等状态
+    public void AtkHurt(InGameBaseObj source,int val){
         float pro = propertys.GetProperty(enCharacterProperty.steallife) / 100f;
         float stealval = val * pro;
 
-        this.ChangeLife((int)stealval,false);
+        this.ChangeLife(source,(int)stealval,false);
     }
 
     public int GetAtkForce(){

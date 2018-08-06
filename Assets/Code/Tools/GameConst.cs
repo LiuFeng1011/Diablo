@@ -68,7 +68,7 @@ public struct GameModel{
         this.lbname = lbname;
     }
 }
-
+//0.12 * life + 0.75 * atk * speed 战力
 public static class GameConst  {
 	
 	public const string userDataFileName = "userdata";
@@ -89,19 +89,6 @@ public static class GameConst  {
         new GameModel(3,"Time","wipecube_time"),
     };
 
-    public const int MAP_HEIGHT = 16;
-    public const int MAP_WIDTH = 6;
-    public const float MAP_OBJ_MAX_POSX = 3;
-
-    public const float comboDis = 0.3f;
-    public const int timeModelTime = 60;
-
-    public const float STEP_MIN_SIZE = 0.5f;
-    public const float STEP_MAX_SIZE = 1.5f;
-
-    //观看视频奖励
-    public const int WATCH_AD_GOLD = 50;
-
     public static int[,] CAMP_ATK = {
          //玩家, //敌人, //中立, //其他
         {   0,     1,     1,      0   },//玩家
@@ -110,7 +97,6 @@ public static class GameConst  {
         {   0,     0,     0,      0   },//其他
     };
 
-	
 	public static string GetLevelDataFilePath(string filename){
         return "Assets/Resources/LevelData/" + filename;
 	}

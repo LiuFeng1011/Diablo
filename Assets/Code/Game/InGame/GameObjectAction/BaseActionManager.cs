@@ -155,7 +155,7 @@ public class BaseActionManager : BaseGameObject {
         else
         {
             parent.Move(path[0]);
-            parent.SetAnimatorState(InGameBaseCharacter.AnimatorState.Run, parent.GetMoveSpeed() * 0.3f);
+            parent.SetAnimatorState(InGameBaseCharacter.AnimatorState.Run, parent.GetMoveSpeed()*0.6f);
         }
     }
     void StartAtk()
@@ -180,7 +180,7 @@ public class BaseActionManager : BaseGameObject {
 
                 parent.StopAction();
 
-                EquipData e = EquipSystem.GetInstance().RandEquipProperty(equip.confid, equip.level);
+                EquipData e = EquipSystem.GetInstance().RandEquipProperty(equip);
                 InGameManager.GetInstance().inGamePlayerManager.AddEquip(e);
 
                 MonoBehaviour.Destroy(equip.gameObject);

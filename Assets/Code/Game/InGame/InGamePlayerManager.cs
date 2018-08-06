@@ -25,12 +25,13 @@ public class InGamePlayerManager : InGameBaseManager {
         role = InGameManager.GetInstance().inGameObjManager.AddObj(rd.roldid,enMSCamp.en_camp_player) as InGameBaseCharacter;
         role.SetData(rd);
 
-        InGameManager.GetInstance().inGameCameraManager.SetTarget(role.gameObject);
         //InGameManager.GetInstance().GetManager<InGameObjManager>(InGameManager.enGameManager.InGameObjManager).AddObj(0);
         Vector3 startpos = InGameManager.GetInstance().inGameLevelManager.gameMap.GetStartPosition();
 
         role.transform.position = GameCommon.GetWorldPos(startpos);
         role.SetZPos();
+
+        InGameManager.GetInstance().inGameCameraManager.SetTarget(role.gameObject);
 
         for (int i = 0; i < rd.choseEquipList.Count; i++)
         {

@@ -13,7 +13,7 @@ public class EquipSystem : BaseGameObject {
         return instance;
     }
 
-    public InGameBaseEquip OutEquip(GameObject go,int level){
+    public InGameBaseEquip OutEquip(GameObject go,int level,float fm){
 
         List<EquipConf> datas = ConfigManager.equipConfManager.datas;
 
@@ -26,30 +26,33 @@ public class EquipSystem : BaseGameObject {
         InGameBaseEquip equip = equipobj.GetComponent<InGameBaseEquip>();
         equip.Init(-1,equipConf.id,enMSCamp.en_camp_item);
         equip.level = level;
+        equip.quality = ConfigManager.equipQualityManager.GetEquipQuality(fm);
 
         return equip;
     }
 
-    public EquipData RandEquipProperty(int id,int level){
+    public EquipData RandEquipProperty(InGameBaseEquip equip){
         
-        EquipConf equipConf = ConfigManager.equipConfManager.dic[id];
+        EquipConf equipConf = ConfigManager.equipConfManager.dic[equip.confid];
 
         List<PropertyConf> propertys = ConfigManager.propertyConfManager.datas;
         List<EquipProperty> propertyList = new List<EquipProperty>();
 
-        int propertyCount = Random.Range(1, 5);
-        for (int i = 0; i < propertyCount; i++)
+        EquipQuality quality = equip.quality;
+
+        for (int i = 0; i < quality.propertycount; i++)
         {
             PropertyConf propertyConf = propertys[Random.Range(0, propertys.Count)];
             EquipProperty e = new EquipProperty();
             e.id = propertyConf.id;
-            float val = propertyConf.baseval + propertyConf.levelval * level;
+            float val = propertyConf.baseval + propertyConf.levelval * equip.level;
             e.val = Mathf.Ceil(val + Random.Range(-val * propertyConf.randomrange, val * propertyConf.randomrange));
             propertyList.Add(e);
         }
 
         EquipData equipData = new EquipData(
             UserDataManager.instance.GetInstanceID(),
+            quality.id,
             equipConf.id,
             -1,
             propertyList);

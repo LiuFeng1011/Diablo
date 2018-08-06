@@ -29,6 +29,7 @@ public class ConfigManager  {
     public static SkillConfManager skillConfManager = new SkillConfManager();
     public static MapObjConfManager mapObjConfManager = new MapObjConfManager();
     public static MapGroupConfManager mapGroupConfManager = new MapGroupConfManager();
+    public static EquipQualityManager equipQualityManager = new EquipQualityManager();
 
     static MapObjConfManager editorMapObjConfManager = null ;
 
@@ -42,6 +43,7 @@ public class ConfigManager  {
         skillConfManager.Load();
         mapObjConfManager.Load();
         mapGroupConfManager.Load();
+        equipQualityManager.Load();
         Debuger.Log("----------配置表管理器启动成功-----------");
 
     }

@@ -20,7 +20,7 @@ public class ObjMoveManager : BaseActionManager {
             return;
         }else{
             parent.Move(targetPos);
-            parent.SetAnimatorState(InGameBaseCharacter.AnimatorState.Run, parent.GetMoveSpeed()* 0.3f);
+            parent.SetAnimatorState(InGameBaseCharacter.AnimatorState.Run, parent.GetMoveSpeed()*10f);
         }
     }
 

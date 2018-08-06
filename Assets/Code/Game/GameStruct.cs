@@ -83,6 +83,7 @@ public class  EquipData : GoodsData
 {
     public AHInt instanceid;
     public AHInt equipid;
+    public AHInt qualityID = 1;
     public AHInt roleid;//<0 仓库 >0角色id
     public List<EquipProperty> propertyList ;
 
@@ -91,8 +92,9 @@ public class  EquipData : GoodsData
         type = GoodsType.equip;
     }
 
-    public EquipData(int instanceid,int equipid,int roleid,List<EquipProperty> propertyList){
+    public EquipData(int instanceid,int qualityid,int equipid,int roleid,List<EquipProperty> propertyList){
         this.instanceid = instanceid;
+        this.qualityID = qualityid;
         this.equipid = equipid;
         this.roleid = roleid;
         this.propertyList = propertyList;
@@ -124,6 +126,8 @@ public class  EquipData : GoodsData
                         propertyList.Add(p);
                     }
                     break;
+                case 5:
+                    qualityID = stream.ReadSInt32(); break;
             }
             _type = stream.ReadSInt16();
         }
@@ -144,6 +148,8 @@ public class  EquipData : GoodsData
         for (int i = 0; i < propertyList.Count;  i++ ){
             propertyList[i].Serialize(stream);
         }
+        stream.WriteSInt16(5);
+        stream.WriteSInt32(qualityID);
         stream.WriteSInt16(-1);
     }
 }

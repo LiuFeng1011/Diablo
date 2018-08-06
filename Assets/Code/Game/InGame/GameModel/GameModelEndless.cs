@@ -21,7 +21,9 @@ public class GameModelEndless : BaseGameModelManager {
         List<CharacterConf> roleList = ConfigManager.characterConfManager.dicByType[(int)CharacterConf.enCharacterType.enemy];
 
         while(enemyList.Count < 5){
-            InGameBaseCharacter enemy = InGameManager.GetInstance().inGameObjManager.AddObj(roleList[Random.Range(0, roleList.Count)].id, enMSCamp.en_camp_enemy) as InGameBaseCharacter;
+            //InGameBaseCharacter enemy = InGameManager.GetInstance().inGameObjManager.AddObj(roleList[Random.Range(0, roleList.Count)].id, enMSCamp.en_camp_enemy) as InGameBaseCharacter;
+            InGameBaseCharacter enemy = InGameManager.GetInstance().inGameObjManager.AddObj(100008, enMSCamp.en_camp_enemy) as InGameBaseCharacter;
+           //100011 
             enemy.AddAI();
 
             Vector3 pos = InGameManager.GetInstance().inGameLevelManager.gameMap.GetRandomWay();

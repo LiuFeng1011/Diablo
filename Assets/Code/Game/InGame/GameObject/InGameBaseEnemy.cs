@@ -38,8 +38,7 @@ public class InGameBaseEnemy : InGameBaseCharacter {
 
         Invoke("Delself", 2);
 
-        //出装备
-        EquipSystem.GetInstance().OutEquip(gameObject,level);
+        
 
     }
 }

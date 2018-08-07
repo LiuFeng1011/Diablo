@@ -47,12 +47,26 @@ public class MESaveLevelData : Editor
 		stream.WriteSInt32(msobjlist.Count);
 
         foreach(InGameBaseObj msobj in msobjlist){
+
+            stream.WriteByte(1);
             stream.WriteSInt32(msobj.confid);
             int x = (int)(msobj.transform.position.x * 1000f);
             int y = (int)(msobj.transform.position.y * 1000f);
+            stream.WriteByte(2);
             stream.WriteSInt32(x);
+            stream.WriteByte(3);
             stream.WriteSInt32(y);
-            Debug.Log("x : " + x + " y : " + y);
+            stream.WriteByte(4);
+            stream.WriteSInt32(msobj.parentid);
+            stream.WriteByte(5);
+            stream.WriteSInt32(msobj.instanceId);
+
+            stream.WriteByte(7);
+            stream.WriteString16(msobj.gameObject.name);
+
+            stream.WriteByte(6);
+            msobj.Serialize(stream);
+            stream.WriteByte(0);
 		}
 
         WriteDataToFile(lo,stream);
@@ -66,9 +80,12 @@ public class MESaveLevelData : Editor
             if(gameobj == null){
                 continue;
 			}
+            gameobj.parentid = child.parent.GetInstanceID();
+            gameobj.instanceId = child.GetInstanceID();
 
             msobjlist.Add(gameobj);
 
+            ForeachObjAndSave(child.gameObject);
 		}
 	}
 

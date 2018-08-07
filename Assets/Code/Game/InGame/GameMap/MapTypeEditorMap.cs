@@ -7,7 +7,6 @@ public class MapTypeEditorMap : MazeMapManager {
 
     int[,] groundArr ;
 
-
     public override void InitMap(int group, int row, int col)
     {
         base.InitMap(group, row, col);
@@ -79,8 +78,12 @@ public class MapTypeEditorMap : MazeMapManager {
         //    s += "\n";
         //}
         //Debug.Log(s);
+        if(startPointList.Count > 0){
+            startPoint = startPointList[Random.Range(0,startPointList.Count)];
+        }else{
+            startPoint = GetRandomWay();
+        }
 
-        startPoint = GetRandomWay();
     }
 
     public override void Update(){

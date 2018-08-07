@@ -12,8 +12,10 @@ public class InGameBaseObj : BaseUnityObject {
         map,
     }
 
-    public int instanceId = -1;
+    [HideInInspector] public int instanceId = -1;
     public int confid = -1;
+
+    [HideInInspector] public int parentid;
     public enMSCamp camp = enMSCamp.en_camp_neutral;
     bool isDie = false;
 
@@ -52,5 +54,15 @@ public class InGameBaseObj : BaseUnityObject {
         return val == 1;
     }
 
+    public virtual void Serialize(DataStream writer)
+    {
+        
+    }
+
+    public virtual void Deserialize(DataStream reader)
+    {
+        //myData.Deserialize(reader);
+        //parent = reader.ReadSInt32();
+    }
 
 }

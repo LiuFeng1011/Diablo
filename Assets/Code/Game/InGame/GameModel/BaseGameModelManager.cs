@@ -8,13 +8,19 @@ public class BaseGameModelManager : BaseGameObject {
     {
         nothing,
         endless,
+        level,
     }
+
+    protected List<MapEnemyPoint> enemyPoints = new List<MapEnemyPoint>();
 
     public static BaseGameModelManager GetGameMode(GameLevelModel model){
         BaseGameModelManager ret = null;
         switch(model){
             case GameLevelModel.endless:
                 ret = new GameModelEndless();
+                break;
+            case GameLevelModel.level:
+                ret = new GameModelLevel();
                 break;
             default:
                 ret = new BaseGameModelManager();
@@ -26,7 +32,7 @@ public class BaseGameModelManager : BaseGameObject {
     }
 
     public virtual void Init(){
-        
+        EventManager.Register(this,EventID.EVENT_ADD_ENEMYPOINT);
     }
 
     public virtual void Update()
@@ -36,8 +42,19 @@ public class BaseGameModelManager : BaseGameObject {
 
     public virtual void Destory()
     {
-
+        EventManager.Remove(this);
     }
 
+    public override void HandleEvent(EventData resp)
+    {
+        switch (resp.eid)
+        {
+            case EventID.EVENT_ADD_ENEMYPOINT:
+                MapEnemyPoint enemyPoint = (MapEnemyPoint)resp.sUserData[0];
+                enemyPoints.Add(enemyPoint);
+                break;
+        }
+
+    }
 
 }

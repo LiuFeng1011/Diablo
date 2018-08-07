@@ -53,6 +53,8 @@ public class MazeMapManager : BaseGameMapManager {
 
     public List<InGameMapPointData> lastScreenObj = new List<InGameMapPointData>();
 
+    protected List<Vector2> startPointList = new List<Vector2>();
+
     public static MazeMapManager CreateMapManager(MapType type,int group,int row,int col){
         MazeMapManager manager;
         switch(type){
@@ -230,11 +232,54 @@ public class MazeMapManager : BaseGameMapManager {
         {
             //MSBaseObject.CreateObj(datastream);
             //从字节流中获取id
-            int confid = datastream.ReadSInt32();
-            float objx = datastream.ReadSInt32() / 1000f;
-            float objy = datastream.ReadSInt32() / 1000f;
+            //int confid = datastream.ReadSInt32();
+            //float objx = datastream.ReadSInt32() / 1000f;
+            //float objy = datastream.ReadSInt32() / 1000f;
+            int confid = 0;
+            float objx = 0, objy = 0;
+            MapObjConf objconf = null;
+            int dataid = datastream.ReadByte();
+            string goname = "";
+            while (dataid != 0)
+            {
+                switch (dataid)
+                {
+                    case 1:
+                        confid = datastream.ReadSInt32();
+                        objconf = ConfigManager.mapObjConfManager.map[confid];
+                        break;
+                    case 2: objx = datastream.ReadSInt32() / 1000f; break;
+                    case 3: objy = datastream.ReadSInt32() / 1000f; break;
+                    case 4:
+                        int parentid = datastream.ReadSInt32();
+                        break;
+                    case 5:
+                        int instanceid = datastream.ReadSInt32();
+                        break;
 
-            MapObjConf objconf = ConfigManager.mapObjConfManager.map[confid];
+                    case 7: goname = datastream.ReadString16(); break;
+                    case 6:
+                        if (confid == 4000001)
+                        {
+                            GameObject column = (GameObject)Resources.Load(objconf.path);
+                            column = MonoBehaviour.Instantiate(column);
+                            column.transform.parent = mapObj.transform;
+                            column.transform.position = GameCommon.GetWorldPos(pos) + new Vector2(objx, objy);
+                            MapEnemyPoint point = column.GetComponent<MapEnemyPoint>();
+                            point.Deserialize(datastream);
+                        }
+                        break;
+                }
+                dataid = datastream.ReadByte();
+            }
+
+            if (confid == 4000001 || confid == 4000003){
+                continue;
+            }else if(confid == 4000002){
+                Vector3 _pos = pos + GameCommon.GetMapPos(new Vector2(objx, objy));
+                startPointList.Add(_pos);
+                continue;
+            }
 
             SetGroupPoint(pos + GameCommon.GetMapPos(new Vector2(objx, objy)), objconf);
         }
@@ -243,6 +288,7 @@ public class MazeMapManager : BaseGameMapManager {
     protected void SetGroupPoint(Vector2 pos, MapObjConf objconf)
     {
         int x = (int)pos.x, y = (int)pos.y;
+
         if (map[x, y] == null)
         {
             map[x, y] = new InGameMapPointData(MazeCreate.PointType.wall, pos);

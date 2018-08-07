@@ -12,7 +12,9 @@ public class GameModelEndless : BaseGameModelManager {
 
     public override void Update()
     {
-
+        for (int i = 0; i < enemyPoints.Count;  i++){
+            enemyPoints[i].ObjUpdate();
+        }
         for (int i = enemyList.Count - 1; i >= 0; i--){
             if(enemyList[i] == null){
                 enemyList.RemoveAt(i);

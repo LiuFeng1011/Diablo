@@ -11,6 +11,7 @@ TGSDK/
 UnityChannel/
 UnityPurchasing/
 Plugins/
+
 # ===================================== #
 # Visual Studio / MonoDevelop generated #
 # ===================================== #
@@ -26,7 +27,8 @@ ExportedObj/
 *.unityproj
 *.tmp
 *.booproj
-
+*.vs
+obj/Debug/
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
 ProjectVersion.txt

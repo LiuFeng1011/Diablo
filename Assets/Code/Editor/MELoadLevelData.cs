@@ -147,24 +147,53 @@ public class MELoadLevelData : EditorWindow {
 		int objcount = datastream.ReadSInt32();
 
         Debug.Log("objcount : " + objcount);
+        Dictionary<int, InGameBaseObj> dic = new Dictionary<int, InGameBaseObj>();
         MapObjConfManager mapObjConfManager = ConfigManager.GetEditorMapObjConfManager();
 
 		for(int i = 0 ; i < objcount ;i ++){
-			//MSBaseObject.CreateObj(datastream);
-			//从字节流中获取id
-			int confid = datastream.ReadSInt32();
-            MapObjConf conf = mapObjConfManager.map[confid];
-			GameObject go;
+            //MSBaseObject.CreateObj(datastream);
+            //从字节流中获取id
 
-            Object tempObj = Resources.Load(conf.path) as GameObject;
-            if (tempObj == null)
-            {
-                Debug.Log(confid + " is null!");
+            int confid = 0;
+            float x = 0, y = 0;
+
+            MapObjConf conf = null;
+            GameObject go = null,tempObj;
+            InGameBaseObj baseObj = null;
+            int dataid = datastream.ReadByte();
+            while(dataid != 0){
+                Debug.Log("dataid : " + dataid);
+                switch(dataid){
+                    case 1: 
+                        confid = datastream.ReadSInt32();
+                        conf = mapObjConfManager.map[confid];
+                        tempObj = Resources.Load(conf.path) as GameObject;
+                        if (tempObj == null)
+                        {
+                            Debug.Log(confid + " is null!");
+                        }
+                        go = (GameObject)Instantiate(tempObj);
+                        baseObj = go.GetComponent<InGameBaseObj>();
+                        break;
+                    case 2: x = datastream.ReadSInt32() / 1000f;break;
+                    case 3: y = datastream.ReadSInt32() / 1000f;break;
+                    case 4: 
+                        int parentid = datastream.ReadSInt32();
+                        if (dic.ContainsKey(parentid)){
+                            go.transform.parent = dic[parentid].transform;
+                        }else{
+                            go.transform.parent = me.transform;
+                        }
+                        break;
+                    case 5:
+                        int instanceid = datastream.ReadSInt32();
+                        dic.Add(instanceid, baseObj);
+                        break;
+                    case 7: go.name = datastream.ReadString16(); break;
+                    case 6: baseObj.Deserialize(datastream); break;
+                }
+                dataid = datastream.ReadByte();
             }
-            go = (GameObject)Instantiate(tempObj);
-            go.transform.parent = me.transform;
-            float x = datastream.ReadSInt32() / 1000f;
-            float y = datastream.ReadSInt32() / 1000f;
 
             go.transform.position = new Vector3(x,y);
             GameCommon.SetObjZIndex(go, 1);

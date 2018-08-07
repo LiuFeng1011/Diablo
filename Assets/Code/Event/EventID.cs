@@ -26,6 +26,7 @@ public enum EventID{
 
     EVENT_GAME_CHARACTER_HURT = 0x20008,// 角色受伤
 
+    EVENT_ADD_ENEMYPOINT = 0x20100,//添加刷怪点
 
     EVENT_UI_OPENPACKAGE = 0x30001,//打开背包
     EVENT_UI_DELEQUIP = 0x30002,//删除装备
@@ -34,6 +35,7 @@ public enum EventID{
     EVENT_UI_PACKAGE_SELECT_ITEM = 0x30005,//背包列表选择装备
     EVENT_UI_UNEQUIP = 0x30006,//卸下装备
     EVENT_UI_REFRESH_PACKAGEUI = 0x30007,//刷新背包UI界面
+
 
 }
 

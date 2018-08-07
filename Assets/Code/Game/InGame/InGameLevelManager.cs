@@ -9,9 +9,10 @@ public class InGameLevelManager : InGameBaseManager {
 
     public override void Init()
     {
-        gameModel = BaseGameModelManager.GetGameMode(BaseGameModelManager.GameLevelModel.endless);
+        gameModel = BaseGameModelManager.GetGameMode(BaseGameModelManager.GameLevelModel.level);
+        gameModel.Init();
 
-        gameMap = MazeMapManager.CreateMapManager(MazeMapManager.MapType.en_type_editormap,1,50,50);
+        gameMap = MazeMapManager.CreateMapManager(MazeMapManager.MapType.en_type_editormap,2,25,25);
     }
 
     public override void Update()

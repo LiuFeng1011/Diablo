@@ -11,9 +11,6 @@ public class MapTypeEditorMap : MazeMapManager {
     {
         base.InitMap(group, row, col);
 
-        map = new InGameMapPointData[row, col];
-        astarArray = new int[row, col];
-
         groundArr = new int[row, col];
 
 

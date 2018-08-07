@@ -162,7 +162,6 @@ public class MELoadLevelData : EditorWindow {
             InGameBaseObj baseObj = null;
             int dataid = datastream.ReadByte();
             while(dataid != 0){
-                Debug.Log("dataid : " + dataid);
                 switch(dataid){
                     case 1: 
                         confid = datastream.ReadSInt32();

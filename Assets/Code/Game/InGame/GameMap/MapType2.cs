@@ -34,9 +34,6 @@ public class MapType2 : MazeMapManager {
         //AccumulationMap(mazeCreate.tree, Accumulation);
         ErosionMap(mazeCreate.tree);
 
-        map = new InGameMapPointData[row, col];
-        astarArray = new int[row, col];
-
         startPoint = mazeCreate.tree.position;
 
         for (int i = 0; i < row; i++)

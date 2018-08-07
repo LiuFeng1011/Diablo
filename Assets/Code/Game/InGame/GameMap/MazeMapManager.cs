@@ -34,6 +34,7 @@ public class MazeMapManager : BaseGameMapManager {
         en_type_1 = 1,
         en_type_2 = 2,
         en_type_editormap = 3,
+        en_type_fixeditormap = 4,
     }
 
     const float mapscale = 1;
@@ -64,7 +65,9 @@ public class MazeMapManager : BaseGameMapManager {
             case MapType.en_type_editormap:
                 manager = new MapTypeEditorMap();
                 break;
-            case MapType.en_type_1 :
+            case MapType.en_type_fixeditormap :
+                manager = new FixEditorMap();
+                break;
             default:
                 manager = new MapType1();
                 break;
@@ -79,6 +82,10 @@ public class MazeMapManager : BaseGameMapManager {
         mapGroup = group;
         this.row = row;
         this.col = col;
+
+        map = new InGameMapPointData[row, col];
+        astarArray = new int[row, col];
+
     }
     //动态生成地面
     public override void Update()
@@ -288,7 +295,7 @@ public class MazeMapManager : BaseGameMapManager {
     protected void SetGroupPoint(Vector2 pos, MapObjConf objconf)
     {
         int x = (int)pos.x, y = (int)pos.y;
-
+        Debug.Log("x : " + x + " y : " + y);
         if (map[x, y] == null)
         {
             map[x, y] = new InGameMapPointData(MazeCreate.PointType.wall, pos);

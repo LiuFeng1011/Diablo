@@ -2,14 +2,60 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
+public class MapEnemyPointEnemy{
+    public int rangeMinCount = 0;
+    public int rangeMaxCount = 0;
+    public List<int> rangeObjIdList = new List<int>();
+    public void Serialize(DataStream writer)
+    {
+        writer.WriteSInt32(1);
+        writer.WriteSInt32(rangeMinCount);
+        writer.WriteSInt32(2);
+        writer.WriteSInt32(rangeMaxCount);
+
+        writer.WriteSInt32(3);
+        int count = rangeObjIdList.Count;
+        writer.WriteSInt32(count);
+
+        for (int i = 0; i < count; i++)
+        {
+            writer.WriteSInt32(rangeObjIdList[i]);
+        }
+
+        writer.WriteSInt32(-1);
+    }
+
+    public void Deserialize(DataStream reader)
+    {
+
+        int dataid = reader.ReadSInt32();
+
+        while (dataid != -1)
+        {
+            switch (dataid)
+            {
+                case 1: rangeMinCount = reader.ReadSInt32(); break;
+                case 2: rangeMaxCount = reader.ReadSInt32(); break;
+                case 3:
+                    int idcount = reader.ReadSInt32();
+                    for (int i = 0; i < idcount; i++)
+                    {
+                        rangeObjIdList.Add(reader.ReadSInt32());
+                    }
+                    break;
+            }
+            dataid = reader.ReadSInt32();
+        }
+    }
+}
+
 public class MapEnemyPoint : InGameBaseMapObj {
     
     float intervalTime = 0f;
     public float flushTime = 10f;
 
-    public int rangeMinCount = 0;
-    public int rangeMaxCount = 0;
-    public List<int> rangeObjIdList = new List<int>();
+    public List<MapEnemyPointEnemy> enemyPointList = new List<MapEnemyPointEnemy>();
 
     List<InGameBaseCharacter> enemyList = new List<InGameBaseCharacter>();
 
@@ -18,6 +64,8 @@ public class MapEnemyPoint : InGameBaseMapObj {
         intervalTime = flushTime;
 
         EventData.CreateEvent(EventID.EVENT_ADD_ENEMYPOINT).AddData(this).Send();
+
+        this.gameObject.SetActive(false);
 	}
 	
 	// Update is called once per frame
@@ -42,21 +90,39 @@ public class MapEnemyPoint : InGameBaseMapObj {
 	}
 
     void AddRangeEnemy(){
-        if (rangeObjIdList.Count <= 0) return;
-        int count = Random.Range(rangeMinCount, rangeMaxCount);
+        if (enemyPointList.Count <= 0) return;
+
+        List<int> objidList = new List<int>();
+        //将所有敌人随机插入到队列中
+        for (int i = 0; i < enemyPointList.Count; i++){
+            MapEnemyPointEnemy point = enemyPointList[i];
+            int enemycount = Random.Range(point.rangeMinCount, point.rangeMaxCount);
+            for (int j = 0; j < enemycount; j ++){
+                if(objidList.Count <= 0){
+                    objidList.Add(point.rangeObjIdList[Random.Range(0, point.rangeObjIdList.Count)]);
+                }else{
+                    objidList.Insert(Random.Range(0, objidList.Count),
+                                 point.rangeObjIdList[Random.Range(0, point.rangeObjIdList.Count)]);
+                }
+
+            }
+        }
+
+        //向周围扩散加入敌人
+        int count = objidList.Count;
         int size = 1;
         Vector2 basepos = GameCommon.GetMapPos(transform.position);
-        while(count > 0){
+        while(count >= 0){
             for (int i = 0; i < size; i++){
                 count--;
+                if (count < 0) break;
                 Vector2 _pos = basepos + new Vector2(i, size - 1);
-                AddObj(rangeObjIdList[Random.Range(0, rangeObjIdList.Count)],GameCommon.GetWorldPos(_pos));
-                if (count <= 0) break;
+                AddObj(objidList[count],GameCommon.GetWorldPos(_pos));
 
                 count--;
+                if (count < 0) break;
                 _pos = basepos + new Vector2(size - 1, i);
-                AddObj(rangeObjIdList[Random.Range(0, rangeObjIdList.Count)], GameCommon.GetWorldPos(_pos));
-                if (count <= 0) break;
+                AddObj(objidList[count], GameCommon.GetWorldPos(_pos));
             }
             size++;
         }
@@ -78,16 +144,16 @@ public class MapEnemyPoint : InGameBaseMapObj {
     {
         writer.WriteSInt32(1);
         writer.WriteSInt32((int)(flushTime * 1000f));
-        writer.WriteSInt32(2);
-        writer.WriteSInt32(rangeMinCount);
-        writer.WriteSInt32(3);
-        writer.WriteSInt32(rangeMaxCount);
 
-        writer.WriteSInt32(4);
-        writer.WriteSInt32(rangeObjIdList.Count);
-        for (int i = 0; i < rangeObjIdList.Count; i++){
-            writer.WriteSInt32(rangeObjIdList[i]);
+        writer.WriteSInt32(2);
+        int count = enemyPointList.Count;
+        writer.WriteSInt32(enemyPointList.Count);
+
+        for (int i = 0; i < count; i ++){
+            MapEnemyPointEnemy point = enemyPointList[i];
+            point.Serialize(writer);
         }
+
         writer.WriteSInt32(-1);
     }
 
@@ -99,14 +165,16 @@ public class MapEnemyPoint : InGameBaseMapObj {
         while(dataid != -1){
             switch(dataid){
                 case 1: flushTime = (float)reader.ReadSInt32() / 1000f; break;
-                case 2: rangeMinCount = reader.ReadSInt32(); break;
-                case 3: rangeMaxCount = reader.ReadSInt32();break;
-                case 4:
-                    int idcount = reader.ReadSInt32();
-                    for (int i = 0; i < idcount; i ++){
-                        rangeObjIdList.Add(reader.ReadSInt32());
+                case 2: 
+                    int count = reader.ReadSInt32();
+                    for (int i = 0; i < count; i++)
+                    {
+                        MapEnemyPointEnemy point = new MapEnemyPointEnemy();
+                        point.Deserialize(reader);
+                        enemyPointList.Add(point);
                     }
                     break;
+                    
             }
             dataid = reader.ReadSInt32();
         }

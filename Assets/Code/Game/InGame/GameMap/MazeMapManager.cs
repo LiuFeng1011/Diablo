@@ -152,6 +152,7 @@ public class MazeMapManager : BaseGameMapManager {
     protected  GameObject GetPoolObj(MapObjConf conf){
         GameObject obj = null;
         if (!objPool.ContainsKey(conf.id) || objPool[conf.id].Count <= 0){
+            Debug.Log(conf.path);
             GameObject column = (GameObject)Resources.Load(conf.path);
             obj = MonoBehaviour.Instantiate(column);
             obj.transform.parent = mapObj.transform;

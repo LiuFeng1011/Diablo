@@ -267,25 +267,28 @@ public class MazeMapManager : BaseGameMapManager {
 
                     case 7: goname = datastream.ReadString16(); break;
                     case 6:
-                        if (confid == 4000001)
-                        {
+                        if(objconf.isstatic == 1){
                             GameObject column = (GameObject)Resources.Load(objconf.path);
                             column = MonoBehaviour.Instantiate(column);
                             column.transform.parent = mapObj.transform;
                             column.transform.position = GameCommon.GetWorldPos(pos) + new Vector2(objx, objy);
-                            MapEnemyPoint point = column.GetComponent<MapEnemyPoint>();
+                            InGameBaseObj point = column.GetComponent<InGameBaseObj>();
                             point.Deserialize(datastream);
+                            GameCommon.SetObjZIndex(column,objconf.depth);
                         }
+
                         break;
                 }
                 dataid = datastream.ReadByte();
             }
 
-            if (confid == 4000001 || confid == 4000003){
+            if (confid == 4000002)
+            {
+                startPointList.Add(pos + GameCommon.GetMapPos(new Vector2(objx, objy)));
                 continue;
-            }else if(confid == 4000002){
-                Vector3 _pos = pos + GameCommon.GetMapPos(new Vector2(objx, objy));
-                startPointList.Add(_pos);
+            }
+            if (objconf.isstatic == 1){
+                SetWayProperty(pos + GameCommon.GetMapPos(new Vector2(objx, objy)), objconf);
                 continue;
             }
 
@@ -304,6 +307,11 @@ public class MazeMapManager : BaseGameMapManager {
 
         map[x, y].AddObj(new MapPointObj(objconf, null, pos ));
 
+        SetWayProperty(pos,objconf);
+    }
+
+    protected void SetWayProperty(Vector2 pos, MapObjConf objconf){
+        int x = (int)pos.x, y = (int)pos.y;
         MazeCreate.PointType type;
         int arrval = 0;
         if (objconf.depth >= 3)
@@ -325,7 +333,7 @@ public class MazeMapManager : BaseGameMapManager {
                 int _y = y + j;
                 if (map[_x, _y] == null)
                 {
-                    map[_x, _y] = new InGameMapPointData(MazeCreate.PointType.wall, new Vector2(_x,_y));
+                    map[_x, _y] = new InGameMapPointData(MazeCreate.PointType.wall, new Vector2(_x, _y));
                 }
                 if (map[_x, _y].type == MazeCreate.PointType.wallfull) continue;
                 map[_x, _y].type = type;

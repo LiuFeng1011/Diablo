@@ -527,6 +527,9 @@ public class InGameBaseCharacter : InGameBaseObj
         //    ret += ((InGameBaseCharacter)target).boxSize.x;
         //    ret += this.conf.atkdis;
         //}
+        if(target.camp == enMSCamp.en_camp_item){
+            return 1;
+        }
         float ret = this.conf.atkdis + 1;
 
         return ret;

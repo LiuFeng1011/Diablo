@@ -195,7 +195,7 @@ public class MELoadLevelData : EditorWindow {
             }
 
             go.transform.position = new Vector3(x,y);
-            GameCommon.SetObjZIndex(go, 1);
+            GameCommon.SetObjZIndex(go, conf.depth);
 		}
 	}
 

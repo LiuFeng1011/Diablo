@@ -177,14 +177,15 @@ public class BaseActionManager : BaseGameObject {
             if (target.GetObjType() == InGameBaseObj.enObjType.equip)
             {
                 InGameBaseEquip equip = (InGameBaseEquip)target;
-
-                parent.StopAction();
-
                 EquipData e = EquipSystem.GetInstance().RandEquipProperty(equip);
                 InGameManager.GetInstance().inGamePlayerManager.AddEquip(e);
-
                 MonoBehaviour.Destroy(equip.gameObject);
+            }else if(target.GetObjType() == InGameBaseObj.enObjType.map){
+                InGameBaseMapObj mapobj = (InGameBaseMapObj)target;
+                mapobj.HandleFuntion(parent);
             }
+            parent.StopAction();
+
             return;
         }
 

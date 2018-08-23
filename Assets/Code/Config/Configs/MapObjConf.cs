@@ -12,6 +12,7 @@ public class MapObjConf
     public string path;
     public int size;
     public int depth;
+    public int isstatic;
 }
 public class MapObjConfManager {
 

@@ -12,7 +12,7 @@ public class InGameLevelManager : InGameBaseManager {
         gameModel = BaseGameModelManager.GetGameMode(BaseGameModelManager.GameLevelModel.level);
         gameModel.Init();
 
-        gameMap = MazeMapManager.CreateMapManager(MazeMapManager.MapType.en_type_fixeditormap,5002002,100,100);
+        gameMap = MazeMapManager.CreateMapManager(MazeMapManager.MapType.en_type_fixeditormap,5002003,100,100);
     }
 
     public override void Update()

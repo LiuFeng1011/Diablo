@@ -10,4 +10,7 @@ public class InGameBaseMapObj : InGameBaseObj {
 
     }
 
+    public virtual void HandleFuntion(InGameBaseObj obj){
+        
+    }
 }

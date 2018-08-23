@@ -38,7 +38,7 @@ public class ChangeLifeLabel : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         
-        actionPos = new Vector3(-0.2f + Random.Range(0f,0.4f), -0.2f + Random.Range(0f, 0.4f), 0);
+        actionPos = new Vector3(-0.2f + Random.Range(0f,0.4f), 0.2f + Random.Range(0f, 0.4f), 0);
 
         baseScale = transform.localScale.x;
 

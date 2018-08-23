@@ -550,7 +550,7 @@ public class InGameBaseCharacter : InGameBaseObj
 
                 float dis = Vector3.Distance(target.transform.position, this.transform.position);
 
-                if(dis < 5){
+                if(dis < 2){
                     this.StartAtk((InGameBaseCharacter)resp.sUserData[0]);
                 }
 

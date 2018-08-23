@@ -299,7 +299,6 @@ public class MazeMapManager : BaseGameMapManager {
     protected void SetGroupPoint(Vector2 pos, MapObjConf objconf)
     {
         int x = (int)pos.x, y = (int)pos.y;
-        Debug.Log("x : " + x + " y : " + y);
         if (map[x, y] == null)
         {
             map[x, y] = new InGameMapPointData(MazeCreate.PointType.wall, pos);

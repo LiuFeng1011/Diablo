@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class InitializeOnLoad : MonoBehaviour {
 
-    static string[] jumpSceneList = { "Logo","Menu","Game"};
+    static string[] jumpSceneList = { "Logo","Menu","Game","MapEditor"};
 
 	[RuntimeInitializeOnLoadMethod]
 	static void Initialize()

@@ -49,5 +49,15 @@ public class MapObjConfManager {
         }
     }
 
+    public MapObjConf GetConfByPrefabName(string prefabName){
+        for (int i = 0; i < datas.Count; i ++){
+            string[] names = datas[i].path.Split('/');
+            if (prefabName == names[names.Length-1]) {
+                return datas[i];
+            }
+        }
+        return null;
+    }
+
 
 }

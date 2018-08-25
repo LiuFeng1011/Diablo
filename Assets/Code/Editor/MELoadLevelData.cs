@@ -53,7 +53,7 @@ public class MELoadLevelData : EditorWindow {
                 lo.mapHeight = 100;
 
 				isfind = true;
-			}else if(sceneObject.name != "Main Camera"){
+            }else if(sceneObject.name != "Main Camera" && sceneObject.name != "Directional Light"){
 				delarr.Add(sceneObject);
 
 			}

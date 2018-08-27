@@ -23,6 +23,8 @@ public class MapObjConfManager {
 
     public Dictionary<int, MapObjConf> map = new Dictionary<int, MapObjConf>();
 
+    public Dictionary<string, MapObjConf> prefabNameMap = new Dictionary<string, MapObjConf>();
+
     public void Load()
     {
         if (datas != null) datas.Clear();
@@ -31,6 +33,7 @@ public class MapObjConfManager {
 
         groupMap.Clear();
         map.Clear();
+        prefabNameMap.Clear();
 
         for (int i = 0; i < datas.Count; i++)
         {
@@ -46,17 +49,21 @@ public class MapObjConfManager {
                 groupMap[obj.group].Add(obj.size, new List<MapObjConf>());
             }
             groupMap[obj.group][obj.size].Add(obj);
+
+            string[] names = obj.path.Split('/');
+            string _n = names[names.Length - 1];
+            if(!prefabNameMap.ContainsKey(_n)){
+                prefabNameMap.Add(_n, obj);
+            }else{
+                Debug.Log(_n);
+            }
+
+
         }
     }
 
     public MapObjConf GetConfByPrefabName(string prefabName){
-        for (int i = 0; i < datas.Count; i ++){
-            string[] names = datas[i].path.Split('/');
-            if (prefabName == names[names.Length-1]) {
-                return datas[i];
-            }
-        }
-        return null;
+        return prefabNameMap[prefabName];
     }
 
 

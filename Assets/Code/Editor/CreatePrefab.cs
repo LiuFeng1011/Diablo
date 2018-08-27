@@ -78,8 +78,8 @@ public class CreatePrefab : MonoBehaviour {
             spriteObj.transform.parent = prefabObj.transform;
             sr.sprite = sprite;
 
-            spriteObj.transform.localScale = new Vector3(2.2f, 2.2f, 1f);
-            spriteObj.transform.localPosition = new Vector3(0f, -0.07f, 0f);
+            spriteObj.transform.localScale = new Vector3(1f, 1f, 1f);
+            spriteObj.transform.localPosition = new Vector3(0f, -0.613f, 0f);
 
             spriteObj.GetComponent<Renderer>().material = mat;
             //创建预制体

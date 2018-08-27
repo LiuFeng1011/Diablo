@@ -107,7 +107,7 @@ public class MapType1 : MazeMapManager {
             }
         }
 
-        StaticBatchingUtility.Combine(mapObj);
+        //StaticBatchingUtility.Combine(mapObj);
 
     }
 }

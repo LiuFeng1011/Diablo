@@ -41,8 +41,8 @@ public class MazeMapManager : BaseGameMapManager {
     public int row = 100, col = 100;
     public int UPDATE_MAP_SIZE = 30;
     public MazeCreate mazeCreate;
-    public int Accumulation = 95;//障碍堆积系数
-    public int Erosion = 50;//障碍侵蚀系数
+    public int Accumulation = 99;//障碍堆积系数
+    public int Erosion = 10;//障碍侵蚀系数
 
     public int mapGroup = 1;
 

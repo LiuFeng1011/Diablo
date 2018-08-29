@@ -24,9 +24,9 @@ public class ObjMoveManager : BaseActionManager {
         }
     }
 
-    public override void StartAction(InGameBaseObj target, Vector3 targetPos)
+    public override void StartAction(InGameBaseObj target, Vector3 targetPos,int dis)
     { 
-        base.StartAction(target,targetPos);
+        base.StartAction(target,targetPos,dis);
     }
 
 

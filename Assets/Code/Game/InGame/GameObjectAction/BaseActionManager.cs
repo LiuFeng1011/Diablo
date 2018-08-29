@@ -27,6 +27,8 @@ public class BaseActionManager : BaseGameObject {
 
     float atkTime = 0;
 
+    int astarDis = 0;
+
     public virtual void Init(InGameBaseCharacter parent, Vector3 targetPos)
     { 
         this.parent = parent;
@@ -83,13 +85,14 @@ public class BaseActionManager : BaseGameObject {
     }
 
 
-    public virtual void StartAction(InGameBaseObj target,Vector3 targetPos){
-
+    public virtual void StartAction(InGameBaseObj target,Vector3 targetPos,int dis){
+        astarDis = dis;
         MazeMapManager gameMap = InGameManager.GetInstance().inGameLevelManager.gameMap;
         List<Vector2> _path = astar.StratAStar(
             gameMap.astarArray,
             GameCommon.GetMapPos(parent.transform.position) ,
-            GameCommon.GetMapPos(targetPos));
+            GameCommon.GetMapPos(targetPos),
+        dis);
         
         if (_path.Count <= 0)
         {
@@ -122,7 +125,7 @@ public class BaseActionManager : BaseGameObject {
 
             if (Vector2.Distance(parent.transform.position, target.transform.position) > parent.GetAtkDis(target))
             {
-                StartAction( target,  target.transform.position);
+                StartAction( target,  target.transform.position,astarDis);
                 MoveAction();
             }
             else

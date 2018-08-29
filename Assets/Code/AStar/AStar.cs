@@ -108,7 +108,8 @@ public class AStar
     /// <param name="map">地图数据 二维数组，0为可移动路径，1为不可移动路径.</param>
     /// <param name="startPosition">开始位置.</param>
     /// <param name="endPosition">结束位置.</param>
-    public List<Vector2> StratAStar(int[,] map,Vector2 startPosition,Vector2 endPosition){
+    public List<Vector2> StratAStar(int[,] map,Vector2 startPosition,Vector2 endPosition,int dis){
+        
         openList.Clear();
         mapList = new MapNode[map.GetLength(0),map.GetLength(1)];
 
@@ -129,7 +130,8 @@ public class AStar
             //取出开启列表中f值最低的节点，由于我们在向开启列表中添加节点时已经进行了排序，所以这里直接取第0个值即可
             MapNode node = openList[0];
             //如果node为目标点则结束寻找
-            if(Mathf.Abs(node.p.x - endPosition.x) < 1f && Mathf.Abs(node.p.y - endPosition.y) < 1f){
+            float _dis = Mathf.Abs(node.p.x - endPosition.x) + Mathf.Abs(node.p.y - endPosition.y);
+            if(_dis <= dis){
                 endNode = node;
                 break;
             }
@@ -198,7 +200,7 @@ public class AStar
             ret.Insert(0,endNode.p);
             endNode = endNode.parent;
         }
-
+        ret.Add(endPosition);
         return ret;
     }
 }

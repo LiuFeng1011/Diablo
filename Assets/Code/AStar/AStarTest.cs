@@ -45,7 +45,7 @@ public class AStarTest : MonoBehaviour
         CreateObj("AStarEndPoint", endPosition);
 
         AStar astar = new AStar();
-        List<Vector2> path = astar.StratAStar(map,startPosition,endPosition);
+        List<Vector2> path = astar.StratAStar(map,startPosition,endPosition,0);
 
         Debug.Log(path);
 

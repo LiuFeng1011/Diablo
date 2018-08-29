@@ -21,7 +21,8 @@ public class EquipSystem : BaseGameObject {
 
         GameObject equipobj = (GameObject)Resources.Load(equipConf.prefabpath + equipConf.prefabname);
         equipobj = MonoBehaviour.Instantiate(equipobj);
-        equipobj.transform.position = go.transform.position;
+        equipobj.transform.position = GameCommon.GetWorldPos(GameCommon.GetMapPos(go.transform.position));
+        GameCommon.SetObjZIndex(equipobj,3);
 
         InGameBaseEquip equip = equipobj.GetComponent<InGameBaseEquip>();
         equip.Init(-1,equipConf.id,enMSCamp.en_camp_item);

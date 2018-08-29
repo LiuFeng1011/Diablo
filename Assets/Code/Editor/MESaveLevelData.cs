@@ -64,6 +64,14 @@ public class MESaveLevelData : Editor
             stream.WriteByte(7);
             stream.WriteString16(msobj.gameObject.name);
 
+            int sx = (int)(msobj.transform.localScale.x * 1000f);
+            int sy = (int)(msobj.transform.localScale.y * 1000f);
+
+            stream.WriteByte(8);
+            stream.WriteSInt32(sx);
+            stream.WriteByte(9);
+            stream.WriteSInt32(sy);
+
             stream.WriteByte(6);
             msobj.Serialize(stream);
             stream.WriteByte(0);

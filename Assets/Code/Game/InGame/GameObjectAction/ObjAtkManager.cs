@@ -56,14 +56,14 @@ public class ObjAtkManager : BaseActionManager {
         }
     }
 
-    public override void StartAction(InGameBaseObj target, Vector3 targetPos)
+    public override void StartAction(InGameBaseObj target, Vector3 targetPos,int dis)
     {
         if (state == AtkState.atkbegin || state == AtkState.atkend)
         {
             return;
         }
 
-        base.StartAction(target, targetPos);
+        base.StartAction(target, targetPos,dis);
 
         atkTime = 0;
 

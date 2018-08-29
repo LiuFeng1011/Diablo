@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class MapPointObj{
     public Vector2 pos;
+    public Vector3 scale;
     public MapObjConf conf;
     public GameObject obj;
-    public MapPointObj(MapObjConf conf,GameObject obj, Vector2 pos){
+    public MapPointObj(MapObjConf conf,GameObject obj, Vector2 pos,Vector3 scale){
         this.conf = conf;
         this.obj = obj;
         this.pos = pos;
+        this.scale = scale;
     }
 
 }
@@ -126,10 +128,13 @@ public class MazeMapManager : BaseGameMapManager {
                 }
                 for (int i = 0; i < data.objList.Count; i ++){
                     if(data.objList[i].obj == null){
-                        GameObject obj = GetPoolObj(data.objList[i].conf);
-                        obj.transform.position = GameCommon.GetWorldPos(data.objList[i].pos);
-                        GameCommon.SetObjZIndex(obj, data.objList[i].conf.depth);
-                        data.objList[i].obj = obj;
+                        MapPointObj mapPointObj = data.objList[i];
+                        GameObject obj = GetPoolObj(mapPointObj.conf);
+                        obj.transform.position = GameCommon.GetWorldPos(mapPointObj.pos);
+
+                        obj.transform.localScale = mapPointObj.scale;
+                        GameCommon.SetObjZIndex(obj, mapPointObj.conf.depth);
+                        mapPointObj.obj = obj;
                     }
                 }
                 lastScreenObj.Add(data);
@@ -152,7 +157,6 @@ public class MazeMapManager : BaseGameMapManager {
     protected  GameObject GetPoolObj(MapObjConf conf){
         GameObject obj = null;
         if (!objPool.ContainsKey(conf.id) || objPool[conf.id].Count <= 0){
-            Debug.Log(conf.path);
             GameObject column = (GameObject)Resources.Load(conf.path);
             obj = MonoBehaviour.Instantiate(column);
             obj.transform.parent = mapObj.transform;
@@ -238,14 +242,16 @@ public class MazeMapManager : BaseGameMapManager {
         int objcount = datastream.ReadSInt32();
         for (int i = 0; i < objcount; i++)
         {
+            Debug.Log("====== ");
             //MSBaseObject.CreateObj(datastream);
             //从字节流中获取id
             //int confid = datastream.ReadSInt32();
             //float objx = datastream.ReadSInt32() / 1000f;
             //float objy = datastream.ReadSInt32() / 1000f;
             int confid = 0;
-            float objx = 0, objy = 0;
+            float objx = 0, objy = 0,objsx = 0, objsy = 0;
             MapObjConf objconf = null;
+            GameObject column = null;
             int dataid = datastream.ReadByte();
             string goname = "";
             while (dataid != 0)
@@ -264,11 +270,17 @@ public class MazeMapManager : BaseGameMapManager {
                     case 5:
                         int instanceid = datastream.ReadSInt32();
                         break;
-
                     case 7: goname = datastream.ReadString16(); break;
+                    case 8: 
+                        objsx = datastream.ReadSInt32() / 1000f;
+                        Debug.Log("objsx : " + objsx);
+                        break;
+                    case 9: 
+                        objsy = datastream.ReadSInt32() / 1000f; 
+                        break;
                     case 6:
                         if(objconf.isstatic == 1){
-                            GameObject column = (GameObject)Resources.Load(objconf.path);
+                            column = (GameObject)Resources.Load(objconf.path);
                             column = MonoBehaviour.Instantiate(column);
                             column.transform.parent = mapObj.transform;
                             column.transform.position = GameCommon.GetWorldPos(pos) + new Vector2(objx, objy);
@@ -289,14 +301,15 @@ public class MazeMapManager : BaseGameMapManager {
             }
             if (objconf.isstatic == 1){
                 SetWayProperty(pos + GameCommon.GetMapPos(new Vector2(objx, objy)), objconf);
+                column.transform.localScale = new Vector3(objsx, objsy, 1);
                 continue;
             }
 
-            SetGroupPoint(pos + GameCommon.GetMapPos(new Vector2(objx, objy)), objconf);
+            SetGroupPoint(pos + GameCommon.GetMapPos(new Vector2(objx, objy)), objconf,new Vector3(objsx, objsy,1));
         }
     }
 
-    protected void SetGroupPoint(Vector2 pos, MapObjConf objconf)
+    protected void SetGroupPoint(Vector2 pos, MapObjConf objConf,Vector3 scale)
     {
         int x = (int)pos.x, y = (int)pos.y;
         if (map[x, y] == null)
@@ -304,9 +317,9 @@ public class MazeMapManager : BaseGameMapManager {
             map[x, y] = new InGameMapPointData(MazeCreate.PointType.wall, pos);
         }
 
-        map[x, y].AddObj(new MapPointObj(objconf, null, pos ));
+        map[x, y].AddObj(new MapPointObj(objConf, null, pos ,scale));
 
-        SetWayProperty(pos,objconf);
+        SetWayProperty(pos,objConf);
     }
 
     protected void SetWayProperty(Vector2 pos, MapObjConf objconf){
@@ -432,7 +445,7 @@ public class MazeMapManager : BaseGameMapManager {
 
         //column.transform.parent = mapObj.transform;
 
-        map[(int)v.x, (int)v.y].AddObj(new MapPointObj(conf, null,v));
+        map[(int)v.x, (int)v.y].AddObj(new MapPointObj(conf, null,v,new Vector3(1,1,1)));
     }
 
     public void LogMap()

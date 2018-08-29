@@ -155,7 +155,7 @@ public class MELoadLevelData : EditorWindow {
             //从字节流中获取id
 
             int confid = 0;
-            float x = 0, y = 0;
+            float x = 0, y = 0 ,sx = 1,sy = 1;
 
             MapObjConf conf = null;
             GameObject go = null,tempObj;
@@ -189,12 +189,15 @@ public class MELoadLevelData : EditorWindow {
                         dic.Add(instanceid, baseObj);
                         break;
                     case 7: go.name = datastream.ReadString16(); break;
+                    case 8: sx = datastream.ReadSInt32() / 1000f; break;
+                    case 9: sy = datastream.ReadSInt32() / 1000f; break;
                     case 6: baseObj.Deserialize(datastream); break;
                 }
                 dataid = datastream.ReadByte();
             }
 
             go.transform.position = new Vector3(x,y);
+            go.transform.localScale = new Vector3(sx, sy, 1);
             GameCommon.SetObjZIndex(go, conf.depth);
 		}
 	}

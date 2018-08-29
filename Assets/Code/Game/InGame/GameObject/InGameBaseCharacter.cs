@@ -371,13 +371,13 @@ public class InGameBaseCharacter : InGameBaseObj
 
     public virtual void StartRun(Vector3 targetPos)
     {
-        actionManager.StartAction(null, targetPos);
+        actionManager.StartAction(null, targetPos,0);
     }
 
 
     public void StartAtk(InGameBaseObj target)
     {
-        actionManager.StartAction(target, target.transform.position);
+        actionManager.StartAction(target, target.transform.position,1);
         //agent.SetDestination(transform.position);
     }
 
@@ -528,9 +528,9 @@ public class InGameBaseCharacter : InGameBaseObj
         //    ret += this.conf.atkdis;
         //}
         if(target.camp == enMSCamp.en_camp_item){
-            return 1;
+            return 1.3f;
         }
-        float ret = this.conf.atkdis + 1;
+        float ret = this.conf.atkdis + 1.3f;
 
         return ret;
     }

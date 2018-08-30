@@ -83,7 +83,9 @@ public class MapEditor : MonoBehaviour {
         Camera cam = sceneView.camera;
         Vector3 mousepos = Event.current.mousePosition;
         mousepos.z = 0;
-        mousepos.y = cam.pixelHeight - mousepos.y;
+        mousepos.x *= 2;
+        mousepos.y = (cam.pixelHeight - mousepos.y * 2);
+
         mousepos = sceneView.camera.ScreenToWorldPoint(mousepos);
         return mousepos;
     }

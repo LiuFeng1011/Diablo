@@ -242,7 +242,6 @@ public class MazeMapManager : BaseGameMapManager {
         int objcount = datastream.ReadSInt32();
         for (int i = 0; i < objcount; i++)
         {
-            Debug.Log("====== ");
             //MSBaseObject.CreateObj(datastream);
             //从字节流中获取id
             //int confid = datastream.ReadSInt32();
@@ -273,7 +272,6 @@ public class MazeMapManager : BaseGameMapManager {
                     case 7: goname = datastream.ReadString16(); break;
                     case 8: 
                         objsx = datastream.ReadSInt32() / 1000f;
-                        Debug.Log("objsx : " + objsx);
                         break;
                     case 9: 
                         objsy = datastream.ReadSInt32() / 1000f; 

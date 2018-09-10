@@ -101,10 +101,6 @@ public class BaseActionManager : BaseGameObject {
         }
         _path.Insert(0, startPos);
 
-        for (int i = 0; i < _path.Count ; i++){
-
-            Debug.Log("i : " + i + " : "+ _path[i]);
-        }
         //将两个对角路径之间的路径删除,避免走Z形路线
         List<int> dellist = new List<int>();
         if(_path.Count >= 3){
@@ -112,25 +108,19 @@ public class BaseActionManager : BaseGameObject {
             {
                 Vector2 start = _path[i];
                 Vector2 end = _path[i+2];
-                Debug.Log(start);
-                Debug.Log(end);
-                Debug.Log("x : " + Mathf.Abs((int)start.x - (int)end.x));
-                Debug.Log("y : " + Mathf.Abs((int)start.y - (int)end.y));
-
                 if(Mathf.Abs((int)start.x - (int)end.x ) == 1 && Mathf.Abs((int)start.y - (int)end.y) == 1){
                     dellist.Add(i+1);
                     i += 1;
                 }
             }
         }
-        Debug.Log(LitJson.JsonMapper.ToJson(dellist));
-        Debug.Log(_path.Count);
+
         for (int i = dellist.Count - 1; i >= 0; i -- ){
-            Debug.Log(dellist[i]);
-            Debug.Log("data : " + _path[dellist[i]]);
             _path.RemoveAt(dellist[i]);
 
         }
+
+        _path.RemoveAt(0);
 
         path = _path;
 

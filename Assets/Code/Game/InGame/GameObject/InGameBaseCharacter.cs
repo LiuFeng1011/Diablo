@@ -398,11 +398,12 @@ public class InGameBaseCharacter : InGameBaseObj
         {
             if(killMe.GetObjType() == enObjType.character){
                 InGameBaseCharacter source = (InGameBaseCharacter)killMe;
-                EquipSystem.GetInstance().OutEquip(gameObject, level,
-                                                   source.propertys.GetProperty(enCharacterProperty.equipdrop) + 
+                if(UnityEngine.Random.Range(0,100)< conf.outodds){
+                    EquipSystem.GetInstance().OutEquip(gameObject, level,
+                                                   source.propertys.GetProperty(enCharacterProperty.equipdrop) +
                                                    this.conf.equipdrop);
+                }
             }
-
         }
 
         transform.GetComponent<BoxCollider>().enabled = false;

@@ -48,7 +48,6 @@ public class Skill300002 : BaseSkill {
             if(HitGameObj(list[i])){
                 return false;
             }
-
         }
 
         //地图碰撞

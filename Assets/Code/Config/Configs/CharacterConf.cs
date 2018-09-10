@@ -39,6 +39,7 @@ public class CharacterConf
     public float steallife;   /*  偷取生命    */
     public float golddrop;    /*  金币掉率加成  */
     public float equipdrop;   /*  魔法物品掉率  */
+    public float outodds;   /*  爆率  */
 
 
     public float[] propertyValues ;

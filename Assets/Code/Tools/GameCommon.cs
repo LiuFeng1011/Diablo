@@ -17,6 +17,8 @@ using System.Reflection;
 public class GameCommon  {
 	public static float GAME_DATA_VERSION = 0.0f;
 
+    public static bool GAME_INIT = false;
+
 	//base64字符串解码
 	public static string UnBase64String(string value){
 		if(value == null || value == ""){
@@ -277,6 +279,25 @@ public class GameCommon  {
         }
         return angle;
     }
+
+    /// <summary>
+    /// hex转换到color
+    /// </summary>
+    /// <param name="hex"></param>
+    /// <returns></returns>
+    public static Color HexToColor(string hex)
+    {
+        byte br = byte.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
+        byte bg = byte.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
+        byte bb = byte.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+        byte cc = byte.Parse(hex.Substring(6, 2), System.Globalization.NumberStyles.HexNumber);
+        float r = br / 255f;
+        float g = bg / 255f;
+        float b = bb / 255f;
+        float a = cc / 255f;
+        return new Color(r, g, b, a);
+    }
+
 }
 
 public class GameItem{
@@ -289,6 +310,8 @@ public class GameItem{
 /// 测试类
 /// </summary>
 public class GameCommonTest{
+
+
 	
 	public static void Base64Test(){
 		string base64string = GameCommon.ToBase64String("aaaa11233Base64编码和解码");

@@ -10,6 +10,8 @@ public class GameGate : BaseUnityObject {
     void Start () {
         Debuger.EnableLog = true;
 
+        GameCommon.GAME_INIT = true;
+
         gameHeart = new GameObject("GameHeart");
         gameHeart.AddComponent<DontDestroyObj>();
 

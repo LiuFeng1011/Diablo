@@ -31,6 +31,7 @@ public class PackageEquipInfo : BaseUnityObject {
 
         iconSprite.spriteName = conf.prefabname;
         equipNameLabel.text = conf.name;
+        equipNameLabel.color = ConfigManager.equipQualityManager.colordic[data.qualityID];
 
         string propertyText = "";
         for (int i = 0; i < data.propertyList.Count; i++)

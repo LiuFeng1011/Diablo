@@ -17,6 +17,7 @@ public class EquipQualityManager
 {
     public List<EquipQuality> datas { get; private set; }
     public Dictionary<int, EquipQuality> dic = new Dictionary<int, EquipQuality>();
+    public Dictionary<int, Color> colordic = new Dictionary<int, Color>();
 
     public float allOdds = 0;
 
@@ -31,6 +32,8 @@ public class EquipQualityManager
         for (int i = 0; i < datas.Count; i++)
         {
             EquipQuality obj = datas[i];
+
+            colordic.Add(obj.id,GameCommon.HexToColor(obj.color));
             dic.Add(obj.id, obj);
 
             allOdds += obj.odds;

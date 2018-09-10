@@ -11,7 +11,7 @@ public class InGameUIManager : InGameBaseManager {
 
     public override void Init()
     {
-
+        if (!GameCommon.GAME_INIT) return;
         base.Init();
 
         EventManager.instance().RegisterObj(this,EventID.EVENT_UI_OPENPACKAGE);

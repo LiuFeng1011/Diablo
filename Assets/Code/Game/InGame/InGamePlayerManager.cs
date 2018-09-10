@@ -114,7 +114,6 @@ public class InGamePlayerManager : InGameBaseManager {
                 break;
             case EventID.EVENT_UI_DELEQUIP:
                 int delinstanceid = int.Parse(resp.sUserData[0].ToString());
-                Debug.Log("delinstanceid : " + delinstanceid);
                 UserDataManager.instance.DelEquip(delinstanceid);
                 EventData.CreateEvent(EventID.EVENT_UI_REFRESH_PACKAGEUI).Send();
                 break;

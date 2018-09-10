@@ -31,6 +31,7 @@ public class InGameManager : BaseUnityObject {
 
     private void Awake()
     {
+        if (!GameCommon.GAME_INIT) return;
         instance = this;
         gamecamera = Camera.main;
         gameState = enGameState.ready;

@@ -15,9 +15,7 @@ public class EquipSystem : BaseGameObject {
 
     public InGameBaseEquip OutEquip(GameObject go,int level,float fm){
 
-        List<EquipConf> datas = ConfigManager.equipConfManager.datas;
-
-        EquipConf equipConf = datas [Random.Range(0, datas.Count)];
+        EquipConf equipConf = ConfigManager.equipConfManager.GetRandomEquip();
 
         GameObject equipobj = (GameObject)Resources.Load(equipConf.prefabpath + equipConf.prefabname);
         equipobj = MonoBehaviour.Instantiate(equipobj);
@@ -35,13 +33,25 @@ public class EquipSystem : BaseGameObject {
     public EquipData RandEquipProperty(InGameBaseEquip equip){
         
         EquipConf equipConf = ConfigManager.equipConfManager.dic[equip.confid];
+        EquipConfData propertyData = ConfigManager.equipConfManager.datadic[equip.confid];
 
         List<PropertyConf> propertys = ConfigManager.propertyConfManager.datas;
         List<EquipProperty> propertyList = new List<EquipProperty>();
 
         EquipQuality quality = equip.quality;
 
-        for (int i = 0; i < quality.propertycount; i++)
+        for (int i = 0; i < propertyData.propertyList.Count;  i++ ){
+            PropertyConf propertyConf = ConfigManager.propertyConfManager.dataMap[propertyData.propertyList[i].id];
+
+            EquipProperty e = new EquipProperty();
+            e.id = propertyConf.id;
+            float val = propertyConf.baseval + propertyConf.levelval * equip.level;
+            e.val = Mathf.Ceil(val + Random.Range(-val * propertyConf.randomrange, val * propertyConf.randomrange));
+            e.val = e.val * (propertyData.propertyList[i].rate / 100f);
+            propertyList.Add(e);
+        }
+
+        for (int i = propertyData.propertyList.Count; i < quality.propertycount; i++)
         {
             PropertyConf propertyConf = propertys[Random.Range(0, propertys.Count)];
             EquipProperty e = new EquipProperty();
@@ -53,7 +63,7 @@ public class EquipSystem : BaseGameObject {
 
         EquipData equipData = new EquipData(
             UserDataManager.instance.GetInstanceID(),
-            quality.id,
+            ConfigManager.equipQualityManager.GetByPropertyCount(propertyList.Count).id,
             equipConf.id,
             -1,
             propertyList);

@@ -40,6 +40,17 @@ public class EquipQualityManager
         }
     }
 
+    public EquipQuality GetByPropertyCount(int count){
+        for (int i = 0; i < datas.Count; i++)
+        {
+            if (datas[i].propertycount >= count)
+            {
+                return datas[i];
+            }
+        }
+        return datas[datas.Count - 1];
+    }
+
     public EquipQuality GetEquipQuality(float fm){
         float _allodds = allOdds + fm * datas.Count;
         float randodds = UnityEngine.Random.Range(0, _allodds);

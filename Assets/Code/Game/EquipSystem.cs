@@ -20,13 +20,15 @@ public class EquipSystem : BaseGameObject {
         GameObject equipobj = (GameObject)Resources.Load(equipConf.prefabpath + equipConf.prefabname);
         equipobj = MonoBehaviour.Instantiate(equipobj);
         equipobj.transform.position = GameCommon.GetWorldPos(GameCommon.GetMapPos(go.transform.position));
-        GameCommon.SetObjZIndex(equipobj,3);
+        GameCommon.SetObjZIndex(equipobj,3.1f);
 
         InGameBaseEquip equip = equipobj.GetComponent<InGameBaseEquip>();
         equip.Init(-1,equipConf.id,enMSCamp.en_camp_item);
         equip.level = level;
         equip.quality = ConfigManager.equipQualityManager.GetEquipQuality(fm);
 
+        EquipOutAction equipOutAction = equipobj.AddComponent<EquipOutAction>();
+        equipOutAction.Init(equipobj.transform.position);
         return equip;
     }
 

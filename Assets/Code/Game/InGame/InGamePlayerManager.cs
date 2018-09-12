@@ -53,9 +53,9 @@ public class InGamePlayerManager : InGameBaseManager {
     public void AddEquip(int instanceid){
         
         if (instanceid == -1) return;
-        UserDataManager.instance.AddEquip(role.GetData().instanceid, instanceid);
+        bool isequip = UserDataManager.instance.AddEquip(role.GetData().instanceid, instanceid);
         //role.GetData().weaponid = instanceid;
-
+        if (!isequip) return;
         EquipData edata = UserDataManager.instance.GetEquip(instanceid);
         role.AddEquip(edata);
         role.ResetAllProperty();

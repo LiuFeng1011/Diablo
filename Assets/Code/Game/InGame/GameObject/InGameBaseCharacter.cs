@@ -296,7 +296,8 @@ public class InGameBaseCharacter : InGameBaseObj
             {
                 lifeReviveTime -= 1;
                 lifeReviveCount += propertys.GetProperty(enCharacterProperty.liferevive);
-                if(lifeReviveCount > 1){
+
+                if(lifeReviveCount >= 1){
                     int addval = (int)lifeReviveCount;
                     this.ChangeLife(null,addval, false);
                     lifeReviveCount -= addval;
@@ -386,6 +387,7 @@ public class InGameBaseCharacter : InGameBaseObj
         actionManager.StopAction();
     }
 
+    //死亡
     public override void Die()
     {
         actionManager.Destory();
@@ -397,6 +399,7 @@ public class InGameBaseCharacter : InGameBaseObj
         if (camp == enMSCamp.en_camp_enemy)
         {
             if(killMe.GetObjType() == enObjType.character){
+                //爆装备
                 InGameBaseCharacter source = (InGameBaseCharacter)killMe;
                 if(UnityEngine.Random.Range(0,100)< conf.outodds){
                     EquipSystem.GetInstance().OutEquip(gameObject, level,
@@ -416,6 +419,7 @@ public class InGameBaseCharacter : InGameBaseObj
         Destroy(gameObject);
     }
 
+    //生命值变化
     public bool ChangeLife(InGameBaseObj source,int val,bool iscombo){
         if (val == 0) return false;
         life = Mathf.Clamp(life + val,0,propertys.GetProperty(enCharacterProperty.life));

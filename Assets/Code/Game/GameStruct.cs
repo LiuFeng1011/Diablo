@@ -162,7 +162,7 @@ public class RoleData
 
     public string name;
 
-    public AHInt equipCount = 3;
+    public AHInt equipCount = 9;
 
     public List<AHInt> choseEquipList = new List<AHInt>();
 
@@ -176,7 +176,7 @@ public class RoleData
         data.instanceid = UserDataManager.instance.GetInstanceID();
         data.roldid = roleid;
         data.name = name;
-        data.equipCount = 3;
+        data.equipCount = 9;
         return data;
     }
 
@@ -195,6 +195,7 @@ public class RoleData
         }
         return false;
     }
+    //TYPE 位置
     public int GetChooseEquip(int type){
 
         if (choseEquipList.Count <= type) return -1;

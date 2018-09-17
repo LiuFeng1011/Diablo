@@ -44,7 +44,7 @@ public class MazeMapManager : BaseGameMapManager {
     public int UPDATE_MAP_SIZE = 30;
     public MazeCreate mazeCreate;
     public int Accumulation = 99;//障碍堆积系数
-    public int Erosion = 10;//障碍侵蚀系数
+    public int Erosion = 50;//障碍侵蚀系数
 
     public int mapGroup = 1;
 
@@ -58,6 +58,14 @@ public class MazeMapManager : BaseGameMapManager {
 
     protected List<Vector2> startPointList = new List<Vector2>();
 
+    /// <summary>
+    /// Creates the map manager.
+    /// </summary>
+    /// <returns>The map manager.</returns>
+    /// <param name="type">Type.</param>
+    /// <param name="group">Group.fix editor map 时传入关卡id</param>
+    /// <param name="row">Row.</param>
+    /// <param name="col">Col.</param>
     public static MazeMapManager CreateMapManager(MapType type,int group,int row,int col){
         MazeMapManager manager;
         switch(type){
@@ -158,7 +166,13 @@ public class MazeMapManager : BaseGameMapManager {
         GameObject obj = null;
         if (!objPool.ContainsKey(conf.id) || objPool[conf.id].Count <= 0){
             GameObject column = (GameObject)Resources.Load(conf.path);
+            if (column == null)
+            {
+                Debug.LogError(conf.path + "  is null!!!!");
+                return null;
+            }
             obj = MonoBehaviour.Instantiate(column);
+
             obj.transform.parent = mapObj.transform;
         }else {
             obj = objPool[conf.id][objPool[conf.id].Count - 1];
@@ -335,9 +349,9 @@ public class MazeMapManager : BaseGameMapManager {
             arrval = 1;
         }
 
-        for (int i = 0; i < objconf.size; i++)
+        for (int i = 0; i < objconf.sizeX; i++)
         {
-            for (int j = 0; j < objconf.size; j++)
+            for (int j = 0; j < objconf.sizeY; j++)
             {
                 int _x = x + i;
                 int _y = y + j;

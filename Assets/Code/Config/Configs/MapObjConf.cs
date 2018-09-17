@@ -10,7 +10,8 @@ public class MapObjConf
     public string name;
     public int group;
     public string path;
-    public int size;
+    public int sizeX;
+    public int sizeY;
     public int depth;
     public int isstatic;
 }
@@ -18,6 +19,7 @@ public class MapObjConfManager {
 
     public List<MapObjConf> datas { get; private set; }
 
+    //group>size>obj
     public Dictionary<int, Dictionary<int,List<MapObjConf>>> groupMap = 
         new Dictionary<int, Dictionary<int, List<MapObjConf>>>();
 
@@ -45,10 +47,10 @@ public class MapObjConfManager {
                 groupMap.Add(obj.group,new Dictionary<int, List<MapObjConf>>());
             }
 
-            if(!groupMap[obj.group].ContainsKey(obj.size)){
-                groupMap[obj.group].Add(obj.size, new List<MapObjConf>());
+            if(!groupMap[obj.group].ContainsKey(obj.sizeX)){
+                groupMap[obj.group].Add(obj.sizeX, new List<MapObjConf>());
             }
-            groupMap[obj.group][obj.size].Add(obj);
+            groupMap[obj.group][obj.sizeX].Add(obj);
 
             string[] names = obj.path.Split('/');
             string _n = names[names.Length - 1];

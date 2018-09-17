@@ -83,8 +83,9 @@ public class MapEditor : MonoBehaviour {
         Camera cam = sceneView.camera;
         Vector3 mousepos = Event.current.mousePosition;
         mousepos.z = 0;
-        mousepos.x *= 2;
-        mousepos.y = (cam.pixelHeight - mousepos.y * 2);
+        int offset = 1;
+        mousepos.x *= offset;
+        mousepos.y = (cam.pixelHeight - mousepos.y * offset);
 
         mousepos = sceneView.camera.ScreenToWorldPoint(mousepos);
         return mousepos;
@@ -153,7 +154,9 @@ public class MapEditor : MonoBehaviour {
     {
         InGameBaseObj ingameobj = obj.GetComponent<InGameBaseObj>();
         if (ingameobj == null) return;
-
+        if(ingameobj.GetObjType() != InGameBaseObj.enObjType.map){
+            return;
+        }
         Vector2 mappos = GameCommon.GetMapPos(pos);
 
         obj.transform.position = GameCommon.GetWorldPos(mappos);

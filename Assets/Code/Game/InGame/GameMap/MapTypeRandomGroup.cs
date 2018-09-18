@@ -12,9 +12,16 @@ public class MapTypeRandomGroup : MazeMapManager {
     }
     class MapTree
     {
+        public enum MapTreeType{
+            start,
+            end,
+            normal
+        }
         public MapTree parent = null;
         public List<MapTree> children = new List<MapTree>();
         public MapVector2 pos ;
+
+        public MapTreeType treetype = MapTreeType.normal;
 
         public MapTree(MapVector2 pos){
             this.pos = pos;
@@ -55,7 +62,7 @@ public class MapTypeRandomGroup : MazeMapManager {
         MapVector2 startPos = new MapVector2(Random.Range(0,row),Random.Range(0, col));
 
         mapTree = new MapTree(startPos);
-
+        mapTree.treetype = MapTree.MapTreeType.start;
         maparr[startPos.x,startPos.y] = 1;
         this.i_mapBreathCount++;
         RandomMap( this.mapTree);
@@ -98,7 +105,13 @@ public class MapTypeRandomGroup : MazeMapManager {
     }
 
     void GenerateGroup(MapTree tree){
-        string waystring = GetTreeWayString(tree);
+        string waystring = "";
+
+        if(tree.treetype == MapTree.MapTreeType.start){
+            waystring = "-1";
+        }else {
+            waystring = GetTreeWayString(tree);
+        }
 
         Dictionary<string, List<MapGroupConf>> conflist = ConfigManager.mapGroupConfManager.dataWayGroupMap[this.mapGroup];
 
@@ -114,8 +127,11 @@ public class MapTypeRandomGroup : MazeMapManager {
             Debug.Log(" no group : " + waystring);
             return;
         }
+
+        MapGroupConf conf = mapList[Random.Range(0, mapList.Count)];
+        Debug.Log(conf.id + " : " + tree.pos.x + " / " + tree.pos.y);
         InsertGroup(new Vector2(tree.pos.x * GameConst.RANDOM_GROUP_SIZE, tree.pos.y * GameConst.RANDOM_GROUP_SIZE),
-                    mapList[Random.Range(0, mapList.Count)].id);
+                    conf.id);
 
         for (int i = 0; i < tree.children.Count; i++)
         {
@@ -166,6 +182,12 @@ public class MapTypeRandomGroup : MazeMapManager {
 
             maparr[pos.x,pos.y] = this.i_mapBreathCount;
             nearlist.RemoveAt(random);
+
+            if (this.b_ismainbreath && this.i_mapBreathCount > this.i_mapmaindepth)
+            {
+                branch.treetype = MapTree.MapTreeType.end;
+            }
+
             this.RandomMap( branch);
         }
     }

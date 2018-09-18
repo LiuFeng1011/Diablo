@@ -33,15 +33,16 @@ public class InGameMapPointData{
 public class MazeMapManager : BaseGameMapManager {
 
     public enum MapType{
-        en_type_1 = 1,
-        en_type_2 = 2,
+        en_type_1 = 1,//随机迷宫
+        en_type_2 = 2,//
         en_type_editormap = 3,
         en_type_fixeditormap = 4,
+        en_type_randomgroup = 5,
     }
 
     const float mapscale = 1;
     public int row = 100, col = 100;
-    public int UPDATE_MAP_SIZE = 30;
+    public int UPDATE_MAP_SIZE = 200;
     public MazeCreate mazeCreate;
     public int Accumulation = 99;//障碍堆积系数
     public int Erosion = 50;//障碍侵蚀系数
@@ -77,6 +78,9 @@ public class MazeMapManager : BaseGameMapManager {
                 break;
             case MapType.en_type_fixeditormap :
                 manager = new FixEditorMap();
+                break;
+            case MapType.en_type_randomgroup:
+                manager = new MapTypeRandomGroup();
                 break;
             default:
                 manager = new MapType1();
@@ -254,6 +258,7 @@ public class MazeMapManager : BaseGameMapManager {
 
         //生成物体
         int objcount = datastream.ReadSInt32();
+
         for (int i = 0; i < objcount; i++)
         {
             //MSBaseObject.CreateObj(datastream);

@@ -70,6 +70,8 @@ public struct GameModel{
 }
 //0.12 * life + 0.75 * atk * speed 战力
 public static class GameConst  {
+
+    public const int RANDOM_GROUP_SIZE = 20;
 	
 	public const string userDataFileName = "userdata";
     public const string CONF_FILE_NAME = ".bytes";

@@ -6,12 +6,12 @@ public class BaseWindowManager : BaseUnityObject {
 
     public GameObject closeBtn;
 
-    public void Init(){
+    public virtual void Init(){
         if(closeBtn != null) GameUIEventListener.Get(closeBtn).onClick = CloseBtn;
     }
 	
 	// Update is called once per frame
-	void Update () {
+	public virtual void MUpdate () {
 		
 	}
 

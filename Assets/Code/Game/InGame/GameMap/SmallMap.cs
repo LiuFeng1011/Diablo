@@ -9,12 +9,11 @@ public class SmallMapUnit{
 }
 
 public class SmallMap : BaseGameObject {
-    Color maskColor = new Color(0.3f,0.3f,0.3f, 1);
-    Color obsColor = new Color(0, 0, 0, 1);
-    Color wayColor = new Color(1, 1, 1, 1);
+    Color maskColor = new Color(0.3f,0.3f,0.3f, 0);
+    Color obsColor = new Color(0, 0, 0, 0.5f);
+    Color wayColor = new Color(89 / 255f, 51 / 255f, 44 / 255f, 1);
     //小地图每个格子单位的像素尺寸
     const int unitSize = 1;
-    const int mapScale = 3;
     //小地图刷新频率
     const float  updateMaxTime = 1f;
 
@@ -27,9 +26,6 @@ public class SmallMap : BaseGameObject {
     int mapSizeX = 0, mapSizeY = 0,textureWidth = 0,textureHeight = 0;
 
     Texture2D mapTexture;
-    //SpriteRenderer sr;
-
-    RawImage rawImage;
 
     public int[,] dataArray; // 0 null,1 路 ,2 障碍
 
@@ -57,13 +53,9 @@ public class SmallMap : BaseGameObject {
         }
         mapTexture.Apply();
 
-        //GameObject obj = new GameObject("smallMap");
-        //sr = obj.AddComponent<SpriteRenderer>();
         ApplySprite();
 
-        rawImage = GameObject.Find("Canvas").transform.Find("SmallMap").Find("RawImage").GetComponent<RawImage>();
-        rawImage.texture = mapTexture;
-        rawImage.GetComponent<RectTransform>().sizeDelta = new Vector2(textureWidth * mapScale,textureHeight*mapScale);
+        EventData.CreateEvent(EventID.EVENT_UI_INITMAPTEXTURE).AddData(mapTexture).Send();
     }
 
     public virtual void Update()
@@ -74,15 +66,7 @@ public class SmallMap : BaseGameObject {
             if(updateData){
                 ApplySprite();
             }
-
-            Vector3 rolePos = InGameManager.GetInstance().inGamePlayerManager.GetRolePos();
-            Vector2 arrPos = GameCommon.GetMapPos(rolePos);
-            rawImage.transform.localPosition = -mapScale * new Vector2(
-                arrPos.x /mapSizeX * textureWidth,arrPos.y / mapSizeY * textureHeight
-            );
         }
-
-
     }
 
     public virtual void Destory()
@@ -132,7 +116,5 @@ public class SmallMap : BaseGameObject {
     {
         mapTexture.Apply();
         updateData = false;
-        //Sprite pic = Sprite.Create(mapTexture, new Rect(0, 0, textureWidth, textureHeight), new Vector2(0.5f, 0.5f));
-        //sr.sprite = pic;
     }
 }

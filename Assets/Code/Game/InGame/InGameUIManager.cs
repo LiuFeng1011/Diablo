@@ -5,6 +5,7 @@ using UnityEngine;
 public class InGameUIManager : InGameBaseManager {
     InGamePadManager inGamePadManager;
     InGamePackageManager inGamePackageManager;
+    InGameBigMapManager inGameBigMapManager;
 
     InGameUIPlayerInfoManager playerInfo;
     public GameObject gameUICanvas;
@@ -14,7 +15,9 @@ public class InGameUIManager : InGameBaseManager {
         if (!GameCommon.GAME_INIT) return;
         base.Init();
 
-        EventManager.instance().RegisterObj(this,EventID.EVENT_UI_OPENPACKAGE);
+        EventManager.Register(this,
+                              EventID.EVENT_UI_OPENPACKAGE,
+                              EventID.EVENT_UI_OPENBIGMAP);
 
         GameObject canvas = GameObject.Find("UI Root");
         gameUICanvas = canvas;
@@ -26,6 +29,10 @@ public class InGameUIManager : InGameBaseManager {
         inGamePackageManager = canvas.transform.Find("Package").GetComponent<InGamePackageManager>();
         inGamePackageManager.gameObject.SetActive(false);
         inGamePackageManager.Init();
+
+        inGameBigMapManager = canvas.transform.Find("BigMap").GetComponent<InGameBigMapManager>();
+        inGameBigMapManager.gameObject.SetActive(false);
+        inGameBigMapManager.Init();
 
         GameObject playerinfoObj = new GameObject("PlayerInfo");
         Transform PlayerInfo = playerinfoObj.transform;
@@ -45,6 +52,9 @@ public class InGameUIManager : InGameBaseManager {
             case EventID.EVENT_UI_OPENPACKAGE:
                 inGamePackageManager.Show();
                 break;
+            case EventID.EVENT_UI_OPENBIGMAP:
+                inGameBigMapManager.Show();
+                break;
         }
     }
 
@@ -53,6 +63,9 @@ public class InGameUIManager : InGameBaseManager {
         //更新玩家信息
         playerInfo.InGameUIPlayerInfoManagerUpdate();
 
+        inGamePadManager.MUpdate();
+        inGamePackageManager.MUpdate();
+        inGameBigMapManager.MUpdate();
     }
 
     //增加了一个玩家

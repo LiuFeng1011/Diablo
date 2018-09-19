@@ -36,6 +36,8 @@ public enum EventID{
     EVENT_UI_UNEQUIP = 0x30006,//卸下装备
     EVENT_UI_REFRESH_PACKAGEUI = 0x30007,//刷新背包UI界面
 
+    EVENT_UI_OPENBIGMAP = 0x30008,//打开大地图
+    EVENT_UI_INITMAPTEXTURE = 0x30009,//初始化地图贴图
 
 }
 

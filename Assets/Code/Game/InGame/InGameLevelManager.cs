@@ -12,7 +12,7 @@ public class InGameLevelManager : InGameBaseManager {
         gameModel = BaseGameModelManager.GetGameMode(BaseGameModelManager.GameLevelModel.level);
         gameModel.Init();
 
-        gameMap = MazeMapManager.CreateMapManager(MazeMapManager.MapType.en_type_randomgroup,4,3,10);
+        gameMap = MazeMapManager.CreateMapManager(MazeMapManager.MapType.en_type_randomgroup,4,3,5);
         //gameMap = MazeMapManager.CreateMapManager(MazeMapManager.MapType.en_type_fixeditormap, 5004010, 100, 100);
     }
 

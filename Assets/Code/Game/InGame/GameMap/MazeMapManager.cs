@@ -53,6 +53,8 @@ public class MazeMapManager : BaseGameMapManager {
     public int[,] astarArray;// 0 null,1 路 ,2 障碍
     public GameObject mapObj;
 
+    public SmallMap smallMap;
+
     public Dictionary<int, List<GameObject>> objPool = new Dictionary<int, List<GameObject>>();
 
     public List<InGameMapPointData> lastScreenObj = new List<InGameMapPointData>();
@@ -100,10 +102,14 @@ public class MazeMapManager : BaseGameMapManager {
         map = new InGameMapPointData[row, col];
         astarArray = new int[row, col];
 
+        smallMap = new SmallMap();
+        smallMap.Init(row,col);
     }
     //动态生成地面
     public override void Update()
     {
+        smallMap.Update();
+
         Vector2 startPos = InGameManager.GetInstance().inGameCameraManager.GetCameraPos();
 
         Vector2 startMapPos = GameCommon.GetMapPos(startPos);
@@ -134,6 +140,7 @@ public class MazeMapManager : BaseGameMapManager {
                 if (sx < 0 || sx >= map.GetLength(0)) break;
                 if (sy < 0 || sy >= map.GetLength(1)) continue;
 
+                smallMap.OpenUnit(sx,sy,astarArray[sx, sy]);
                 InGameMapPointData data = map[sx,sy];
                 if(data == null){
                     continue;

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;  
 public class InGamePadManager : BaseWindowManager {
 
-    const int mapScale = 6;
+    const int mapScale = 12;
 
     public GameObject openPackageBtn;
     public GameObject playerInfoBtn;

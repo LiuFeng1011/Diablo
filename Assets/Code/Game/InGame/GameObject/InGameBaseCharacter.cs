@@ -118,9 +118,6 @@ public class InGameBaseCharacter : InGameBaseObj
     {
         base.Init(instanceId, confid, camp);
 
-        EventManager.Register(this,
-                              EventID.EVENT_GAME_CHARACTER_HURT);
-
         propertys = new CharacterProperty();
 
         conf = ConfigManager.characterConfManager.dic[confid];
@@ -145,6 +142,8 @@ public class InGameBaseCharacter : InGameBaseObj
         ResetAllProperty(true);
 
         lastPos = transform.position;
+
+        EventData.CreateEvent(EventID.EVENT_GAME_CHARACTER_BORN).AddData(this).Send();
     }
 
     public override enObjType GetObjType()
@@ -427,7 +426,7 @@ public class InGameBaseCharacter : InGameBaseObj
         if (life <= 0){
             SetDie(false);
             killMe = source;
-            EventData.CreateEvent(EventID.EVENT_GAME_CHARACTER_DIE).AddData(this.instanceId, this.level).Send();
+            EventData.CreateEvent(EventID.EVENT_GAME_CHARACTER_DIE).AddData(this).Send();
 
         }
         Color c;

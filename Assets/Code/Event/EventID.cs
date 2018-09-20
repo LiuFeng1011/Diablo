@@ -21,6 +21,7 @@ public enum EventID{
     EVENT_GAME_TOUCH_GROUND = 0x20001,//点击地面
     EVENT_GAME_TOUCH_OBJ = 0x20002,//点击对象
 
+    EVENT_GAME_CHARACTER_BORN = 0x20003,// 角色出生
     EVENT_GAME_CHARACTER_DIE = 0x20004,// 角色死亡
     EVENT_GAME_INITROLE = 0x20006,// 初始化角色
 

@@ -15,6 +15,7 @@ public class MazeCreate
 
     public enum PointType
     {
+        non = 0,
         wall = 0x1,//墙0000 0001
         wallfull = 0x3,//墙 0000 0011
         nullpoint = 0x7,//空位置，不进行任何操作  0000 0111
@@ -22,6 +23,10 @@ public class MazeCreate
         fullway = 0x30,//路 0011 0000
         startpoint = 0x110,//起始点 0001 0001 0000
         endpoint = 0x210,//结束点 0010 0001 0000
+        characterpoint = 0x1000,//角色位置 0001 0000 0000 0000
+        enemypoint = 0x3000,//敌人位置 0011 0000 0000 0000
+        rolepoint = 0x5000,//主角位置 0101 0000 0000 0000
+
     }
 
     /// <summary>
@@ -43,6 +48,7 @@ public class MazeCreate
 
     private MazeCreate(int row, int col)
     {
+
         this.row = row;
         this.col = col;
 

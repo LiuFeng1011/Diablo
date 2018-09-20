@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InGameBigMapManager : BaseWindowManager {
 
-    const int mapScale = 6;
+    const int mapScale = 15;
 
     public UITexture uitexture;
     public override void Init()
@@ -31,10 +31,11 @@ public class InGameBigMapManager : BaseWindowManager {
                 Texture2D texture = resp.sUserData[0] as Texture2D;
                 this.uitexture.mainTexture = texture;
 
-
                 uitexture.width = texture.width * mapScale;
                 uitexture.height = texture.height * mapScale;
 
+                BoxCollider bc = uitexture.transform.GetComponent<BoxCollider>();
+                bc.size = new Vector3(uitexture.width, uitexture.height, 1);
                 break;
         }
     }

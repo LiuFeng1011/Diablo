@@ -42,7 +42,7 @@ public class MazeMapManager : BaseGameMapManager {
 
     const float mapscale = 1;
     public int row = 100, col = 100;
-    public int UPDATE_MAP_SIZE = 30;
+    public int UPDATE_MAP_SIZE = 20;
     public MazeCreate mazeCreate;
     public int Accumulation = 99;//障碍堆积系数
     public int Erosion = 50;//障碍侵蚀系数
@@ -137,14 +137,30 @@ public class MazeMapManager : BaseGameMapManager {
             {
                 int sx = startX + x;
                 int sy = startY + y;
+
+                int _x = UPDATE_MAP_SIZE / 2 - x;
+                int _y = UPDATE_MAP_SIZE / 2 - y;
+
                 if (sx < 0 || sx >= map.GetLength(0)) break;
                 if (sy < 0 || sy >= map.GetLength(1)) continue;
 
-                smallMap.OpenUnit(sx,sy,astarArray[sx, sy]);
+                bool isopen = false;
+                //小地图中的点是否打开，如果已经打开 则不用计算距离
+                if(!smallMap.IsOpenPoint(sx, sy)){
+                    if (Mathf.Sqrt(_x * _x + _y * _y) <= UPDATE_MAP_SIZE / 2)
+                    {
+                        isopen = true;
+                    }
+                }
+
                 InGameMapPointData data = map[sx,sy];
                 if(data == null){
+                    if(isopen)smallMap.OpenUnit(sx, sy,MazeCreate.PointType.nullpoint);
                     continue;
                 }
+
+                if (isopen)smallMap.OpenUnit(sx, sy, data.type);
+
                 for (int i = 0; i < data.objList.Count; i ++){
                     if(data.objList[i].obj == null){
                         MapPointObj mapPointObj = data.objList[i];
@@ -163,7 +179,7 @@ public class MazeMapManager : BaseGameMapManager {
 
     //把物体放到池里
     protected void AddPoolObj(int id,GameObject obj){
-        obj.transform.position = new Vector3(-10000, 0, 0);
+        //obj.transform.position = new Vector3(-10000, 0, 0);
         if (!objPool.ContainsKey(id))
         {
             objPool.Add(id, new List<GameObject>());

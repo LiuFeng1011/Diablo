@@ -13,7 +13,6 @@ public class EnemyInfo{
 
 public class SmallMap : BaseGameObject
 {
-
     Dictionary<MazeCreate.PointType, Color> mapColors = new Dictionary<MazeCreate.PointType, Color>();
 
     //小地图每个格子单位的像素尺寸
@@ -40,16 +39,16 @@ public class SmallMap : BaseGameObject
     public virtual void Init(int row, int col)
     {
         mapColors.Add(MazeCreate.PointType.non      , new Color(0, 0, 0, 0));
-        mapColors.Add(MazeCreate.PointType.wall     , new Color(89 / 255f, 51 / 255f, 44 / 255f, 0.5f));
-        mapColors.Add(MazeCreate.PointType.wallfull , new Color(89 / 255f, 51 / 255f, 44 / 255f, 0.5f));
-        mapColors.Add(MazeCreate.PointType.nullpoint, new Color(89 / 255f, 51 / 255f, 44 / 255f, 0.5f));
-        mapColors.Add(MazeCreate.PointType.way       , new Color(200 / 255f, 180 / 255f, 160 / 255f, 0.5f));
-        mapColors.Add(MazeCreate.PointType.fullway   , new Color(200 / 255f, 180 / 255f, 160 / 255f, 0.5f));
-        mapColors.Add(MazeCreate.PointType.startpoint, new Color(200 / 255f, 180 / 255f, 160 / 255f, 0.5f));
-        mapColors.Add(MazeCreate.PointType.endpoint  , new Color(200 / 255f, 180 / 255f, 160 / 255f, 0.5f));
-        mapColors.Add(MazeCreate.PointType.characterpoint, new Color(255 / 255f, 0 / 255f, 0 / 255f, 0.5f));
-        mapColors.Add(MazeCreate.PointType.enemypoint    , new Color(255 / 255f, 0 / 255f, 0 / 255f, 0.5f));
-        mapColors.Add(MazeCreate.PointType.rolepoint    , new Color(0 / 255f, 255f / 255f, 0 / 255f, 0.5f));
+        mapColors.Add(MazeCreate.PointType.wall         , new Color(0x79 / 255f, 0x55 / 255f, 0x48 / 255f, 1f));
+        mapColors.Add(MazeCreate.PointType.wallfull     , new Color(0x79 / 255f, 0x55 / 255f, 0x48 / 255f, 1f));
+        mapColors.Add(MazeCreate.PointType.nullpoint    , new Color(89 / 255f, 51 / 255f, 44 / 255f, 0.2f));
+        mapColors.Add(MazeCreate.PointType.way          , new Color(0x8d / 255f, 0x6e / 255f, 0x63 / 255f, 1f));
+        mapColors.Add(MazeCreate.PointType.fullway      , new Color(0x8d / 255f, 0x6e / 255f, 0x63 / 255f, 1f));
+        mapColors.Add(MazeCreate.PointType.startpoint   , new Color(0x8d / 255f, 0x6e / 255f, 0x63 / 255f, 1f));
+        mapColors.Add(MazeCreate.PointType.endpoint     , new Color(0x8d / 255f, 0x6e / 255f, 0x63 / 255f, 1f));
+        mapColors.Add(MazeCreate.PointType.characterpoint, new Color(0xe6 / 255f, 0x4a / 255f, 0x19 / 255f, 1f));
+        mapColors.Add(MazeCreate.PointType.enemypoint    , new Color(0xe6 / 255f, 0x4a / 255f, 0x19 / 255f, 1f));
+        mapColors.Add(MazeCreate.PointType.rolepoint    , new Color(0x2e / 255f, 0x7d / 255f, 0x32 / 255f, 1f));
 
 
         mapSizeX = row;
@@ -90,6 +89,7 @@ public class SmallMap : BaseGameObject
         updateTime += Time.deltaTime;
         if(updateTime >= updateMaxTime){
             updateTime = 0f;
+            UpdateCharacterPos();
             if(updateData){
                 ApplySprite();
             }
@@ -99,6 +99,49 @@ public class SmallMap : BaseGameObject
     public virtual void Destory()
     {
 
+    }
+
+    void UpdateCharacterPos(){
+        //重置全部enemy位置信息
+        for (int i = 0; i < enemyInfoList.Count; i++)
+        {
+            EnemyInfo info = enemyInfoList[i];
+
+            Vector2 mapPos = GameCommon.GetMapPos(info.character.transform.position);
+
+            //如果坐标位置没有改变 ，不做任何操作
+            if ((int)mapPos.x == info.x && (int)mapPos.y == info.y)
+            {
+                info.isupdateInfo = false;
+            }
+            else
+            {
+                //设置更新标记 并 更新位置信息
+                SetPixel(info.x, info.y, dataArray[info.x, info.y]);
+                info.x = (int)mapPos.x;
+                info.y = (int)mapPos.y;
+                info.isupdateInfo = true;
+                updateData = true;
+            }
+        }
+        //重新绘制enemy位置信息
+        for (int i = 0; i < enemyInfoList.Count; i++)
+        {
+            EnemyInfo info = enemyInfoList[i];
+            if (info.isupdateInfo)
+            {
+
+                if (info.character.GetObjType() == InGameBaseObj.enObjType.character)
+                {
+                    SetPixel(info.x, info.y, MazeCreate.PointType.rolepoint);
+                }
+                else
+                {
+                    SetPixel(info.x, info.y, MazeCreate.PointType.enemypoint);
+                }
+
+            }
+        }
     }
 
     public bool IsOpenPoint(int x, int y){
@@ -128,41 +171,6 @@ public class SmallMap : BaseGameObject
 
     void ApplySprite()
     {
-        //重置全部enemy位置信息
-        for (int i = 0; i < enemyInfoList.Count; i++)
-        {
-            EnemyInfo info = enemyInfoList[i];
-
-            Vector2 mapPos = GameCommon.GetMapPos(info.character.transform.position);
-
-            //如果坐标位置没有改变 ，不做任何操作
-            if((int)mapPos.x == info.x && (int)mapPos.y == info.y){
-                info.isupdateInfo = false;
-            }else{
-                //设置更新标记 并 更新位置信息
-                SetPixel(info.x, info.y, dataArray[info.x, info.y]);
-                info.x = (int)mapPos.x;
-                info.y = (int)mapPos.y;
-                info.isupdateInfo = true; 
-            }
-        }
-
-        //重新绘制enemy位置信息
-        for (int i = 0; i < enemyInfoList.Count; i++)
-        {
-            EnemyInfo info = enemyInfoList[i];
-            if(info.isupdateInfo){
-
-                if (info.character.GetObjType() == InGameBaseObj.enObjType.character)
-                { 
-                    SetPixel(info.x, info.y, MazeCreate.PointType.rolepoint);
-                }else{
-                    SetPixel(info.x, info.y, MazeCreate.PointType.enemypoint);
-                }
-
-            }
-        }
-
         mapTexture.Apply();
         updateData = false;
     }

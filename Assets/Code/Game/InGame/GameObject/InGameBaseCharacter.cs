@@ -104,6 +104,9 @@ public class InGameBaseCharacter : InGameBaseObj
 
     public Vector3 boxSize;
 
+    bool isElite = false;
+
+
     Vector3 lastPos = Vector3.zero;
 
     List<EquipData> equipList = new List<EquipData>();
@@ -136,12 +139,16 @@ public class InGameBaseCharacter : InGameBaseObj
         boxSize = transform.GetComponent<BoxCollider>().size * transform.localScale.x;
 
         //注册到UI界面
-        InGameManager.GetInstance().inGameUIManager.AddRole(this);
+        //InGameManager.GetInstance().inGameUIManager.AddRole(this);
 
         //this.level = conf.level;
         ResetAllProperty(true);
 
         lastPos = transform.position;
+
+        EventManager.Register(this,
+                      EventID.EVENT_GAME_CHARACTER_HURT);
+
 
         EventData.CreateEvent(EventID.EVENT_GAME_CHARACTER_BORN).AddData(this).Send();
     }
@@ -181,15 +188,18 @@ public class InGameBaseCharacter : InGameBaseObj
                 continue;
             }
             PropertyConf pconf = ConfigManager.propertyConfManager.dataMap[i];
+
+            AHFloat val = conf.propertyValues[i];
+            if (this.isElite) val *= 2f;
             if (pconf.formula != 2)
             {
                 if (pconf.formula == 1)
                 {
-                    propertys.propertyValues[i] = (1f - conf.propertyValues[i] / 100f);
+                    propertys.propertyValues[i] = (1f - val / 100f);
                 }
                 else
                 {
-                    propertys.propertyValues[i] = conf.propertyValues[i];
+                    propertys.propertyValues[i] = val;
                 }
             }
             else
@@ -210,7 +220,7 @@ public class InGameBaseCharacter : InGameBaseObj
                 EquipProperty p = equipdata.propertyList[j];
                 PropertyConf pconf = ConfigManager.propertyConfManager.dataMap[p.id];
 
-                string propertyText = string.Format(pconf.des, p.val) + "\n";
+                 //string propertyText = string.Format(pconf.des, p.val) + "\n";
                 if (pconf.formula != 2)
                 {
                     if (pconf.formula == 1)
@@ -234,7 +244,8 @@ public class InGameBaseCharacter : InGameBaseObj
 
     }
 
-    public virtual void ResetAllProperty(bool isinit)
+    //计算属性
+    public virtual void ResetAllProperty(bool isinit = false)
     {
         SetBaseProperty();
         SetEquipProperty();
@@ -266,13 +277,6 @@ public class InGameBaseCharacter : InGameBaseObj
         }
     }
 
-
-    //计算属性
-    public virtual void ResetAllProperty()
-    {
-        ResetAllProperty(false);
-        //this.propertys.Log();
-    }
 
     public override bool ObjUpdate()
     {
@@ -308,6 +312,13 @@ public class InGameBaseCharacter : InGameBaseObj
         return true;
     }
 
+    public void SetIsElite(bool isElite){
+        this.isElite = isElite;
+        this.ResetAllProperty(true);
+    }
+    public bool GetIsElite(){
+        return isElite;
+    }
     public virtual void AddAI(){
         ai = new BaseEnemyAI();
         ai.Init(this);
@@ -391,7 +402,7 @@ public class InGameBaseCharacter : InGameBaseObj
     {
         actionManager.Destory();
 
-        InGameManager.GetInstance().inGameUIManager.DelRole(this.instanceId);
+        //InGameManager.GetInstance().inGameUIManager.DelRole(this.instanceId);
         //base.Die();
         SetAnimatorState(AnimatorState.Dead, 1);
 
@@ -555,9 +566,10 @@ public class InGameBaseCharacter : InGameBaseObj
                     return;
                 }
 
-                float dis = Vector3.Distance(target.transform.position, this.transform.position);
+                float dis = Vector2.Distance(target.transform.position, this.transform.position);
 
-                if(dis < 2){
+                if(dis < 4){
+                    
                     this.StartAtk((InGameBaseCharacter)resp.sUserData[0]);
                 }
 

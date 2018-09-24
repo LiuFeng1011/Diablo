@@ -16,6 +16,7 @@ public class MapEnemyPointEnemy{
 
         writer.WriteSInt32(3);
         int count = rangeObjIdList.Count;
+        Debug.Log(count);
         writer.WriteSInt32(count);
 
         for (int i = 0; i < count; i++)
@@ -28,7 +29,7 @@ public class MapEnemyPointEnemy{
 
     public void Deserialize(DataStream reader)
     {
-
+        rangeObjIdList.Clear();
         int dataid = reader.ReadSInt32();
 
         while (dataid != -1)
@@ -39,6 +40,7 @@ public class MapEnemyPointEnemy{
                 case 2: rangeMaxCount = reader.ReadSInt32(); break;
                 case 3:
                     int idcount = reader.ReadSInt32();
+
                     for (int i = 0; i < idcount; i++)
                     {
                         rangeObjIdList.Add(reader.ReadSInt32());
@@ -54,6 +56,7 @@ public class MapEnemyPoint : InGameBaseMapObj {
     
     float intervalTime = 0f;
     public float flushTime = 10f;
+    public bool isElite = false;
 
     public List<MapEnemyPointEnemy> enemyPointList = new List<MapEnemyPointEnemy>();
 
@@ -133,6 +136,7 @@ public class MapEnemyPoint : InGameBaseMapObj {
     InGameBaseCharacter AddObj(int id,Vector2 pos){
         InGameBaseCharacter enemy = InGameManager.GetInstance().inGameObjManager.AddObj(id,enMSCamp.en_camp_enemy) as InGameBaseCharacter;
         enemyList.Add(enemy);
+        enemy.SetIsElite(isElite) ;
         enemy.AddAI();
 
         enemy.transform.position = pos;
@@ -154,12 +158,15 @@ public class MapEnemyPoint : InGameBaseMapObj {
             point.Serialize(writer);
         }
 
+        writer.WriteSInt32(3);
+        writer.WriteBoolean(isElite);
+
         writer.WriteSInt32(-1);
     }
 
     public override void Deserialize(DataStream reader)
     {
-
+        enemyPointList.Clear();
         int dataid = reader.ReadSInt32();
 
         while(dataid != -1){
@@ -174,6 +181,7 @@ public class MapEnemyPoint : InGameBaseMapObj {
                         enemyPointList.Add(point);
                     }
                     break;
+                case 3: isElite = reader.ReadBoolean(); break;
                     
             }
             dataid = reader.ReadSInt32();

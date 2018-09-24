@@ -129,7 +129,7 @@ public class MapTypeRandomGroup : MazeMapManager {
         }
 
         MapGroupConf conf = mapList[Random.Range(0, mapList.Count)];
-        Debug.Log(conf.id + " : " + tree.pos.x + " / " + tree.pos.y);
+
         InsertGroup(new Vector2(tree.pos.x * GameConst.RANDOM_GROUP_SIZE, tree.pos.y * GameConst.RANDOM_GROUP_SIZE),
                     conf.id);
 

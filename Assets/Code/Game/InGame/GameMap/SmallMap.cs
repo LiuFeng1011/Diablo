@@ -48,7 +48,8 @@ public class SmallMap : BaseGameObject
         mapColors.Add(MazeCreate.PointType.endpoint     , new Color(0x8d / 255f, 0x6e / 255f, 0x63 / 255f, 1f));
         mapColors.Add(MazeCreate.PointType.characterpoint, new Color(0xe6 / 255f, 0x4a / 255f, 0x19 / 255f, 1f));
         mapColors.Add(MazeCreate.PointType.enemypoint    , new Color(0xe6 / 255f, 0x4a / 255f, 0x19 / 255f, 1f));
-        mapColors.Add(MazeCreate.PointType.rolepoint    , new Color(0x2e / 255f, 0x7d / 255f, 0x32 / 255f, 1f));
+        mapColors.Add(MazeCreate.PointType.enemyelitepoint, new Color(0xf6 / 255f, 0x8a / 255f, 0x59 / 255f, 1f));
+        mapColors.Add(MazeCreate.PointType.rolepoint    , new Color(0x25 / 255f, 0xc6 / 255f, 0xfc / 255f, 1f));
 
 
         mapSizeX = row;
@@ -102,6 +103,7 @@ public class SmallMap : BaseGameObject
     }
 
     void UpdateCharacterPos(){
+        bool forceUpdate = updateData;
         //重置全部enemy位置信息
         for (int i = 0; i < enemyInfoList.Count; i++)
         {
@@ -110,7 +112,7 @@ public class SmallMap : BaseGameObject
             Vector2 mapPos = GameCommon.GetMapPos(info.character.transform.position);
 
             //如果坐标位置没有改变 ，不做任何操作
-            if ((int)mapPos.x == info.x && (int)mapPos.y == info.y)
+            if (((int)mapPos.x == info.x && (int)mapPos.y == info.y) && !forceUpdate )
             {
                 info.isupdateInfo = false;
             }
@@ -131,13 +133,19 @@ public class SmallMap : BaseGameObject
             if (info.isupdateInfo)
             {
 
-                if (info.character.GetObjType() == InGameBaseObj.enObjType.character)
+                if (info.character.camp == enMSCamp.en_camp_enemy)
                 {
-                    SetPixel(info.x, info.y, MazeCreate.PointType.rolepoint);
+                    if(info.character.GetIsElite()){
+                        SetPixel(info.x, info.y, MazeCreate.PointType.enemyelitepoint);
+
+                    }else{
+                        SetPixel(info.x, info.y, MazeCreate.PointType.enemypoint); 
+                    }
+
                 }
                 else
                 {
-                    SetPixel(info.x, info.y, MazeCreate.PointType.enemypoint);
+                    SetPixel(info.x, info.y, MazeCreate.PointType.rolepoint);
                 }
 
             }

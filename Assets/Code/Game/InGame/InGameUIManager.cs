@@ -69,14 +69,14 @@ public class InGameUIManager : InGameBaseManager {
     }
 
     //增加了一个玩家
-    public void AddRole(InGameBaseCharacter role)
-    {
-        playerInfo.AddRole(role);
-    }
-    public void DelRole(int instanceid)
-    {
-        playerInfo.DelRole(instanceid);
-    }
+    //public void AddRole(InGameBaseCharacter role)
+    //{
+    //    playerInfo.AddRole(role);
+    //}
+    //public void DelRole(int instanceid)
+    //{
+    //    playerInfo.DelRole(instanceid);
+    //}
 
     public override void Destory()
     {

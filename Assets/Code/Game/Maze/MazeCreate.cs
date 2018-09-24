@@ -25,6 +25,7 @@ public class MazeCreate
         endpoint = 0x210,//结束点 0010 0001 0000
         characterpoint = 0x1000,//角色位置 0001 0000 0000 0000
         enemypoint = 0x3000,//敌人位置 0011 0000 0000 0000
+        enemyelitepoint = 0xb000,//敌人位置 1011 0000 0000 0000
         rolepoint = 0x5000,//主角位置 0101 0000 0000 0000
 
     }

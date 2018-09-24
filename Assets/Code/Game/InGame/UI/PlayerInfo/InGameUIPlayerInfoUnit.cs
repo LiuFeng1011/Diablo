@@ -6,18 +6,31 @@ public class InGameUIPlayerInfoUnit : MonoBehaviour {
 
     public InGameBaseCharacter role{get ; private set;}
 
-	public UILabel	nameLabel{get ; private set;}
+    public UILabel	nameLabel{get ; private set;}
+    public UILabel eliteNameLabel { get; private set; }
 	public UISprite	lifeSprite{get ; private set;}
 
 	Vector3 basePos;
 	void Awake(){
         lifeSprite 	= transform.Find("LifeLine").Find("life").GetComponent<UISprite>();
-		nameLabel 	= transform.Find("nameLabel").GetComponent<UILabel>();
+        nameLabel 	= transform.Find("nameLabel").GetComponent<UILabel>();
+        eliteNameLabel = transform.Find("eliteNameLabel").GetComponent<UILabel>();
+
 		basePos = transform.localPosition;
 	}
 
     public void Init(InGameBaseCharacter role){
 		this.role = role;
+        if(role.GetIsElite()){
+            
+            eliteNameLabel.gameObject.SetActive(true);
+            nameLabel.gameObject.SetActive(false);
+        }else{
+            eliteNameLabel.gameObject.SetActive(false);
+            nameLabel.gameObject.SetActive(true);
+        }
+        nameLabel.text = role.charactername;
+        eliteNameLabel.text = role.charactername;
 	}
 
 	// Use this for initialization
@@ -28,7 +41,6 @@ public class InGameUIPlayerInfoUnit : MonoBehaviour {
 	// Update is called once per frame
     public void InGameUIPlayerInfoUnitUpdate () {
         
-        nameLabel.text = role.charactername;
 		//血条
 
         float toval = (float)role.life / (float)role.propertys.GetProperty(enCharacterProperty.life);

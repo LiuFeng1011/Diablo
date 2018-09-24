@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InGameUIPlayerInfoManager {
+public class InGameUIPlayerInfoManager : BaseGameObject {
 	Transform playerInfo;
     GameObject playerInfoUnit;
 	Dictionary<int,InGameUIPlayerInfoUnit> infoList = new Dictionary<int,InGameUIPlayerInfoUnit>();
@@ -12,6 +12,9 @@ public class InGameUIPlayerInfoManager {
 
 		this.playerInfo = playerInfo;
 
+        EventManager.Register(this,
+                              EventID.EVENT_GAME_CHARACTER_BORN,
+                              EventID.EVENT_GAME_CHARACTER_DIE);
 	}
 
 	//Update
@@ -54,4 +57,20 @@ public class InGameUIPlayerInfoManager {
 		unit.Init(role);
         infoList.Add(role.instanceId,unit);
 	}
+
+    public override void HandleEvent(EventData resp)
+    {
+        switch (resp.eid)
+        {
+            case EventID.EVENT_GAME_CHARACTER_BORN:
+
+                InGameBaseCharacter bornobj = (InGameBaseCharacter)resp.sUserData[0];
+                this.AddRole(bornobj);
+                break;
+            case EventID.EVENT_GAME_CHARACTER_DIE:
+                InGameBaseCharacter dieobj = (InGameBaseCharacter)resp.sUserData[0];
+                this.DelRole(dieobj.instanceId);
+                break;
+        }
+    }
 }

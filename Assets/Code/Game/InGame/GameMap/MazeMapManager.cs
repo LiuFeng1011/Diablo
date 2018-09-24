@@ -42,7 +42,7 @@ public class MazeMapManager : BaseGameMapManager {
 
     const float mapscale = 1;
     public int row = 100, col = 100;
-    public int UPDATE_MAP_SIZE = 20;
+    public int UPDATE_MAP_SIZE = 30;
     public MazeCreate mazeCreate;
     public int Accumulation = 99;//障碍堆积系数
     public int Erosion = 50;//障碍侵蚀系数

@@ -93,7 +93,17 @@ public class DataStream
 	{
 		mBinWriter.Write(bytes, offset, count);
 	}
-	
+
+
+    public void WriteBoolean(bool value)
+    {
+        WriteByte(value ? (byte)1 : (byte)0);
+    }
+    public bool ReadBoolean()
+    {
+        return mBinReader.ReadByte() == 1;
+    }
+
 	public void WriteByte(byte value)
 	{
 		mBinWriter.Write(value);
@@ -206,7 +216,8 @@ public class DataStream
 		return bytes;
 	}
 	
-	
+
+
 	/// <summary>
 	/// signedÐÍÊý¾Ý¶ÁÐ´
 	/// </summary>
@@ -237,7 +248,7 @@ public class DataStream
 	{
 		WriteInteger(BitConverter.GetBytes(value));
 	}
-	
+
 	public Int32 ReadSInt32()
 	{
 		Int32 val = mBinReader.ReadInt32();

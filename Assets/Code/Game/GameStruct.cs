@@ -169,7 +169,14 @@ public class RoleData
     //public AHInt strength = 1;//力量 1攻击力
     //public AHInt agility = 1;//敏捷 0.01攻击速度，0.005闪避 0.01移动速度
     //public AHInt brains = 1;//智力 0.01释放技能概率 
-    //public AHInt stamina = 1;//体力 生命恢复速度 10生命最大值
+
+    public Dictionary<int, float> additionPropertyList = new Dictionary<int, float>();
+
+    public AHInt level = 1;
+    public AHInt exp = 0;
+
+    public AHInt levelupPoint = 0;//升级点数
+    private int strength;
 
     public static RoleData Create(int roleid,string name){
         RoleData data = new RoleData();
@@ -225,9 +232,18 @@ public class RoleData
                         choseEquipList.Add(id);
                     }
                     break;
-                case 5:
-                    equipCount = stream.ReadSInt32();
+                case 5: equipCount = stream.ReadSInt32(); break;
+                case 6: 
+                    int pcount = stream.ReadSInt32();
+                    for (int i = 0; i < pcount; i++)
+                    {
+                        int id = stream.ReadSInt32();
+                        additionPropertyList.Add(id, (float)stream.ReadSInt32() / 1000);
+                    }
                     break;
+                case 7: level = stream.ReadSInt32(); break;
+                case 8: exp = stream.ReadSInt32(); break;
+                case 9: levelupPoint = stream.ReadSInt32(); break;
 
             }
             type = stream.ReadSInt16();
@@ -251,6 +267,23 @@ public class RoleData
         }
         stream.WriteSInt16(5);
         stream.WriteSInt32(equipCount);
+
+        stream.WriteSInt16(6);
+        stream.WriteSInt32(additionPropertyList.Count);
+
+        foreach (KeyValuePair<int, float> kv in additionPropertyList)
+        {
+            stream.WriteSInt32(kv.Key);
+            stream.WriteSInt32((int)(kv.Value * 1000));
+        }
+
+        stream.WriteSInt16(7);
+        stream.WriteSInt32(level);
+        stream.WriteSInt16(8);
+        stream.WriteSInt32(exp);
+
+        stream.WriteSInt16(9);
+        stream.WriteSInt32(levelupPoint);
 
         stream.WriteSInt16(-1);
     }

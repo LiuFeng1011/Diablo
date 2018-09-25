@@ -29,6 +29,11 @@ public enum enCharacterProperty
     armorAddition = 16,   /*  护甲加成  */
 
     atkForceAddition = 19,      /*  攻击力加成  */
+
+    strength = 25,
+    agility = 26,
+    brains = 27,
+
     maxval,
 }
 
@@ -205,6 +210,29 @@ public class InGameBaseCharacter : InGameBaseObj
             else
             {
                 propertys.propertyValues[i] = 0;
+            }
+        }
+
+        //附加属性
+        if (data == null) return;
+        foreach (KeyValuePair<int, float> kv in data.additionPropertyList)
+        {
+            PropertyConf pconf = ConfigManager.propertyConfManager.dataMap[kv.Key];
+
+            if (pconf.formula != 2)
+            {
+                if (pconf.formula == 1)
+                {
+                    propertys.propertyValues[kv.Key] *= (1f - kv.Value / 100f);
+                }
+                else
+                {
+                    propertys.propertyValues[kv.Key] += kv.Value;
+                }
+            }
+            else
+            {
+                propertys.propertyValues[kv.Key] += kv.Value;
             }
         }
 

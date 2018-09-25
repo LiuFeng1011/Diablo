@@ -30,6 +30,9 @@ public class GameGate : BaseUnityObject {
         //初始化场景管理器
         GameSceneManager gsm = gameHeart.AddComponent<GameSceneManager>();
 
+        //消息管理
+        HandleMessage hm = gameHeart.AddComponent<HandleMessage>();
+
         ConfigManager.LoadData();
         (new EventChangeScene(GameSceneManager.SceneTag.Logo)).Send();
 

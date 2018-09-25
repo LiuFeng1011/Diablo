@@ -27,7 +27,14 @@ public enum EventID{
 
     EVENT_GAME_CHARACTER_HURT = 0x20008,// 角色受伤
 
+    EVENT_GAME_ROLR_LEVELUP = 0x20009,// 角色升级
+
     EVENT_ADD_ENEMYPOINT = 0x20100,//添加刷怪点
+
+    EVENT_DATA_USELEVELUPPOINT = 0x21001,//使用升级点
+
+    EVENT_DATA_REFRESHPROPERTY = 0x210FF,//刷新角色属性
+
 
     EVENT_UI_OPENPACKAGE = 0x30001,//打开背包
     EVENT_UI_DELEQUIP = 0x30002,//删除装备
@@ -39,6 +46,8 @@ public enum EventID{
 
     EVENT_UI_OPENBIGMAP = 0x30008,//打开大地图
     EVENT_UI_INITMAPTEXTURE = 0x30009,//初始化地图贴图
+
+
 
 }
 

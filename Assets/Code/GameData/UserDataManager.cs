@@ -161,6 +161,61 @@ public class UserDataManager : BaseSingleton<UserDataManager> {
     public void SaveRoleData(){
         SaveData(userDataRole);
     }
+
+    //----level exp----
+    public void AddExp(int roleid,int count){
+        RoleData data = GetRoleData(roleid);
+        int exp = data.exp + count;
+        data.exp = exp;
+        if(!ConfigManager.levelExpManager.dataMap.ContainsKey(data.level)){
+            return;
+        }
+        LevelExp leveldata = ConfigManager.levelExpManager.dataMap[data.level];
+        while(leveldata.exp <= exp){
+            exp -= leveldata.exp;
+            data.exp = exp;
+            data.level++;
+            data.levelupPoint++;
+            if (!ConfigManager.levelExpManager.dataMap.ContainsKey(data.level))
+            {
+                break;
+            }
+            leveldata = ConfigManager.levelExpManager.dataMap[data.level];
+
+            EventData.CreateEvent(EventID.EVENT_GAME_ROLR_LEVELUP).AddData(data);
+        }
+
+        SaveData(userDataRole);
+    }
+
+    public void AddLevelupProperty(int roleid,int type){
+        RoleData data = GetRoleData(roleid);
+
+        if(data.levelupPoint <= 0){
+            return;
+        }
+        data.levelupPoint--;
+        AddProperty(roleid,type,1);
+    }
+
+    public void AddProperty(int roleid, int type, int count)
+    {
+        RoleData data = GetRoleData(roleid);
+
+        float val = count;
+        if (data.additionPropertyList.ContainsKey(type))
+        {
+            data.additionPropertyList[type] += val;
+        }
+        else
+        {
+            data.additionPropertyList.Add(type, val);
+        }
+
+        SaveData(userDataRole);
+
+        EventData.CreateEvent(EventID.EVENT_DATA_REFRESHPROPERTY).Send();
+    }
     //=========================EQUIP=============================
 
     public void AddEquip(EquipData e){

@@ -11,24 +11,28 @@ public enum enCharacterProperty
     life = 1 ,//生命
     liferevive = 2,  /*  生命回复    */
 
-    atkForce = 3,//攻击力
+    mana = 3,//魔法
+    manarevive = 4,//魔法回复
 
-    atkSpeed = 4,    /*  攻击速度  */
-    moveSpeed = 5,   /*  移动速度  */
 
-    comborate = 6,   /*  暴击几率    */
-    comboval = 7,    /*  暴击伤害    */
-    armor = 8,   /*  护甲  */
-    avoid = 9,   /*  闪避  */
-    returnhurt = 10,  /*  反弹伤害    */
-    steallife = 11,   /*  偷取生命    */
-    golddrop = 12,    /*  金币掉率加成  */
-    equipdrop = 13,   /*  魔法物品掉率  */
+    atkForce = 5,//攻击力
 
-    lifeAddition = 15,   /*  生命加成  */
-    armorAddition = 16,   /*  护甲加成  */
+    atkSpeed = 6,    /*  攻击速度  */
+    moveSpeed = 7,   /*  移动速度  */
 
-    atkForceAddition = 19,      /*  攻击力加成  */
+    comborate = 8,   /*  暴击几率    */
+    comboval = 9,    /*  暴击伤害    */
+    armor = 10,   /*  护甲  */
+    avoid = 11,   /*  闪避  */
+    returnhurt = 12,  /*  反弹伤害    */
+    steallife = 13,   /*  偷取生命    */
+    golddrop = 14,    /*  金币掉率加成  */
+    equipdrop = 15,   /*  魔法物品掉率  */
+
+    lifeAddition = 16,   /*  生命加成  */
+    armorAddition = 17,   /*  护甲加成  */
+
+    atkForceAddition = 18,      /*  攻击力加成  */
 
     strength = 25,
     agility = 26,
@@ -217,23 +221,7 @@ public class InGameBaseCharacter : InGameBaseObj
         if (data == null) return;
         foreach (KeyValuePair<int, float> kv in data.additionPropertyList)
         {
-            PropertyConf pconf = ConfigManager.propertyConfManager.dataMap[kv.Key];
-
-            if (pconf.formula != 2)
-            {
-                if (pconf.formula == 1)
-                {
-                    propertys.propertyValues[kv.Key] *= (1f - kv.Value / 100f);
-                }
-                else
-                {
-                    propertys.propertyValues[kv.Key] += kv.Value;
-                }
-            }
-            else
-            {
-                propertys.propertyValues[kv.Key] += kv.Value;
-            }
+            AddPropertyVal(kv.Key,kv.Value,1);
         }
 
     }
@@ -246,37 +234,34 @@ public class InGameBaseCharacter : InGameBaseObj
             for (int j = 0; j < equipdata.propertyList.Count; j++)
             {
                 EquipProperty p = equipdata.propertyList[j];
-                PropertyConf pconf = ConfigManager.propertyConfManager.dataMap[p.id];
-
-                 //string propertyText = string.Format(pconf.des, p.val) + "\n";
-                if (pconf.formula != 2)
-                {
-                    if (pconf.formula == 1)
-                    {
-                        propertys.propertyValues[p.id] *= (1f - p.val / 100f);
-                    }
-                    else
-                    {
-                        propertys.propertyValues[p.id] += p.val;
-                    }
-                }
-                else
-                {
-                    propertys.propertyValues[p.id] += p.val;
-                }
-
+                AddPropertyVal(p.id, p.val, 1);
             }
-
         }
+    }
 
+    //主属性加成
+    public void SetMainPropertyAddition(){
+        Dictionary<int,List<int>> dataMap = ConfigManager.mainPropertyManager.dataMap;
 
+        foreach(KeyValuePair<int, List<int>> kv in dataMap){
+            List<int> additionList = kv.Value;
+            for (int i = 0; i < additionList.Count; i ++){
+                float pointval = ConfigManager.propertyConfManager.dataMap[additionList[i]].levelval;
+
+                AddPropertyVal(additionList[i],propertys.propertyValues[kv.Key]*pointval , 1);
+            }
+        }
     }
 
     //计算属性
     public virtual void ResetAllProperty(bool isinit = false)
     {
         SetBaseProperty();
+        if (camp == enMSCamp.en_camp_player) Debug.Log("1old val : " + propertys.propertyValues[5]);
         SetEquipProperty();
+        if (camp == enMSCamp.en_camp_player) Debug.Log("2old val : " + propertys.propertyValues[5]);
+        SetMainPropertyAddition();
+        if (camp == enMSCamp.en_camp_player)Debug.Log("3old val : " + propertys.propertyValues[5]);
 
         for (int i = 1; i < propertys.propertyValues.Length; i++)
         {
@@ -302,6 +287,27 @@ public class InGameBaseCharacter : InGameBaseObj
         if (isinit)
         {
             InitProperty();
+        }
+    }
+
+    public void AddPropertyVal(int id,float val,float times){
+
+        PropertyConf pconf = ConfigManager.propertyConfManager.dataMap[id];
+        val *= times;
+        if (pconf.formula != 2)
+        {
+            if (pconf.formula == 1)
+            {
+                propertys.propertyValues[id] *= (1f - val / 100f);
+            }
+            else
+            {
+                propertys.propertyValues[id] += val;
+            }
+        }
+        else
+        {
+            propertys.propertyValues[id] += val;
         }
     }
 

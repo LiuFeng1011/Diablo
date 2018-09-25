@@ -166,8 +166,8 @@ public class RoleData
 
     public List<AHInt> choseEquipList = new List<AHInt>();
 
-    //public AHInt strength = 1;//力量 1攻击力
-    //public AHInt agility = 1;//敏捷 0.01攻击速度，0.005闪避 0.01移动速度
+    //public AHInt strength = 1;//力量 1攻击力，1生命，3护甲 ，0.1生命回复
+    //public AHInt agility = 1;//敏捷 1攻击速度，0.3闪避 0.01移动速度
     //public AHInt brains = 1;//智力 0.01释放技能概率 
 
     public Dictionary<int, float> additionPropertyList = new Dictionary<int, float>();

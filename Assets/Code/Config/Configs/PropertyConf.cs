@@ -12,8 +12,6 @@ public class PropertyConf  {
     public float baseval;  /* 基础值 */
     public float randomrange;  /*  随机范围  */
 
-    public float levelrate;
-
     public float levelval;
 
     public int formula;

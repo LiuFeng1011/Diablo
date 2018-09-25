@@ -26,8 +26,13 @@ public class CharacterConf
 
     public int price;//价格
 
+    public int strength;//力量
+    public int agility;//敏捷
+    public int brains;//智利
     public float life;    /*  生命  */
     public float liferevive;  /*  生命回复    */
+    public float mana;//魔法 
+    public float manarevive;// 魔法回复
     public float atkForce;    /*  攻击力 */
     public float moveSpeed;   /*  移动速度加成  */
     public float atkSpeed;    /*  攻击速度加成  */
@@ -49,6 +54,8 @@ public class CharacterConf
 
         propertyValues[(int)enCharacterProperty.life] = life;
         propertyValues[(int)enCharacterProperty.liferevive] = liferevive;
+        propertyValues[(int)enCharacterProperty.mana] = mana;
+        propertyValues[(int)enCharacterProperty.manarevive] = manarevive;
         propertyValues[(int)enCharacterProperty.atkForce] = atkForce;
         propertyValues[(int)enCharacterProperty.moveSpeed] = moveSpeed;
         propertyValues[(int)enCharacterProperty.atkSpeed] = atkSpeed;
@@ -57,6 +64,10 @@ public class CharacterConf
         propertyValues[(int)enCharacterProperty.armor] = armor;
         propertyValues[(int)enCharacterProperty.avoid] = avoid;
         propertyValues[(int)enCharacterProperty.returnhurt] = returnhurt;
+
+        propertyValues[(int)enCharacterProperty.strength] = strength;
+        propertyValues[(int)enCharacterProperty.agility] = agility;
+        propertyValues[(int)enCharacterProperty.brains] = brains;
     }
 }
 

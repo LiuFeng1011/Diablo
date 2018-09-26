@@ -476,6 +476,7 @@ public class InGameBaseCharacter : InGameBaseObj
                                                    source.propertys.GetProperty(enCharacterProperty.equipdrop) +
                                                    this.conf.equipdrop);
                 }
+                EventData.CreateEvent(EventID.EVENT_DATA_KILLENEMY).AddData(source,this).Send();
             }
         }
 
@@ -504,7 +505,8 @@ public class InGameBaseCharacter : InGameBaseObj
     //生命值变化
     public bool ChangeLife(InGameBaseObj source,int val,bool iscombo){
         if (val == 0) return false;
-        life = Mathf.Clamp(life + val,0,propertys.GetProperty(enCharacterProperty.life));
+        float maxlife = propertys.GetProperty(enCharacterProperty.life);
+        life = Mathf.Clamp(life + val,0,maxlife);
 
         if (life <= 0){
             SetDie(false);
@@ -525,6 +527,8 @@ public class InGameBaseCharacter : InGameBaseObj
         ChangeLifeLabel.CreateChangeLifeLabel(transform.position + 
                                               new Vector3(0,this.boxSize.y+0.2f,0),c,val+"");
 
+        EventData.CreateEvent(EventID.EVENT_DATA_CHANGELIFE).
+                 AddData(this).Send();
         return true;
     }
 

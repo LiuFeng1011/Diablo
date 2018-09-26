@@ -8,11 +8,13 @@ public class HandleMessage : BaseUnityObject {
 
     public void Awake(){
         instance = this;
+        Init();
     }
 
     public void Init(){
         EventManager.Register(this,
-                              EventID.EVENT_DATA_USELEVELUPPOINT);
+                              EventID.EVENT_DATA_USELEVELUPPOINT,
+                              EventID.EVENT_DATA_KILLENEMY);
     }
 
     public override void HandleEvent(EventData resp)
@@ -22,7 +24,13 @@ public class HandleMessage : BaseUnityObject {
             case EventID.EVENT_DATA_USELEVELUPPOINT:
                 int roleid = (int)resp.sUserData[0];
                 int type = (int)resp.sUserData[1];
-                UserDataManager.instance.AddLevelupProperty(roleid,type);
+                UserDataManager.instance.UseLevelupProperty(roleid,type);
+                break;
+            case EventID.EVENT_DATA_KILLENEMY:
+                InGameBaseCharacter source = (InGameBaseCharacter)resp.sUserData[0];
+                InGameBaseCharacter target = (InGameBaseCharacter)resp.sUserData[1];
+
+                UserDataManager.instance.AddExp(source.GetData().instanceid,target.level);
                 break;
         }
     }

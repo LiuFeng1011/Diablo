@@ -47,7 +47,7 @@ public class EquipSystem : BaseGameObject {
 
             EquipProperty e = new EquipProperty();
             e.id = propertyConf.id;
-            float val = propertyConf.baseval + propertyConf.levelval * equip.level;
+            float val = propertyConf.baseval + propertyConf.GetLevelupVal(equip.level);
             e.val = Mathf.Ceil(val + Random.Range(-val * propertyConf.randomrange, val * propertyConf.randomrange));
             e.val = e.val * (propertyData.propertyList[i].rate / 100f);
             propertyList.Add(e);
@@ -58,7 +58,7 @@ public class EquipSystem : BaseGameObject {
             PropertyConf propertyConf = propertys[Random.Range(0, propertys.Count)];
             EquipProperty e = new EquipProperty();
             e.id = propertyConf.id;
-            float val = propertyConf.baseval + propertyConf.levelval * equip.level;
+            float val = propertyConf.baseval + propertyConf.GetLevelupVal(equip.level);
             e.val = Mathf.Ceil(val + Random.Range(-val * propertyConf.randomrange, val * propertyConf.randomrange));
             propertyList.Add(e);
         }

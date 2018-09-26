@@ -182,13 +182,17 @@ public class UserDataManager : BaseSingleton<UserDataManager> {
             }
             leveldata = ConfigManager.levelExpManager.dataMap[data.level];
 
-            EventData.CreateEvent(EventID.EVENT_GAME_ROLR_LEVELUP).AddData(data);
+            EventData.CreateEvent(EventID.EVENT_GAME_ROLR_LEVELUP).AddData(data).Send();
         }
 
         SaveData(userDataRole);
+
+        EventData.CreateEvent(EventID.EVENT_DATA_CHANGEEXP).AddData(data).Send();
+
     }
 
-    public void AddLevelupProperty(int roleid,int type){
+    //使用升级点
+    public void UseLevelupProperty(int roleid,int type){
         RoleData data = GetRoleData(roleid);
 
         if(data.levelupPoint <= 0){

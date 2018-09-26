@@ -15,6 +15,14 @@ public class PropertyConf  {
     public float levelval;
 
     public int formula;
+
+    public float GetLevelupVal(int level){
+        if(isLevelup == 0){
+            return levelval * level;
+        }
+
+        return level * level * levelval / isLevelup + levelval;
+    }
 }
 
 public class PropertyConfManager

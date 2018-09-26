@@ -106,6 +106,7 @@ public class InGameBaseCharacter : InGameBaseObj
     public int level;
     [HideInInspector] public CharacterProperty propertys;
     public float life = 10;
+    public float mana = 10;
 
     protected CharacterConf conf;
 
@@ -125,6 +126,9 @@ public class InGameBaseCharacter : InGameBaseObj
     //生命回复时间
     float lifeReviveTime = 0;
     float lifeReviveCount = 0f;
+
+    float manaReviveTime = 0;
+    float manaReviveCount = 0f;
 
     public override void Init(int instanceId, int confid, enMSCamp camp)
     {
@@ -150,7 +154,7 @@ public class InGameBaseCharacter : InGameBaseObj
         //注册到UI界面
         //InGameManager.GetInstance().inGameUIManager.AddRole(this);
 
-        //this.level = conf.level;
+        this.level = conf.level;
         ResetAllProperty(true);
 
         lastPos = transform.position;
@@ -185,6 +189,7 @@ public class InGameBaseCharacter : InGameBaseObj
     public void InitProperty()
     {
         life = propertys.GetProperty(enCharacterProperty.life);//生命
+        mana = propertys.GetProperty(enCharacterProperty.mana);//魔法
     }
 
     public virtual void SetBaseProperty()
@@ -216,6 +221,12 @@ public class InGameBaseCharacter : InGameBaseObj
                 propertys.propertyValues[i] = 0;
             }
         }
+
+        float baselife = propertys.propertyValues[(int)enCharacterProperty.life];
+        propertys.propertyValues[(int)enCharacterProperty.life] = this.level * this.level * baselife / 2 + baselife;
+
+        float baseforce = propertys.propertyValues[(int)enCharacterProperty.atkForce];
+        propertys.propertyValues[(int)enCharacterProperty.atkForce] = this.level * this.level * baseforce / 10 + baseforce;
 
         //附加属性
         if (data == null) return;
@@ -257,11 +268,8 @@ public class InGameBaseCharacter : InGameBaseObj
     public virtual void ResetAllProperty(bool isinit = false)
     {
         SetBaseProperty();
-        if (camp == enMSCamp.en_camp_player) Debug.Log("1old val : " + propertys.propertyValues[5]);
         SetEquipProperty();
-        if (camp == enMSCamp.en_camp_player) Debug.Log("2old val : " + propertys.propertyValues[5]);
         SetMainPropertyAddition();
-        if (camp == enMSCamp.en_camp_player)Debug.Log("3old val : " + propertys.propertyValues[5]);
 
         for (int i = 1; i < propertys.propertyValues.Length; i++)
         {
@@ -338,6 +346,24 @@ public class InGameBaseCharacter : InGameBaseObj
                     int addval = (int)lifeReviveCount;
                     this.ChangeLife(null,addval, false);
                     lifeReviveCount -= addval;
+                }
+            }
+        }
+
+        //魔法回复
+        if (mana < propertys.GetProperty(enCharacterProperty.mana))
+        {
+            manaReviveTime += Time.deltaTime;
+            if (manaReviveTime >= 1)
+            {
+                manaReviveTime -= 1;
+                manaReviveCount += propertys.GetProperty(enCharacterProperty.manarevive);
+
+                if (manaReviveCount >= 1)
+                {
+                    int addval = (int)manaReviveCount;
+                    this.ChangeMana(addval);
+                    manaReviveCount -= addval;
                 }
             }
         }
@@ -461,6 +487,18 @@ public class InGameBaseCharacter : InGameBaseObj
 
     public void Delself(){
         Destroy(gameObject);
+    }
+
+    public bool ChangeMana(int val){
+        if(mana + val < 0){
+            return false;
+        }
+        mana += val;
+
+        if(mana > propertys.GetProperty(enCharacterProperty.mana)){
+            mana = propertys.GetProperty(enCharacterProperty.mana);
+        }
+        return true;
     }
 
     //生命值变化

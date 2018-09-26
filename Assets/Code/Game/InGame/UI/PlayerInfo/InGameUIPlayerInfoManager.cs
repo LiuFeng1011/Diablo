@@ -24,11 +24,6 @@ public class InGameUIPlayerInfoManager : BaseGameObject {
 		//寻找玩家
 		foreach (KeyValuePair<int,InGameUIPlayerInfoUnit> kv in infoList)
 		{
-			if(!GameCommon.IsPositionInScreen(kv.Value.role.transform.position)){
-				kv.Value.gameObject.SetActive(false);
-				continue;
-			}
-			kv.Value.gameObject.SetActive(true);
 			kv.Value.InGameUIPlayerInfoUnitUpdate();
 		}
 	}

@@ -11,7 +11,7 @@ public class PropertyConf  {
     public string boardDes;
     public float baseval;  /* 基础值 */
     public float randomrange;  /*  随机范围  */
-
+    public int isLevelup;
     public float levelval;
 
     public int formula;

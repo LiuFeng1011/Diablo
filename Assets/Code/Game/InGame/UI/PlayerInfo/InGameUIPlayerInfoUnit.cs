@@ -10,6 +10,8 @@ public class InGameUIPlayerInfoUnit : MonoBehaviour {
     public UILabel eliteNameLabel { get; private set; }
 	public UISprite	lifeSprite{get ; private set;}
 
+    private float showTime = 0;
+
 	Vector3 basePos;
 	void Awake(){
         lifeSprite 	= transform.Find("LifeLine").Find("life").GetComponent<UISprite>();
@@ -40,10 +42,27 @@ public class InGameUIPlayerInfoUnit : MonoBehaviour {
 	
 	// Update is called once per frame
     public void InGameUIPlayerInfoUnitUpdate () {
-        
+
+        if (!GameCommon.IsPositionInScreen(role.transform.position))
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+        showTime -= Time.deltaTime;
+        if(showTime <= 0){
+            gameObject.SetActive(false);
+        }else{
+            gameObject.SetActive(true);
+        }
+
 		//血条
 
         float toval = (float)role.life / (float)role.propertys.GetProperty(enCharacterProperty.life);
+
+        if(Mathf.Abs(toval - lifeSprite.fillAmount) > 0.01f){
+            showTime = 3f;
+        }
+
         float addval = (toval - lifeSprite.fillAmount) * 0.1f;
 
         lifeSprite.fillAmount = toval + addval;

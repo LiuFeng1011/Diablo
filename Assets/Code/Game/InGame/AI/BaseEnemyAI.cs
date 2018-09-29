@@ -12,6 +12,8 @@ public class BaseEnemyAI : BaseGameObject {
     AIState state = AIState.run;
     InGameBaseCharacter character;
 
+    float fllowTime = 0f;
+
     public void Init(InGameBaseCharacter character){
         this.character = character;
     }
@@ -29,6 +31,7 @@ public class BaseEnemyAI : BaseGameObject {
                     if (Vector2.Distance(objlist[i].transform.position, this.character.transform.position) < 4f){
                         character.StartAtk((InGameBaseCharacter)objlist[i]);
                         state = AIState.atk;
+                        fllowTime = 0f;
                         break;
                     }
                 }
@@ -41,12 +44,15 @@ public class BaseEnemyAI : BaseGameObject {
                 character.StopAction();
                 return;
             }
-            if (Vector2.Distance(character.actionManager.target.transform.position,
-                                 this.character.transform.position) > 4f)
+
+            fllowTime += Time.deltaTime; 
+            if (Vector2.Distance(character.actionManager.target.transform.position,this.character.transform.position) > 4f 
+                && fllowTime > 5f)
             {  
                 state = AIState.run;
                 //character.StopRun();
                 character.StopAction();
+                fllowTime = 0f;
             }
 
         }

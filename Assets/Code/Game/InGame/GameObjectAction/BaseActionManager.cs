@@ -18,7 +18,7 @@ public class BaseActionManager : BaseGameObject {
     public InGameBaseObj target;
 
     public Vector3 targetPos = Vector3.zero;
-
+    Vector3 targetMapPos = Vector3.zero;
     AStar astar = new AStar();
     List<Vector2> path = new List<Vector2>();
 
@@ -87,6 +87,12 @@ public class BaseActionManager : BaseGameObject {
 
     public virtual void StartAction(InGameBaseObj target,Vector3 targetPos,int dis){
         astarDis = dis;
+        Vector3 _targetMapPos = GameCommon.GetMapPos(targetPos);
+
+        if(_targetMapPos == targetMapPos){
+            return;
+        }
+
         Vector2 startPos = GameCommon.GetMapPos(parent.transform.position);
         MazeMapManager gameMap = InGameManager.GetInstance().inGameLevelManager.gameMap;
         List<Vector2> _path = astar.StratAStar(
@@ -99,37 +105,43 @@ public class BaseActionManager : BaseGameObject {
         {
             return;
         }
-        _path.Insert(0, startPos);
-
-        //将两个对角路径之间的路径删除,避免走Z形路线
-        List<int> dellist = new List<int>();
-        if(_path.Count >= 3){
-            for (int i = 0; i < _path.Count - 2; i++)
-            {
-                Vector2 start = _path[i];
-                Vector2 end = _path[i+2];
-                if(Mathf.Abs((int)start.x - (int)end.x ) == 1 && Mathf.Abs((int)start.y - (int)end.y) == 1){
-                    dellist.Add(i+1);
-                    i += 1;
-                }
-            }
-        }
-
-        for (int i = dellist.Count - 1; i >= 0; i -- ){
-            _path.RemoveAt(dellist[i]);
-
-        }
-
-        _path.RemoveAt(0);
-
+        HandlePath(startPos,_path);
         path = _path;
 
         isaction = true;
         this.target = target;
         this.targetPos = targetPos;
-
+        targetMapPos = _targetMapPos;
         atkTime = 0;
         state = ActionState.move;
+
+    }
+
+    void HandlePath(Vector2 startPos,List<Vector2> _path){
+        _path.Insert(0, startPos);
+        //将两个对角路径之间的路径删除,避免走Z形路线
+        List<int> dellist = new List<int>();
+        if (_path.Count >= 3)
+        {
+            for (int i = 0; i < _path.Count - 2; i++)
+            {
+                Vector2 start = _path[i];
+                Vector2 end = _path[i + 2];
+                if (Mathf.Abs((int)start.x - (int)end.x) == 1 && Mathf.Abs((int)start.y - (int)end.y) == 1)
+                {
+                    dellist.Add(i + 1);
+                    i += 1;
+                }
+            }
+        }
+
+        for (int i = dellist.Count - 1; i >= 0; i--)
+        {
+            _path.RemoveAt(dellist[i]);
+
+        }
+
+        _path.RemoveAt(0);
 
     }
 

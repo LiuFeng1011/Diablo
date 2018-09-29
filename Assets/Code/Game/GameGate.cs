@@ -33,6 +33,8 @@ public class GameGate : BaseUnityObject {
         //消息管理
         HandleMessage hm = gameHeart.AddComponent<HandleMessage>();
 
+        gameHeart.AddComponent<ShowFPS>();
+
         ConfigManager.LoadData();
         (new EventChangeScene(GameSceneManager.SceneTag.Logo)).Send();
 

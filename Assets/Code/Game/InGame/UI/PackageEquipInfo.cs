@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PackageEquipInfo : BaseUnityObject {
     public GameObject content;
-    public UILabel equipNameLabel, equipPropertyLabel;
+    public UILabel equipNameLabel,equipLvLabel, equipPropertyLabel;
     public GameObject delBtn,unequipBtn,equipBtn;
     public UISprite iconSprite;
 
@@ -32,6 +32,8 @@ public class PackageEquipInfo : BaseUnityObject {
         iconSprite.spriteName = conf.prefabname;
         equipNameLabel.text = conf.name;
         equipNameLabel.color = ConfigManager.equipQualityManager.colordic[data.qualityID];
+
+        equipLvLabel.text = "1";
 
         string propertyText = "";
         for (int i = 0; i < data.propertyList.Count; i++)

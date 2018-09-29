@@ -145,10 +145,12 @@ public class MapEditor : MonoBehaviour {
 
         //foreach (GameObject sceneObject in Object.FindObjectsOfType(typeof(GameObject))){
 
+        #if UNITY_EDITOR
         foreach (GameObject sceneObject in Selection.gameObjects)
         {
             SetObjPos(sceneObject, sceneObject.transform.position);
         }
+    #endif
     }
     public static void SetObjPos(GameObject obj, Vector3 pos)
     {

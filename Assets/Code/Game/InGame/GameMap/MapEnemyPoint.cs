@@ -64,6 +64,7 @@ public class MapEnemyPoint : InGameBaseMapObj {
 
 	// Use this for initialization
 	void Start () {
+        flushTime = 99999;
         intervalTime = flushTime;
 
         EventData.CreateEvent(EventID.EVENT_ADD_ENEMYPOINT).AddData(this).Send();

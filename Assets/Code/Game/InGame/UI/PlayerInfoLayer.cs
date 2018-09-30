@@ -11,6 +11,7 @@ public class PlayerInfoLayer : BasePopLayer {
     public UIGrid grid;
 
     public GameObject propertyItem;
+    public GameObject mainPropertyItem;
 
     List<PropertyListItem> itemList = new List<PropertyListItem>();
 
@@ -30,30 +31,31 @@ public class PlayerInfoLayer : BasePopLayer {
 
     public void Init()
     {
-
         InGameBaseCharacter role = InGameManager.GetInstance().inGamePlayerManager.GetRole();
 
         nameLabel.text = role.GetData().name;
 
-        //string propertyString = "";
+        Dictionary<int,PropertyConf> propertyMap = ConfigManager.propertyConfManager.dataMap;
+        Dictionary<int,List<PropertyConf>> mainPropertyMap = ConfigManager.propertyConfManager.mainDataMap;
 
-        List<PropertyConf> propertyList = ConfigManager.propertyConfManager.datas;
+        foreach(KeyValuePair<int,List<PropertyConf>> kv in mainPropertyMap){
 
-        for (int i = 0; i < propertyList.Count; i ++){
-            PropertyConf conf = propertyList[i];
+            CreateProperty(mainPropertyItem,propertyMap[kv.Key],role);
 
-            //propertyString += string.Format(conf.des, role.propertys.propertyValues[conf.id]);
-            //propertyString += "\n";
-
-            GameObject obj = NGUITools.AddChild(grid.gameObject, propertyItem);
-            PropertyListItem item = obj.GetComponent<PropertyListItem>();
-            item.Init(conf, role.propertys.propertyValues[conf.id]);
-
-            itemList.Add(item);
+            List<PropertyConf> list = kv.Value;
+            for (int i = 0; i < list.Count;  i++){
+                CreateProperty(propertyItem,list[i], role);
+            }
         }
-        //propertyLabel.text = propertyString;
+
     }
 
+    public void CreateProperty(GameObject prefab , PropertyConf conf, InGameBaseCharacter role){
 
+        GameObject obj = NGUITools.AddChild(grid.gameObject, prefab);
+        PropertyListItem item = obj.GetComponent<PropertyListItem>();
+        item.Init(conf, role.propertys.propertyValues[conf.id]);
+        itemList.Add(item);
+    }
 
 }

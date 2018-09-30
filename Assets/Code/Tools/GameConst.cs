@@ -108,7 +108,7 @@ public static class GameConst  {
         return Application.dataPath + "/Resources/LevelData/";
     }
 	public static string GetExcelFilePath(string filename){
-		return Application.dataPath+"/ExcelTools/xlsx/"+filename;
+        return Application.dataPath+"/ExcelTools/xlsx/"+filename;
 	}
 
 	public static string GetConfigFilePath(string tablename){

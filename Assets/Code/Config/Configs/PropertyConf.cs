@@ -11,6 +11,7 @@ public class PropertyConf  {
     public string boardDes;
     public float baseval;  /* 基础值 */
     public float randomrange;  /*  随机范围  */
+    public int mainProerty;
     public int isLevelup;
     public float levelval;
 
@@ -28,16 +29,30 @@ public class PropertyConf  {
 public class PropertyConfManager
 {
     public List<PropertyConf> datas { get; private set; }
+    //id -> data
     public Dictionary<int,PropertyConf> dataMap { get; private set; }
+    //mainproperty -> data
+    public Dictionary<int, List<PropertyConf>> mainDataMap { get; private set; }
+
     public void Load()
     {
         if (datas != null) datas.Clear();
+
         if (dataMap != null) dataMap.Clear();
         else dataMap = new Dictionary<int, PropertyConf>();
 
+        if (mainDataMap != null) mainDataMap.Clear();
+        else mainDataMap = new Dictionary<int, List<PropertyConf>>();
+
         datas = ConfigManager.Load<PropertyConf>();
         for (int i = 0; i < datas.Count; i ++){
-            dataMap.Add(datas[i].id,datas[i]);
+            PropertyConf data = datas[i];
+            dataMap.Add(data.id,data);
+
+            if(!mainDataMap.ContainsKey(data.mainProerty)){
+                mainDataMap.Add(data.mainProerty,new List<PropertyConf>());
+            }
+            mainDataMap[data.mainProerty].Add(data);
         }
     }
 

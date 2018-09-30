@@ -252,16 +252,18 @@ public class InGameBaseCharacter : InGameBaseObj
 
     //主属性加成
     public void SetMainPropertyAddition(){
-        Dictionary<int,List<int>> dataMap = ConfigManager.mainPropertyManager.dataMap;
+        
+        List<PropertyConf> pconflist = ConfigManager.propertyConfManager.datas;
 
-        foreach(KeyValuePair<int, List<int>> kv in dataMap){
-            List<int> additionList = kv.Value;
-            for (int i = 0; i < additionList.Count; i ++){
-                float pointval = ConfigManager.propertyConfManager.dataMap[additionList[i]].levelval;
-
-                AddPropertyVal(additionList[i],propertys.propertyValues[kv.Key]*pointval , 1);
+        for (int i = 0; i < pconflist.Count; i ++){
+            PropertyConf _conf = pconflist[i];
+            if(_conf.id < 0){
+                continue;
             }
+
+            AddPropertyVal(_conf.id, propertys.propertyValues[_conf.mainProerty] * _conf.levelval, 1);
         }
+
     }
 
     //计算属性

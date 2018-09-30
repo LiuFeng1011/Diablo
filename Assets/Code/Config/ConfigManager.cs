@@ -31,7 +31,6 @@ public class ConfigManager  {
     public static MapGroupConfManager mapGroupConfManager = new MapGroupConfManager();
     public static EquipQualityManager equipQualityManager = new EquipQualityManager();
     public static LevelExpManager levelExpManager = new LevelExpManager();
-    public static MainPropertyManager mainPropertyManager = new MainPropertyManager();
 
     static MapObjConfManager editorMapObjConfManager = null ;
 
@@ -47,7 +46,6 @@ public class ConfigManager  {
         mapGroupConfManager.Load();
         equipQualityManager.Load();
         levelExpManager.Load();
-        mainPropertyManager.Load();
         Debuger.Log("----------配置表管理器启动成功-----------");
 
     }

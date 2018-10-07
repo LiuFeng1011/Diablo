@@ -257,7 +257,7 @@ public class InGameBaseCharacter : InGameBaseObj
 
         for (int i = 0; i < pconflist.Count; i ++){
             PropertyConf _conf = pconflist[i];
-            if(_conf.id < 0){
+            if(_conf.mainProerty < 0){
                 continue;
             }
 
@@ -431,7 +431,7 @@ public class InGameBaseCharacter : InGameBaseObj
 
     string lastAnimatorName = "";
     public void SetAnimatorState(AnimatorState state,float speed){
-
+        if (anim == null) return;
         if (state != AnimatorState.Dead &&  IsDie()) return;
         //if (state == AnimatorState.atk)anim.Play(""+state);
         //anim.SetInteger("state", (int)state);

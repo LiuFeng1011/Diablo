@@ -17,7 +17,8 @@ public class InGamePlayerManager : InGameBaseManager {
                               EventID.EVENT_GAME_TOUCH_OBJ,
                               EventID.EVENT_UI_EQUIP,
                               EventID.EVENT_UI_DELEQUIP,
-                              EventID.EVENT_UI_UNEQUIP);
+                              EventID.EVENT_UI_UNEQUIP,
+                              EventID.EVENT_DATA_REFRESHPROPERTY);
 
 
         RoleData rd = UserDataManager.instance.GetChooseRoleData();
@@ -40,6 +41,7 @@ public class InGamePlayerManager : InGameBaseManager {
             role.AddEquip(edata);
         }
 
+        //UserDataManager.instance.AddLevelupPoint(role.GetData().instanceid,5);
         role.ResetAllProperty(true);
         EventData.CreateEvent(EventID.EVENT_GAME_INITROLE).AddData(role).Send();
 
@@ -121,6 +123,10 @@ public class InGamePlayerManager : InGameBaseManager {
             case EventID.EVENT_UI_UNEQUIP:
                 int unequipinstanceid = int.Parse(resp.sUserData[0].ToString());
                 CancelEquip(unequipinstanceid);
+                break;
+
+            case EventID.EVENT_DATA_REFRESHPROPERTY:
+                role.ResetAllProperty();
                 break;
         }
 

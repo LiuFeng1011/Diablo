@@ -152,6 +152,7 @@ public class BaseActionManager : BaseGameObject {
         parent.SetAnimatorState(InGameBaseCharacter.AnimatorState.Idle, 1);
         atkTime = 0;
         target = null;
+        targetMapPos = Vector3.zero;
         state = ActionState.non;
     }
 
@@ -213,19 +214,27 @@ public class BaseActionManager : BaseGameObject {
 
         if (GameConst.CAMP_ATK[(int)target.camp, (int)parent.camp] == 0)
         {
+            
             if (target.GetObjType() == InGameBaseObj.enObjType.equip)
             {
                 InGameBaseEquip equip = (InGameBaseEquip)target;
                 EquipData e = EquipSystem.GetInstance().RandEquipProperty(equip);
                 InGameManager.GetInstance().inGamePlayerManager.AddEquip(e);
                 MonoBehaviour.Destroy(equip.gameObject);
+                parent.StopAction();
+                return;
             }else if(target.GetObjType() == InGameBaseObj.enObjType.map){
                 InGameBaseMapObj mapobj = (InGameBaseMapObj)target;
-                mapobj.HandleFuntion(parent);
-            }
-            parent.StopAction();
+                bool isfin = mapobj.HandleFuntion(parent);
 
-            return;
+                if(!isfin){
+                    Debug.Log("stop action");
+                    parent.StopAction();
+                    return;
+                }
+                Debug.Log("continue action");
+            }
+
         }
 
         parent.SetAnimatorState(parent.GetAtkAnimator(), parent.GetAtkSpeed());
@@ -239,7 +248,22 @@ public class BaseActionManager : BaseGameObject {
         state = ActionState.atkend;
         parent.SetAnimatorState(InGameBaseCharacter.AnimatorState.Idle, 1);
         if(target != null){
-            BaseSkill.CreateSkill(parent.GetBaseSkillID(), parent, (InGameBaseCharacter)target);
+
+            if (GameConst.CAMP_ATK[(int)target.camp, (int)parent.camp] == 0)
+            {
+                if (target.GetObjType() == InGameBaseObj.enObjType.map)
+                {
+                    InGameBaseMapObj mapobj = (InGameBaseMapObj)target;
+                    bool isdie = mapobj.Hurt(parent);
+                    if(isdie){
+                        state = ActionState.non;
+                        return;
+                    }
+                }
+            }else{
+                BaseSkill.CreateSkill(parent.GetBaseSkillID(), parent, (InGameBaseCharacter)target);
+            }
+
         }
 
         //((InGameBaseCharacter)target).ChangeLife(-parent.GetAtkForce());

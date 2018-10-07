@@ -165,7 +165,7 @@ public class MazeMapManager : BaseGameMapManager {
                     if(data.objList[i].obj == null){
                         MapPointObj mapPointObj = data.objList[i];
                         GameObject obj = GetPoolObj(mapPointObj.conf);
-                        obj.transform.position = GameCommon.GetWorldPos(mapPointObj.pos);
+                        obj.transform.position = GameCommon.GetWorldPos(mapPointObj.pos) + new Vector2(0,Random.Range(0,0.2f));
 
                         obj.transform.localScale = mapPointObj.scale;
                         GameCommon.SetObjZIndex(obj, mapPointObj.conf.depth);
@@ -177,6 +177,41 @@ public class MazeMapManager : BaseGameMapManager {
         }
     }
 
+
+    //从地图中删除一个障碍
+    public void DelMapObj(Vector3 pos, MapObjConf conf){
+
+        Vector2 startMapPos = GameCommon.GetMapPos(pos);
+
+        int startX = (int)startMapPos.x;
+        int startY = (int)startMapPos.y;
+
+
+        InGameMapPointData data = map[startX, startY];
+        for (int i = 0; i < data.objList.Count; i++)
+        {
+            MapPointObj mapPointObj = data.objList[i];
+            if (mapPointObj.obj == null)
+            {
+                if (mapPointObj.conf.id == conf.id){
+                    AddPoolObj(conf.id, mapPointObj.obj);
+                    data.objList.RemoveAt(i);
+
+                    if (map[startX, startX].type == MazeCreate.PointType.wallfull) continue;
+                    if (mapPointObj.conf.depth >= 3)
+                    {
+                        map[startX, startX].type = MazeCreate.PointType.wallfull;
+                        astarArray[startX, startX] = 0;
+                    }
+                    else
+                    {
+                        map[startX, startX].type = MazeCreate.PointType.way;
+                        astarArray[startX, startX] = 1;
+                    }
+                }
+            }
+        }
+    }
     //把物体放到池里
     protected void AddPoolObj(int id,GameObject obj){
         //obj.transform.position = new Vector3(-10000, 0, 0);

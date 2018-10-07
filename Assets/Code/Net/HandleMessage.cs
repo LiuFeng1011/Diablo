@@ -13,7 +13,7 @@ public class HandleMessage : BaseUnityObject {
 
     public void Init(){
         EventManager.Register(this,
-                              EventID.EVENT_DATA_USELEVELUPPOINT,
+                              EventID.EVENT_DATA_USE_LEVELUP_POINT,
                               EventID.EVENT_DATA_KILLENEMY);
     }
 
@@ -21,9 +21,9 @@ public class HandleMessage : BaseUnityObject {
     {
         base.HandleEvent(resp);
         switch(resp.eid){
-            case EventID.EVENT_DATA_USELEVELUPPOINT:
-                int roleid = (int)resp.sUserData[0];
-                int type = (int)resp.sUserData[1];
+            case EventID.EVENT_DATA_USE_LEVELUP_POINT:
+                int roleid = int.Parse(resp.sUserData[0].ToString());
+                int type = int.Parse(resp.sUserData[1].ToString());
                 UserDataManager.instance.UseLevelupProperty(roleid,type);
                 break;
             case EventID.EVENT_DATA_KILLENEMY:

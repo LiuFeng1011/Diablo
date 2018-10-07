@@ -16,9 +16,10 @@ public class MapGateway : InGameBaseMapObj {
 		
 	}
 
-    public override void HandleFuntion(InGameBaseObj obj)
+    public override bool HandleFuntion(InGameBaseObj obj)
     {
         Debug.Log("MapGateway HandleFuntion :targetid : " + targetid);
+        return false;
     }
 
     public override void Serialize(DataStream writer)

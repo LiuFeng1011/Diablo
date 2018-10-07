@@ -191,33 +191,45 @@ public class UserDataManager : BaseSingleton<UserDataManager> {
 
     }
 
-    //使用升级点
-    public void UseLevelupProperty(int roleid,int type){
+    //添加升级点数 仅测试用
+    public void AddLevelupPoint(int roleid,int count){
+        RoleData data = GetRoleData(roleid);
+        data.levelupPoint+=count;
+        SaveData(userDataRole);
+    }
+
+    /// <summary>
+    /// 使用升级点
+    /// </summary>
+    /// <param name="roleid">Roleid.</param>
+    /// <param name="propertyid">.</param>
+    public void UseLevelupProperty(int roleid,int propertyid){
         RoleData data = GetRoleData(roleid);
 
         if(data.levelupPoint <= 0){
             return;
         }
         data.levelupPoint--;
-        AddProperty(roleid,type,1);
+        AddProperty(roleid,propertyid,1);
     }
 
-    public void AddProperty(int roleid, int type, int count)
+    public void AddProperty(int roleid, int propertyid, int count)
     {
         RoleData data = GetRoleData(roleid);
 
         float val = count;
-        if (data.additionPropertyList.ContainsKey(type))
+        if (data.additionPropertyList.ContainsKey(propertyid))
         {
-            data.additionPropertyList[type] += val;
+            data.additionPropertyList[propertyid] += val;
         }
         else
         {
-            data.additionPropertyList.Add(type, val);
+            data.additionPropertyList.Add(propertyid, val);
         }
 
         SaveData(userDataRole);
 
+        Debug.Log("AddProperty");
         EventData.CreateEvent(EventID.EVENT_DATA_REFRESHPROPERTY).Send();
     }
     //=========================EQUIP=============================

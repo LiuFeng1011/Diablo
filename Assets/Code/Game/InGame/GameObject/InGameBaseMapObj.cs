@@ -10,7 +10,14 @@ public class InGameBaseMapObj : InGameBaseObj {
 
     }
 
-    public virtual void HandleFuntion(InGameBaseObj obj){
-        
+    //是否结束逻辑【是否需要攻击】
+    public virtual bool HandleFuntion(InGameBaseObj obj){
+        return false;
+    }
+
+    //
+    public virtual bool Hurt(InGameBaseObj obj)
+    {
+        return false;
     }
 }

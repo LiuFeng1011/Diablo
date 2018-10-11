@@ -12,7 +12,15 @@ public class OrderObjList : MonoBehaviour {
         GameObject[] go = Selection.gameObjects;
 
         for (int i = 0; i < go.Length;  i++){
-            go[i].transform.localPosition = GameCommon.GetWorldPos(go[i].transform.parent.position + new Vector3(0,i,0));
+
+            Transform transform = go[i].transform;
+            int size = (int)Mathf.Sqrt(transform.childCount);
+            for (int j = 0; j < transform.childCount;j ++){
+                Transform child = transform.GetChild(j);
+                child.transform.localPosition = GameCommon.GetWorldPos(new Vector3(j / size , j % size , 0));
+            }
+
+
         }
 
     }  

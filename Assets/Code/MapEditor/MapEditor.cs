@@ -83,7 +83,7 @@ public class MapEditor : MonoBehaviour {
         Camera cam = sceneView.camera;
         Vector3 mousepos = Event.current.mousePosition;
         mousepos.z = 0;
-        int offset = 2;
+        int offset = 1;
         mousepos.x *= offset;
         mousepos.y = (cam.pixelHeight - mousepos.y * offset);
 

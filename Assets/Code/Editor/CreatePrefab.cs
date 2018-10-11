@@ -78,8 +78,8 @@ public class CreatePrefab : MonoBehaviour {
             spriteObj.transform.parent = prefabObj.transform;
             sr.sprite = sprite;
 
-            spriteObj.transform.localScale = new Vector3(1f, 1f, 1f);
-            spriteObj.transform.localPosition = new Vector3(0f, -0.613f, 0f);
+            spriteObj.transform.localScale = new Vector3(2.2f, 2.2f, 1f);
+            spriteObj.transform.localPosition = new Vector3(0f, 0f, 0f);
 
             spriteObj.GetComponent<Renderer>().material = mat;
             //创建预制体
@@ -89,6 +89,8 @@ public class CreatePrefab : MonoBehaviour {
             //GameObject tempObj = Resources.Load(conf.path) as GameObject;
             GameObject pre = AssetDatabase.LoadAssetAtPath("Assets/Resources/" + conf.path + ".prefab", typeof(GameObject)) as GameObject;
             pre = PrefabUtility.InstantiatePrefab(pre) as GameObject;
+
+
 
             //Debug.Log("create : " + prefabName);
             pre.transform.parent = prefabListObj.transform;

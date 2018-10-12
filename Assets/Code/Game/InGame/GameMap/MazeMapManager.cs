@@ -41,8 +41,9 @@ public class MazeMapManager : BaseGameMapManager {
     }
 
     const float mapscale = 1;
+
     public int row = 100, col = 100;
-    public int UPDATE_MAP_SIZE = 30;
+    public int UPDATE_MAP_SIZE = 30; //动态更新地图范围
     public MazeCreate mazeCreate;
     public int Accumulation = 99;//障碍堆积系数
     public int Erosion = 50;//障碍侵蚀系数
@@ -92,6 +93,11 @@ public class MazeMapManager : BaseGameMapManager {
         return manager;
     }
 
+    public static MazeMapManager CreateMapManager(MapConf conf)
+    {
+        return CreateMapManager((MapType)conf.type,conf.group,conf.row,conf.col);
+    }
+
     public virtual void InitMap(int group, int row, int col)
     { 
         mapObj = new GameObject("map");
@@ -117,10 +123,10 @@ public class MazeMapManager : BaseGameMapManager {
         int startX = (int)startMapPos.x - UPDATE_MAP_SIZE / 2;
         int startY = (int)startMapPos.y - UPDATE_MAP_SIZE / 2;
 
-        for (int i = 0; i < lastScreenObj.Count; i ++){
+        for (int i = 0; i < lastScreenObj.Count; i ++){ 
             Vector2 pos = lastScreenObj[i].pos;
-            if (pos.x >= startX && pos.x < startX + UPDATE_MAP_SIZE-1 && 
-                pos.y >= startY && pos.y < startY + UPDATE_MAP_SIZE-1) continue;
+            if (pos.x >= startX && pos.x < startX + UPDATE_MAP_SIZE && 
+                pos.y >= startY && pos.y < startY + UPDATE_MAP_SIZE) continue;
 
             List<MapPointObj> _list = lastScreenObj[i].objList;
             for (int j = 0; j < _list.Count; j ++){
@@ -165,7 +171,7 @@ public class MazeMapManager : BaseGameMapManager {
                     if(data.objList[i].obj == null){
                         MapPointObj mapPointObj = data.objList[i];
                         GameObject obj = GetPoolObj(mapPointObj.conf);
-                        obj.transform.position = GameCommon.GetWorldPos(mapPointObj.pos) + new Vector2(0,Random.Range(0,0.2f));
+                        obj.transform.position = GameCommon.GetWorldPos(mapPointObj.pos) + new Vector2(0,Random.Range(0,0.1f));
 
                         obj.transform.localScale = mapPointObj.scale;
                         GameCommon.SetObjZIndex(obj, mapPointObj.conf.depth);
@@ -214,7 +220,7 @@ public class MazeMapManager : BaseGameMapManager {
     }
     //把物体放到池里
     protected void AddPoolObj(int id,GameObject obj){
-        //obj.transform.position = new Vector3(-10000, 0, 0);
+        obj.transform.position = new Vector3(-10000, 0, 0);
         if (!objPool.ContainsKey(id))
         {
             objPool.Add(id, new List<GameObject>());

@@ -6,8 +6,8 @@ public class MapPointObj{
     public Vector2 pos;
     public Vector3 scale;
     public MapObjConf conf;
-    public GameObject obj;
-    public MapPointObj(MapObjConf conf,GameObject obj, Vector2 pos,Vector3 scale){
+    public InGameBaseMapObj obj;
+    public MapPointObj(MapObjConf conf,InGameBaseMapObj obj, Vector2 pos,Vector3 scale){
         this.conf = conf;
         this.obj = obj;
         this.pos = pos;
@@ -43,7 +43,7 @@ public class MazeMapManager : BaseGameMapManager {
     const float mapscale = 1;
 
     public int row = 100, col = 100;
-    public int UPDATE_MAP_SIZE = 30; //动态更新地图范围
+    public int UPDATE_MAP_SIZE = 20; //动态更新地图范围
     public MazeCreate mazeCreate;
     public int Accumulation = 99;//障碍堆积系数
     public int Erosion = 50;//障碍侵蚀系数
@@ -56,11 +56,14 @@ public class MazeMapManager : BaseGameMapManager {
 
     public SmallMap smallMap;
 
-    public Dictionary<int, List<GameObject>> objPool = new Dictionary<int, List<GameObject>>();
+    public Dictionary<int, List<InGameBaseMapObj>> objPool = new Dictionary<int, List<InGameBaseMapObj>>();
 
     public List<InGameMapPointData> lastScreenObj = new List<InGameMapPointData>();
 
     protected List<Vector2> startPointList = new List<Vector2>();
+
+    //地图元素显示隐藏动画
+    public List< InGameBaseMapObj> mapObjActionList = new List< InGameBaseMapObj>();
 
     /// <summary>
     /// Creates the map manager.
@@ -170,15 +173,30 @@ public class MazeMapManager : BaseGameMapManager {
                 for (int i = 0; i < data.objList.Count; i ++){
                     if(data.objList[i].obj == null){
                         MapPointObj mapPointObj = data.objList[i];
-                        GameObject obj = GetPoolObj(mapPointObj.conf);
+                        InGameBaseMapObj obj = GetPoolObj(mapPointObj.conf);
                         obj.transform.position = GameCommon.GetWorldPos(mapPointObj.pos) + new Vector2(0,Random.Range(0,0.1f));
 
                         obj.transform.localScale = mapPointObj.scale;
-                        GameCommon.SetObjZIndex(obj, mapPointObj.conf.depth);
+
+                        GameCommon.SetObjZIndex(obj.gameObject, mapPointObj.conf.depth);
                         mapPointObj.obj = obj;
+
+                        obj.Show();
+                        mapObjActionList.Add(obj);
                     }
                 }
                 lastScreenObj.Add(data);
+            }
+        }
+
+
+        //处理mapobj 动画
+
+        for (int i = mapObjActionList.Count - 1; i >= 0; i -- ){
+            InGameBaseMapObj obj = mapObjActionList[i];
+            obj.ActionUpdate();
+            if(!obj.isAction){
+                mapObjActionList.RemoveAt(i);
             }
         }
     }
@@ -219,36 +237,51 @@ public class MazeMapManager : BaseGameMapManager {
         }
     }
     //把物体放到池里
-    protected void AddPoolObj(int id,GameObject obj){
-        obj.transform.position = new Vector3(-10000, 0, 0);
+    protected void AddPoolObj(int id,InGameBaseMapObj obj){
+        //obj.transform.position = new Vector3(-10000, 0, 0);
         if (!objPool.ContainsKey(id))
         {
-            objPool.Add(id, new List<GameObject>());
+            objPool.Add(id, new List<InGameBaseMapObj>());
         }
 
         objPool[id].Add(obj);
+
+        mapObjActionList.Add(obj);
+        obj.Hide();
     }
 
     //从池里取出一个物体
-    protected  GameObject GetPoolObj(MapObjConf conf){
-        GameObject obj = null;
+    protected  InGameBaseMapObj GetPoolObj(MapObjConf conf){
+        InGameBaseMapObj obj = null;
         if (!objPool.ContainsKey(conf.id) || objPool[conf.id].Count <= 0){
-            GameObject column = (GameObject)Resources.Load(conf.path);
-            if (column == null)
-            {
-                Debug.LogError(conf.path + "  is null!!!!");
-                return null;
-            }
-            obj = MonoBehaviour.Instantiate(column);
-
-            obj.transform.parent = mapObj.transform;
+            
         }else {
-            obj = objPool[conf.id][objPool[conf.id].Count - 1];
-            objPool[conf.id].RemoveAt(objPool[conf.id].Count - 1);
+            List<InGameBaseMapObj> objlise =  objPool[conf.id];
+            for (int i = 0; i < objlise.Count; i ++){
+                obj = objlise[i];
+                if(obj.isAction ) continue;
+                objlise.RemoveAt(i);
+
+                mapObjActionList.Add( obj);
+                return obj;
+            }
         }
-        return obj;
+        return CreateNewObj(conf);
     }
 
+    InGameBaseMapObj CreateNewObj(MapObjConf conf){
+        GameObject column = (GameObject)Resources.Load(conf.path);
+        if (column == null)
+        {
+            Debug.LogError(conf.path + "  is null!!!!");
+            return null;
+        }
+        GameObject insobj = MonoBehaviour.Instantiate(column);
+        insobj.transform.parent = mapObj.transform;
+        InGameBaseMapObj obj = insobj.GetComponent<InGameBaseMapObj>();
+
+        return obj;
+    }
 
     protected int GetMaxFullSpace(int i, int j,MazeCreate.PointType type)
     {

@@ -132,7 +132,7 @@ public class InGamePlayerManager : InGameBaseManager {
 
     }
 
-    private void OnDestroy()
+    public override void Destory()
     {
         EventManager.Remove(this);
     }

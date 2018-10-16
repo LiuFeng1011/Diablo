@@ -68,4 +68,8 @@ public class InGameUIPlayerInfoManager : BaseGameObject {
                 break;
         }
     }
+    public void Destory()
+    {
+        EventManager.Remove(this);
+    }
 }

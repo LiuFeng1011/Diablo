@@ -80,7 +80,9 @@ public class InGameUIManager : InGameBaseManager {
 
     public override void Destory()
     {
-
+        inGamePadManager.Destory();
+        inGameBigMapManager.Destory();
+        playerInfo.Destory();
     }
 
 }

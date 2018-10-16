@@ -450,7 +450,7 @@ public class InGameBaseCharacter : InGameBaseObj
 
     public void StartAtk(InGameBaseObj target)
     {
-        actionManager.StartAction(target, target.transform.position,1);
+        actionManager.StartAction(target, target.transform.position,target.ActionDistance());
         //agent.SetDestination(transform.position);
     }
 
@@ -620,9 +620,12 @@ public class InGameBaseCharacter : InGameBaseObj
         //    ret += ((InGameBaseCharacter)target).boxSize.x;
         //    ret += this.conf.atkdis;
         //}
+
         if(target.camp == enMSCamp.en_camp_item){
-            return 1.3f;
+            
+            return (float)target.ActionDistance() + 0.2f;
         }
+
         float ret = this.conf.atkdis + 1.3f;
 
         return ret;
@@ -662,6 +665,10 @@ public class InGameBaseCharacter : InGameBaseObj
         if (ai != null)
         {
             ai.Destory();
+        }
+
+        if(actionManager != null){
+            actionManager.Destory();
         }
 
         EventManager.Remove(this);

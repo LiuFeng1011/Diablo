@@ -89,6 +89,7 @@ public class InGameManager : BaseUnityObject {
         {
             return;
         }
+        Debug.Log("game Destory");
         playerCtrlManager.Destory();
         inGamePlayerManager.Destory();
         inGameObjManager.Destory();

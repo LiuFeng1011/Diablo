@@ -25,6 +25,11 @@ public class InGameBaseObj : BaseUnityObject {
 
     }
 
+    //场景对象互动距离
+    public virtual int ActionDistance(){
+        return 1;
+    }
+
     public virtual void Init(int instanceId, int confid,enMSCamp camp){
         this.instanceId = instanceId;
         this.confid = confid;

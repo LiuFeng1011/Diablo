@@ -339,6 +339,7 @@ public class MazeMapManager : BaseGameMapManager {
 
     protected void InsertGroup(Vector2 pos, int groupid)
     {
+        Debug.Log(groupid);
         int x = (int)pos.x, y = (int)pos.y;
         MapGroupConf conf = ConfigManager.mapGroupConfManager.dataMap[groupid];
         if (conf == null) return;

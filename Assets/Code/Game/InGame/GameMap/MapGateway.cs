@@ -6,19 +6,16 @@ public class MapGateway : InGameBaseMapObj {
 
     public int targetid = -1;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    public override int ActionDistance()
+    {
+        return 0;
+    }
 
     public override bool HandleFuntion(InGameBaseObj obj)
     {
         Debug.Log("MapGateway HandleFuntion :targetid : " + targetid);
+        GameGlobal.selLevelConfId = targetid;
+        (new EventChangeScene(GameSceneManager.SceneTag.Game)).Send();
         return false;
     }
 

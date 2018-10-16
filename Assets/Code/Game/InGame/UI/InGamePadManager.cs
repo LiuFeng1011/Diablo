@@ -123,4 +123,8 @@ public class InGamePadManager : BaseWindowManager {
         }
     }
 
+    public void Destory()
+    {
+        EventManager.Remove(this);
+    }
 }

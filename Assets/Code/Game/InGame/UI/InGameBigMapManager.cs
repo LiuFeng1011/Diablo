@@ -39,4 +39,11 @@ public class InGameBigMapManager : BaseWindowManager {
                 break;
         }
     }
+
+    public void Destory()
+    {
+        EventManager.Remove(this);
+    }
+
+
 }

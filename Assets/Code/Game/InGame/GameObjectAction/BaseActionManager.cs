@@ -159,7 +159,6 @@ public class BaseActionManager : BaseGameObject {
     void Move()
     {
         if(target != null){
-
             if (Vector2.Distance(parent.transform.position, target.transform.position) > parent.GetAtkDis(target))
             {
                 StartAction( target,  target.transform.position,astarDis);
@@ -275,6 +274,6 @@ public class BaseActionManager : BaseGameObject {
     }
 
     public void Destory(){
-        
+        EventManager.Remove(this);
     }
 }
